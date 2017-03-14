@@ -548,7 +548,7 @@
 (def teensy2-length 53)
 (def teensy-pcb-thickness 1.6) 
 (def teensy-offset-height 5)
-(def teensy-holder-length 68)
+(def teensy-holder-length 70)
 (def teensy-holder-offset (- 0 (/ teensy-holder-length 2)))
 (def teensy-holder-top-length 14)
 (def teensy-holder-top-offset (- 1 (/ teensy-holder-top-length 2)))
@@ -586,6 +586,10 @@
   (on-wall-place 0 teensy-vertical-offset (->> (cube 9 30 12)
                                                (translate [-1 10 0]))))
 
+(defn screw-insert-shape [bottom-radius top-radius height] 
+   (union (cylinder [bottom-radius top-radius] height)
+          (translate [0 0 (/ height 2)] (sphere top-radius))))
+
 (defn screw-insert [column row bottom-radius top-radius height] 
   (let [position (key-position column row [0 0 0])
         column-offset (/ mount-width 2)
@@ -597,8 +601,7 @@
         is-vertical   (or shift-left shift-right)
         col-angle     (+ (* β (- centercol column)) (/ π 12))
         row-angle     (* α (- row centerrow))]
-    (->> (union (cylinder [bottom-radius top-radius] height)
-                (translate [0 0 (/ height 2)] (sphere top-radius)))
+    (->> (screw-insert-shape bottom-radius top-radius height)
          (translate [(first position) (second position) (/ height 2)])
          (translate [(* (if shift-right 1 (if shift-left -1 0)) column-offset)
                      (* (if shift-up    1 (if shift-down -1 0)) row-offset)
@@ -607,7 +610,7 @@
                      (* wall-offset (Math/sin row-angle))
                      0]))))
 
-(defn screw-insert-shapes [bottom-radius top-radius height]
+(defn screw-insert-all-shapes [bottom-radius top-radius height]
   (union (screw-insert 0 0         bottom-radius top-radius height)
          (screw-insert 0 cornerrow bottom-radius top-radius height)
          (screw-insert 3 lastrow   bottom-radius top-radius height)
@@ -617,9 +620,18 @@
 (def screw-insert-height 3.8)
 (def screw-insert-bottom-radius (/ 5.31 2))
 (def screw-insert-top-radius (/ 5.1 2))
-(def screw-insert-holes  (screw-insert-shapes screw-insert-bottom-radius screw-insert-top-radius screw-insert-height))
-(def screw-insert-outers (screw-insert-shapes (+ screw-insert-bottom-radius 1.6) (+ screw-insert-top-radius 1.6) (+ screw-insert-height 1.6)))
+(def screw-insert-holes  (screw-insert-all-shapes screw-insert-bottom-radius screw-insert-top-radius screw-insert-height))
+(def screw-insert-outers (screw-insert-all-shapes (+ screw-insert-bottom-radius 1.6) (+ screw-insert-top-radius 1.6) (+ screw-insert-height 1.6)))
 
+(defn teensy-screw-insert-place [shape] 
+   (->> shape 
+        (rotate (/ π 2) [0 -1 0])
+        (translate [-7 -59 0])
+        (on-wall-place 0 teensy-vertical-offset)
+        ))
+
+(def teensy-screw-insert-hole  (teensy-screw-insert-place (cylinder [screw-insert-bottom-radius screw-insert-top-radius] screw-insert-height)))
+(def teensy-screw-insert-outer (teensy-screw-insert-place (cylinder [(+ screw-insert-bottom-radius 1.6) (+ screw-insert-top-radius 1.6)] (+ screw-insert-height 1.6))))
 
 (spit "things/right.scad"
       (write-scad (difference 
@@ -629,12 +641,15 @@
                     thumb
                     thumb-connectors
                     (difference (union case-walls 
+                                      ;  teensy-screw-insert-outer 
                                        screw-insert-outers 
                                        (if (= nrows 4) teensy-holder)) 
                                 rj9-space 
                                 usb-cutout 
+                                (if (= nrows 4) teensy-screw-insert-hole)
                                 screw-insert-holes)
                     rj9-holder
+                                      ;  teensy-screw-insert-outer 
                     ; thumbcaps
                     ; caps
                     )

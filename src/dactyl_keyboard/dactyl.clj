@@ -459,19 +459,19 @@
   (union
     (hull
       (place1 post1)
-      (place1 (translate [0 0 wall-offset] post1))
-      (place1 (translate [(* dx1 wall-thickness) (* dy1 wall-thickness) -4] post1))
-      (place1 (translate [(* dx1 wall-thickness) (* dy1 wall-thickness) wall-offset] post1))
+      (place1 (translate [(* 4 dx1 wall-thickness) (* 4 dy1 wall-thickness) wall-offset] post1))
+      (place1 (translate [(* 1 dx1 wall-thickness) (* 1 dy1 wall-thickness) -4] post1))
+      (place1 (translate [(* 5 dx1 wall-thickness) (* 5 dy1 wall-thickness) wall-offset] post1))
       (place2 post2)
-      (place2 (translate [0 0 wall-offset] post2))
-      (place2 (translate [(* dx2 wall-thickness) (* dy2 wall-thickness) -4] post2))
-      (place2 (translate [(* dx2 wall-thickness) (* dy2 wall-thickness) wall-offset] post2)))
+      (place2 (translate [(* 4 dx2 wall-thickness) (* 4 dy2 wall-thickness) wall-offset] post2))
+      (place2 (translate [(* 1 dx2 wall-thickness) (* 1 dy2 wall-thickness) -4] post2))
+      (place2 (translate [(* 5 dx2 wall-thickness) (* 5 dy2 wall-thickness) wall-offset] post2)))
     (bottom-hull
-      (place1 (translate [(* dx1 wall-thickness) (* dy1 wall-thickness) wall-offset] post1))
-      (place1 (translate [0         0         wall-offset] post1))
-      (place1 (translate [(* dx1 wall-thickness) (* dy1 wall-thickness) wall-offset] post1))
-      (place2 (translate [0         0         wall-offset] post2))
-      (place2 (translate [(* dx2 wall-thickness) (* dy2 wall-thickness) wall-offset] post2)))))
+      (place1 (translate [(* 4 dx1 wall-thickness) (* 4 dy1 wall-thickness) wall-offset] post1))
+      (place1 (translate [(* 5 dx1 wall-thickness) (* 5 dy1 wall-thickness) wall-offset] post1))
+      (place2 (translate [(* 4 dx2 wall-thickness) (* 4 dy2 wall-thickness) wall-offset] post2))
+      (place2 (translate [(* 5 dx2 wall-thickness) (* 5 dy2 wall-thickness) wall-offset] post2)))
+      ))
 
 (defn key-wall-brace [x1 y1 dx1 dy1 post1 x2 y2 dx2 dy2 post2] 
   (wall-brace (partial key-place x1 y1) dx1 dy1 post1 
@@ -502,7 +502,7 @@
    (wall-brace thumb-mr-place  0 -1 web-post-br thumb-tr-place  0 -1 thumb-post-br)
    (wall-brace thumb-mr-place  0 -1 web-post-br thumb-mr-place  0 -1 web-post-bl)
    (wall-brace thumb-br-place  0 -1 web-post-br thumb-br-place  0 -1 web-post-bl)
-   (wall-brace thumb-ml-place  0  1 web-post-tr thumb-ml-place  0  1 web-post-tl)
+   (wall-brace thumb-ml-place -0.3  1 web-post-tr thumb-ml-place  0  1 web-post-tl)
    (wall-brace thumb-bl-place  0  1 web-post-tr thumb-bl-place  0  1 web-post-tl)
    (wall-brace thumb-br-place -1  0 web-post-tl thumb-br-place -1  0 web-post-bl)
    (wall-brace thumb-bl-place -1  0 web-post-tl thumb-bl-place -1  0 web-post-bl)
@@ -515,8 +515,9 @@
    (wall-brace thumb-bl-place -1  0 web-post-bl thumb-br-place -1  0 web-post-tl)
    (wall-brace thumb-tr-place  0 -1 thumb-post-br (partial key-place 3 lastrow)  0 -1 web-post-bl)
    ; clunky bit on the top left thumb connection
-   (wall-brace thumb-ml-place  0  1 web-post-tr thumb-tl-place -2.5  0 thumb-post-tl)
-   (wall-brace thumb-tl-place -1  0 thumb-post-tl (partial key-place 0 cornerrow) -1  0 web-post-bl)
+  ;  (wall-brace thumb-ml-place  -0.5  1 web-post-tr thumb-tl-place -1.0  0.1 thumb-post-tl)
+  ;  (wall-brace thumb-tl-place -1  0.1 thumb-post-tl (partial key-place 0 cornerrow) -1  0 web-post-bl)
+  ;;;  (wall-brace thumb-ml-place -0.5  1 thumb-post-tr (partial key-place 0 cornerrow) -1  0 web-post-bl)
    ;; another incomplete try to fix this
    ;  (bottom-hull (thumb-tl-place thumb-post-tl)
    ;               (thumb-tl-place (translate [-7 0 0] thumb-post-tl))
@@ -641,7 +642,6 @@
                     thumb
                     thumb-connectors
                     (difference (union case-walls 
-                                      ;  teensy-screw-insert-outer 
                                        screw-insert-outers 
                                        (if (= nrows 4) teensy-holder)) 
                                 rj9-space 
@@ -649,7 +649,6 @@
                                 (if (= nrows 4) teensy-screw-insert-hole)
                                 screw-insert-holes)
                     rj9-holder
-                                      ;  teensy-screw-insert-outer 
                     ; thumbcaps
                     ; caps
                     )
@@ -657,6 +656,15 @@
                   ;  (translate [0 0 -50] (cube 5 5 20)) 
                   )))
                    
+; (spit "things/right.scad"
+;       (write-scad 
+;                    (union
+;                     key-holes
+;                     connectors
+;                     thumb
+;                     thumb-connectors
+;                     case-walls 
+;                   )))
 
 (spit "things/test.scad"
       (write-scad (intersection (translate [29 -5 0] (cube 30 30 30))

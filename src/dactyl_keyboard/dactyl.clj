@@ -545,22 +545,12 @@
      (thumb-tl-place thumb-post-tl))
   ))
 
-(defn on-wall-place [column depth shape]
-  (let [start (wall-locate2 0 1)
-        location [(first start) (+ (second start) (/ mount-height 2)) (last start)]]
-    (translate [0 0 (- depth)]
-      (key-place column 0
-        (->> shape
-             (rotate (+ (* β (- centercol column)) (/ π 12)) [0 -1 0])      
-             (rotate (* α centerrow) [-1 0 0])       
-             (translate location)
-             )))))
 
-
-(def rj9-vertical-offset (- (last (key-position 0 0 [0 (/ mount-height 2) 0])) 35))
+(def rj9-start  (map + [0 -3  0] (key-position 1 0 (map + (wall-locate3 0 1) [0 (/ mount-height  2) 0]))))
+(def rj9-position  [(first rj9-start) (second rj9-start) 12])
 (def rj9-cube   (cube 14.78 13 22.38))
-(def rj9-space  (on-wall-place 1 rj9-vertical-offset rj9-cube))
-(def rj9-holder (on-wall-place 1 rj9-vertical-offset 
+(def rj9-space  (translate rj9-position rj9-cube))
+(def rj9-holder (translate rj9-position
                   (difference rj9-cube
                               (union (translate [0 2 0] (cube 10.78  9 18.38))
                                      (translate [0 0 5] (cube 10.78 13  5))))))
@@ -588,7 +578,7 @@
           bar-left  (+ 1 (first (key-position 0 row (map - (wall-locate2 -1 0) [0 (/ mount-width 2) 0]))))
           bar-width (- bar-right bar-left)
           bar-y     (second (key-position 0 row (map - (wall-locate2 -1 0) [0 (/ mount-width 2) 0])))]
-     (pr bar-right bar-left bar-y)
+    ;  (pr bar-right bar-left bar-y)
      (translate [(- bar-right (/ bar-width 2) 7) (+ bar-y 5) 10] (cube (+ 2 bar-width) 8 20))))
 
 (def teensy-holder 
@@ -611,31 +601,19 @@
            ))
 
 (def usb-cutout
-  (let [hole-height 7.5
-        side-radius (/ hole-height 2)
-        hole-width 12
-        side-cylinder (->> (cylinder side-radius teensy-length)
-                           (with-fn 20)
-                           (translate [(/ (- hole-width hole-height) 2) 0 0]))]
-    (->> (hull side-cylinder
-               (mirror [-1 0 0] side-cylinder))
-         (rotate (/ π 2) [1 0 0])
-         (rotate (/ π 2) [0 1 0])
-         (on-wall-place 0 teensy-vertical-offset))))
-
-(def usb-cutout
-  (->> (cube 9 30 12)
-       (translate [-1 10 0])))
-
-(def usb-cutout
-  (on-wall-place 0 teensy-vertical-offset (->> (cube 9 30 12)
-                                               (translate [-1 10 0]))))
+  (->> (cube 10 30 12)
+       (translate [5 -5 0])
+       (rotate teensy-holder-angle [0 0 -1])
+       (translate [(first teensy-top-xy) 
+                   (- (second teensy-top-xy) 1) 
+                   (/ (+ 6 teensy-width) 2)])
+       ))
 
 
 (defn screw-insert-shape [bottom-radius top-radius height] 
    (union (cylinder [bottom-radius top-radius] height)
           (translate [0 0 (/ height 2)] (sphere top-radius))))
-(pr (wall-locate2  1  0))
+
 (defn screw-insert [column row bottom-radius top-radius height] 
   (let [shift-right   (= column lastcol)
         shift-left    (= column 0)
@@ -709,6 +687,8 @@
 ;                     teensy-holder
 ;                                 teensy-screw-insert-hole
 ;                                 teensy-screw-insert-outer
+;                                 usb-cutout 
+;                                 rj9-space 
 ;                   )))
 
 (spit "things/test.scad"

@@ -13,8 +13,8 @@
 ;; Shape parameters ;;
 ;;;;;;;;;;;;;;;;;;;;;;
 
-(def nrows 6)
-(def ncols 6)
+(def nrows 4)
+(def ncols 5)
 
 (def α (/ π 12))                        ; curvature of the columns
 (def β (/ π 36))                        ; curvature of the rows
@@ -547,7 +547,7 @@
 
 
 (def rj9-start  (map + [0 -3  0] (key-position 1 0 (map + (wall-locate3 0 1) [0 (/ mount-height  2) 0]))))
-(def rj9-position  [(first rj9-start) (second rj9-start) 12])
+(def rj9-position  [(first rj9-start) (second rj9-start) 11])
 (def rj9-cube   (cube 14.78 13 22.38))
 (def rj9-space  (translate rj9-position rj9-cube))
 (def rj9-holder (translate rj9-position
@@ -572,15 +572,6 @@
 (def teensy-holder-top-offset (- 1 (/ teensy-holder-top-length 2)))
 (def teensy-holder-angle (Math/atan2 (- (first teensy-top-xy) (first teensy-bot-xy)) (- (second teensy-top-xy) (second teensy-bot-xy))))
 
-
-(defn teensy-support-bar [row]
-    (let [bar-right (- (first (key-position 0 0   (map + (wall-locate2 0 1) [(/ mount-height 2) 0 0]))) 6)
-          bar-left  (+ 1 (first (key-position 0 row (map - (wall-locate2 -1 0) [0 (/ mount-width 2) 0]))))
-          bar-width (- bar-right bar-left)
-          bar-y     (second (key-position 0 row (map - (wall-locate2 -1 0) [0 (/ mount-width 2) 0])))]
-    ;  (pr bar-right bar-left bar-y)
-     (translate [(- bar-right (/ bar-width 2) 7) (+ bar-y 5) 10] (cube (+ 2 bar-width) 8 20))))
-
 (def teensy-holder 
     (->> 
         (union 
@@ -601,8 +592,8 @@
            ))
 
 (def usb-cutout
-  (->> (cube 10 30 12)
-       (translate [5 -5 0])
+  (->> (cube 8 30 12)
+       (translate [7 -5 0])
        (rotate teensy-holder-angle [0 0 -1])
        (translate [(first teensy-top-xy) 
                    (- (second teensy-top-xy) 1) 
@@ -633,7 +624,7 @@
          (screw-insert 0 cornerrow bottom-radius top-radius height)
          (screw-insert 3 lastrow   bottom-radius top-radius height)
          (screw-insert 3 0         bottom-radius top-radius height)
-         (screw-insert lastcol (dec cornerrow) bottom-radius top-radius height)
+        ;  (screw-insert lastcol (dec cornerrow) bottom-radius top-radius height)
          ))
 (def screw-insert-height 3.8)
 (def screw-insert-bottom-radius (/ 5.31 2))

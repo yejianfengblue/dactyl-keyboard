@@ -35,10 +35,10 @@
 (def keyboard-z-offset  9)              ; controls height; original=24
 
 (def extra-width 2.5)                   ; extra space between the base of keys; original= 2
-(def extra-height 1.0)                  ; origin= 1/2
+(def extra-height 1.0)                  ; original= 0.5
 
 (def wall-z-offset -15)                 ; length of the first downward-sloping part of the wall (negative)
-(def wall-xy-offset 6)                  ; offset in the x and/or y direction for the first downward-sloping part of the wall (negative)
+(def wall-xy-offset 10)                  ; offset in the x and/or y direction for the first downward-sloping part of the wall (negative)
 (def wall-thickness 2)                  ; wall thickness parameter; originally 5
 
 ;;;;;;;;;;;;;;;;;;;;;;;
@@ -555,7 +555,6 @@
                               (union (translate [0 2 0] (cube 10.78  9 18.38))
                                      (translate [0 0 5] (cube 10.78 13  5))))))
 
-(def teensy-vertical-offset (+ rj9-vertical-offset 10))
 (def teensy-width 20)  
 (def teensy-height 12)
 (def teensy-length 33)
@@ -610,10 +609,10 @@
         shift-left    (= column 0)
         shift-up      (and (not (or shift-right shift-left)) (= row 0))
         shift-down    (and (not (or shift-right shift-left)) (= row lastrow))
-        position      (if shift-up    (key-position column row (map + (wall-locate3  0  1) [0 (/ mount-height 2) 0]))
-                       (if shift-down (key-position column row (map - (wall-locate3  0 -1) [0 (/ mount-height 2) 0]))
-                       (if shift-left (key-position column row (map - (wall-locate3 -1  0) [0 0 (/ mount-width 2)]))
-                                      (key-position column row (map + (wall-locate3  1  0) [0 0 (/ mount-width 2)])))))
+        position      (if shift-up    (key-position column row (map + (wall-locate2  0  1) [0 (/ mount-height 2) 0]))
+                       (if shift-down (key-position column row (map - (wall-locate2  0 -1) [0 (/ mount-height 2) 0]))
+                       (if shift-left (key-position column row (map - (wall-locate2 -1  0) [(/ mount-width 2) 0 0]))
+                                      (key-position column row (map + (wall-locate2  1  0) [(/ mount-width 2) 0 0])))))
         ]
     (->> (screw-insert-shape bottom-radius top-radius height)
          (translate [(first position) (second position) (/ height 2)])
@@ -624,7 +623,7 @@
          (screw-insert 0 cornerrow bottom-radius top-radius height)
          (screw-insert 3 lastrow   bottom-radius top-radius height)
          (screw-insert 3 0         bottom-radius top-radius height)
-        ;  (screw-insert lastcol (dec cornerrow) bottom-radius top-radius height)
+         (screw-insert lastcol (dec cornerrow) bottom-radius top-radius height)
          ))
 (def screw-insert-height 3.8)
 (def screw-insert-bottom-radius (/ 5.31 2))
@@ -644,49 +643,50 @@
 (def teensy-screw-insert-hole  (teensy-screw-insert-place (cylinder [screw-insert-bottom-radius screw-insert-top-radius] (+ screw-insert-height 1))))
 (def teensy-screw-insert-outer (teensy-screw-insert-place (cylinder [(+ screw-insert-bottom-radius 1.6) (+ screw-insert-top-radius 1.6)] (+ screw-insert-height 2.6))))
 
-(spit "things/right.scad"
-      (write-scad (difference 
-                   (union
-                    key-holes
-                    connectors
-                    thumb
-                    thumb-connectors
-                    (difference (union case-walls 
-                                       screw-insert-outers 
-                                       teensy-screw-insert-outer
-                                       teensy-holder)
-                                rj9-space 
-                                usb-cutout 
-                                teensy-screw-insert-hole
-                                screw-insert-holes)
-                    rj9-holder
-                    ; thumbcaps
-                    ; caps
-                    )
-                   (translate [0 0 -20] (cube 350 350 40)) 
-                  ;  (translate [0 0 -150] (cube 5 5 20)) 
-                  )))
-                   
 ; (spit "things/right.scad"
-;       (write-scad 
+;       (write-scad (difference 
 ;                    (union
 ;                     key-holes
 ;                     connectors
 ;                     thumb
 ;                     thumb-connectors
-;                     case-walls 
-;                     teensy-holder
-;                                 teensy-screw-insert-hole
-;                                 teensy-screw-insert-outer
-;                                 usb-cutout 
+;                     (difference (union case-walls 
+;                                        screw-insert-outers 
+;                                        teensy-screw-insert-outer
+;                                        teensy-holder)
 ;                                 rj9-space 
+;                                 usb-cutout 
+;                                 teensy-screw-insert-hole
+;                                 screw-insert-holes)
+;                     rj9-holder
+;                     ; thumbcaps
+;                     ; caps
+;                     )
+;                    (translate [0 0 -20] (cube 350 350 40)) 
+;                   ;  (translate [0 0 -150] (cube 5 5 20)) 
 ;                   )))
+                   
+(spit "things/right.scad"
+      (write-scad 
+                   (union
+                    key-holes
+                    connectors
+                    thumb
+                    thumb-connectors
+                    case-walls 
+                    teensy-holder
+                                screw-insert-outers 
+                                teensy-screw-insert-hole
+                                teensy-screw-insert-outer
+                                usb-cutout 
+                                rj9-space 
+                  )))
 
-(spit "things/test.scad"
-      (write-scad (intersection (translate [29 -5 0] (cube 30 30 30))
-                   (difference (union case-walls screw-insert-outers) 
-                               screw-insert-holes)
-                   )))
+; (spit "things/test.scad"
+;       (write-scad (intersection (translate [29 -5 0] (cube 30 30 30))
+;                    (difference (union case-walls screw-insert-outers) 
+;                                screw-insert-holes)
+;                    )))
 
 ; (spit "things/test.scad"
 ;       (write-scad screw-insert-holes))

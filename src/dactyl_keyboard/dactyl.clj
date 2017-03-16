@@ -13,8 +13,8 @@
 ;; Shape parameters ;;
 ;;;;;;;;;;;;;;;;;;;;;;
 
-(def nrows 4)
-(def ncols 5)
+(def nrows 6)
+(def ncols 6)
 
 (def α (/ π 12))                        ; curvature of the columns
 (def β (/ π 36))                        ; curvature of the rows
@@ -564,13 +564,13 @@
 (def teensy-holder-length 75)
 (def teensy-holder-offset (- 0 (/ teensy-holder-length 2)))
 (def teensy-holder-top-length 20)
-(def teensy-top-xy (key-position 0 0 (map + (wall-locate3 0 1) [(/ mount-width -2) (/ mount-height  2) 0])))
-(def teensy-bot-xy (key-position 0 2 (map + (wall-locate2 0 1) [(/ mount-width -2)  
+(def teensy-top-xy (key-position 0 0 (map + (wall-locate3  0 1) [(/ mount-width -2) (/ mount-height  2) 0])))
+(def teensy-bot-xy (key-position 0 2 (map + (wall-locate2 -1 0) [(/ mount-width -2)  
                                                                 (/ mount-height  2) ; useful for changing the angle
                                                                 0])))
 (def teensy-holder-top-offset (- 1 (/ teensy-holder-top-length 2)))
 (def teensy-holder-angle (Math/atan2 (- (first teensy-top-xy) (first teensy-bot-xy)) (- (second teensy-top-xy) (second teensy-bot-xy))))
-
+(pr (wall-locate2 0 1))
 (def teensy-holder 
     (->> 
         (union 
@@ -623,7 +623,7 @@
          (screw-insert 0 cornerrow bottom-radius top-radius height)
          (screw-insert 3 lastrow   bottom-radius top-radius height)
          (screw-insert 3 0         bottom-radius top-radius height)
-         (screw-insert lastcol (dec cornerrow) bottom-radius top-radius height)
+         (screw-insert lastcol 1 bottom-radius top-radius height)
          ))
 (def screw-insert-height 3.8)
 (def screw-insert-bottom-radius (/ 5.31 2))

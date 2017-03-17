@@ -678,6 +678,26 @@
 (def teensy-screw-insert-hole  (teensy-screw-insert-place (cylinder [screw-insert-bottom-radius screw-insert-top-radius] (+ screw-insert-height 0.4))))
 (def teensy-screw-insert-outer (teensy-screw-insert-place (translate [0 0 1] (cylinder [(+ screw-insert-bottom-radius 1.6) (+ screw-insert-top-radius 1.6)] (+ screw-insert-height 2)))))
 
+(def wire-post-height 7)
+(def wire-post-overhang 3)
+(def wire-post-diameter 1.6)
+(defn wire-post [direction offset]
+   (->> (union (translate [0 (* wire-post-diameter -0.5 direction) 0] (cube wire-post-diameter wire-post-diameter wire-post-height))
+               (translate [0 (* wire-post-overhang -0.5 direction) (/ wire-post-height -2)] (cube wire-post-diameter wire-post-overhang wire-post-diameter)))
+        (translate [0 (- offset) (+ (/ wire-post-height -2) 3) ])
+        (rotate (/ α -2) [1 0 0])
+        (translate [3 (/ mount-height -2) 0])))
+
+(def wire-posts
+  (union
+     (for [column (range 0 lastcol)
+           row (range 0 cornerrow)]
+       (union
+        (key-place column row (wire-post 1 0))
+        (key-place column row (translate [3 0 0] (wire-post -1 6)))
+        (key-place column row (translate [6 0 0] (wire-post  1 0)))))))
+
+
 (spit "things/right.scad"
       (write-scad (difference 
                    (union
@@ -696,6 +716,7 @@
                                 teensy-screw-insert-hole
                                 screw-insert-holes)
                     rj9-holder
+                    wire-posts
                     ; thumbcaps
                     ; caps
                     )
@@ -708,16 +729,17 @@
                    (union
                     key-holes
                     connectors
-                    thumb
-                    thumb-connectors
-                    case-walls 
-                    teensy-holder
-                    ; teensy-holder-hole
-                                screw-insert-outers 
-                                teensy-screw-insert-hole
-                                teensy-screw-insert-outer
-                                usb-cutout 
-                                rj9-space 
+                    ; thumb
+                    ; thumb-connectors
+                    ; case-walls 
+                    ; teensy-holder
+                    ; ; teensy-holder-hole
+                    ;             screw-insert-outers 
+                    ;             teensy-screw-insert-hole
+                    ;             teensy-screw-insert-outer
+                    ;             usb-cutout 
+                    ;             rj9-space 
+                                wire-posts
                   )))
 
 ; (spit "things/test.scad"

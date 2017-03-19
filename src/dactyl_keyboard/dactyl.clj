@@ -670,7 +670,7 @@
  (let [position (vec (map - teensy-bot-xy (map (partial * 0.3) (map - teensy-top-xy teensy-bot-xy))))] 
    (->> shape 
         (rotate (/ π 2) [0 -1 0])
-        (translate [(- 3 teensy-holder-width (/ screw-insert-height 2)) (- (+ teensy2-length 4)) 0])
+        (translate [(- 3 teensy-holder-width (/ screw-insert-height 2)) (- (+ teensy2-length 7)) 0])
         (rotate teensy-holder-angle [0 0 -1])
         (translate [(first teensy-top-xy) (second teensy-top-xy) 15])
         )))
@@ -679,8 +679,8 @@
 (def teensy-screw-insert-outer (teensy-screw-insert-place (translate [0 0 1] (cylinder [(+ screw-insert-bottom-radius 1.6) (+ screw-insert-top-radius 1.6)] (+ screw-insert-height 2)))))
 
 (def wire-post-height 7)
-(def wire-post-overhang 3)
-(def wire-post-diameter 1.6)
+(def wire-post-overhang 3.5)
+(def wire-post-diameter 2.6)
 (defn wire-post [direction offset]
    (->> (union (translate [0 (* wire-post-diameter -0.5 direction) 0] (cube wire-post-diameter wire-post-diameter wire-post-height))
                (translate [0 (* wire-post-overhang -0.5 direction) (/ wire-post-height -2)] (cube wire-post-diameter wire-post-overhang wire-post-diameter)))
@@ -690,12 +690,15 @@
 
 (def wire-posts
   (union
+     (thumb-ml-place (translate [-5 0 -2] (wire-post  1 0)))
+     (thumb-ml-place (translate [ 0 0 -2.5] (wire-post -1 6)))
+     (thumb-ml-place (translate [ 5 0 -2] (wire-post  1 0)))
      (for [column (range 0 lastcol)
            row (range 0 cornerrow)]
        (union
-        (key-place column row (wire-post 1 0))
-        (key-place column row (translate [3 0 0] (wire-post -1 6)))
-        (key-place column row (translate [6 0 0] (wire-post  1 0)))))))
+        (key-place column row (translate [-5 0 0] (wire-post 1 0)))
+        (key-place column row (translate [0 0 0] (wire-post -1 6)))
+        (key-place column row (translate [5 0 0] (wire-post  1 0)))))))
 
 
 (spit "things/right.scad"
@@ -729,8 +732,8 @@
                    (union
                     key-holes
                     connectors
-                    ; thumb
-                    ; thumb-connectors
+                    thumb
+                    thumb-connectors
                     ; case-walls 
                     ; teensy-holder
                     ; ; teensy-holder-hole

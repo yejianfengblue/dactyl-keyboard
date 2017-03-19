@@ -665,6 +665,7 @@
 (def screw-insert-top-radius (/ 5.1 2))
 (def screw-insert-holes  (screw-insert-all-shapes screw-insert-bottom-radius screw-insert-top-radius screw-insert-height))
 (def screw-insert-outers (screw-insert-all-shapes (+ screw-insert-bottom-radius 1.6) (+ screw-insert-top-radius 1.6) (+ screw-insert-height 1.6)))
+(def screw-insert-screw-holes  (screw-insert-all-shapes 1.7 1.7 350))
 
 (defn teensy-screw-insert-place [shape] 
  (let [position (vec (map - teensy-bot-xy (map (partial * 0.3) (map - teensy-top-xy teensy-bot-xy))))] 
@@ -743,6 +744,14 @@
                     ;             usb-cutout 
                     ;             rj9-space 
                                 wire-posts
+                  )))
+
+(spit "things/right-plate.scad"
+      (write-scad 
+                   (project 
+                     (difference (union case-walls
+                                  screw-insert-outers)
+                                 (translate [0 0 -10] screw-insert-screw-holes))
                   )))
 
 ; (spit "things/test.scad"

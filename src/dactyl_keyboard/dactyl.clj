@@ -44,13 +44,9 @@
 (def show-caps? false)
 
 (defn column-offset [column]
-  (if rental-car?
-    (cond (= column 2)  [0   0    -6.5]
-          (>= column 4) [0   0     6]
-          :else         [0   0     0])
-    (cond (= column 2)  [0   2.82 -6.5]
-          (>= column 4) [0  -13    6]
-          :else         [0   0     0])))
+  (cond (= column 2)  [0   2.82 -6.5]
+        (>= column 4) [0  -13    6]
+        :else         [0   0     0]))
 
 (def thumb-offsets [6 -3 7])
 
@@ -461,7 +457,9 @@
 
 (defn wall-locate1 [dx dy] [(* dx wall-thickness) (* dy wall-thickness) -1])
 (defn wall-locate2 [dx dy] [(* dx wall-xy-offset) (* dy wall-xy-offset) wall-z-offset])
-(defn wall-locate3 [dx dy] [(* dx (+ wall-xy-offset wall-thickness)) (* dy (+ wall-xy-offset wall-thickness)) wall-z-offset])
+(defn wall-locate3 [dx dy] [(* dx (+ wall-xy-offset wall-thickness))
+                            (* dy (+ wall-xy-offset wall-thickness))
+                            wall-z-offset])
 
 (defn wall-brace [place1 dx1 dy1 post1 place2 dx2 dy2 post2]
   (union
@@ -487,24 +485,24 @@
 (def pinky-connectors
   (apply union
          (concat
-          (for [row (range 0 (if use-last-rows? (inc lastrow) lastrow))]
+          (for [row (range 0 lastrow)]
             (triangle-hulls
              (key-place lastcol row web-post-tr)
-             (key-place lastcol row wide-post-tr)
+             (key-place lastcol row web-post-tr)
              (key-place lastcol row web-post-br)
-             (key-place lastcol row wide-post-br)))
-          (for [row (range 0 (if use-last-rows? lastrow cornerrow))]
+             (key-place lastcol row web-post-br)))
+          (for [row (range 0 cornerrow)]
             (triangle-hulls
              (key-place lastcol row web-post-br)
-             (key-place lastcol row wide-post-br)
+             (key-place lastcol row web-post-br)
              (key-place lastcol (inc row) web-post-tr)
-             (key-place lastcol (inc row) wide-post-tr))))))
+             (key-place lastcol (inc row) web-post-tr))))))
 
 (def pinky-walls
   (union
-   (key-wall-brace lastcol (if use-last-rows? lastrow cornerrow) 0 -1 web-post-br
-                   lastcol (if use-last-rows? lastrow cornerrow) 0 -1 wide-post-br)
-   (key-wall-brace lastcol 0 0 1 web-post-tr lastcol 0 0 1 wide-post-tr)))
+   (key-wall-brace lastcol cornerrow 0 -1 web-post-br
+                   lastcol cornerrow 0 -1 web-post-br)
+   (key-wall-brace lastcol 0 0 1 web-post-tr lastcol 0 0 1 web-post-tr)))
 
 (def case-walls
   (union
@@ -710,9 +708,9 @@
          (translate [(first position) (second position) (/ height 2)]))))
 
 (defn screw-insert-all-shapes [bottom-radius top-radius height]
-  (let [lastloc (if-not use-wide-pinky? (+ lastcol 0.1) (+ lastcol 0.5))]
-    (union (screw-insert (if use-inner-column? -1 0)       0               bottom-radius top-radius height)
-           (screw-insert (if use-inner-column? -1 0)       (- lastrow 0.8) bottom-radius top-radius height)
+  (let [lastloc (+ lastcol 0.1)]
+    (union (screw-insert 0       0               bottom-radius top-radius height)
+           (screw-insert 0       (- lastrow 0.8) bottom-radius top-radius height)
            (screw-insert 2       (+ lastrow 0.2) bottom-radius top-radius height)
            (screw-insert 3       0               bottom-radius top-radius height)
            (screw-insert lastloc 1               bottom-radius top-radius height))))
@@ -748,7 +746,6 @@
 (def model-right (difference
                   (union
                    key-holes
-                   (if use-inner-column? inner-key-holes)
                    (if show-caps? caps)
                    (if show-caps? thumbcaps)
                    pinky-connectors

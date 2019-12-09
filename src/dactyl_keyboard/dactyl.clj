@@ -20,7 +20,7 @@
 (def β (/ π 36))                        ; curvature of the rows
 (def centerrow (- nrows 3))             ; controls front-back tilt
 (def centercol 4)                       ; controls left-right tilt / tenting (higher number is more tenting)
-(def tenting-angle (/ π 12))            ; or, change this for more precise tenting control
+(def tenting-angle (/ π 9))            ; or, change this for more precise tenting control
 (def column-style
   (if (> nrows 5) :orthographic :standard))  ; options include :standard, :orthographic, and :fixed
 
@@ -51,6 +51,8 @@
 ; if you want to use small usb hole, set
 ; this parameter as true
 (def use-promicro-usb-hole? false)
+
+(def use-hotswap? false)
 
 (defn column-offset [column] (cond
                                (= column 2) [0 2.82 -4.5]
@@ -128,49 +130,32 @@
         minus-hole (->> (cylinder (/ 2.9 2) 10)
                         (with-fn 8)
                         (translate [2.54 5.08 0]))
+        plus-hole-mirrored (->> (cylinder (/ 2.9 2) 10)
+                                (with-fn 8)
+                                (translate [3.81 2.54 0]))
+        minus-hole-mirrored (->> (cylinder (/ 2.9 2) 10)
+                                 (with-fn 8)
+                                 (translate [-2.54 5.08 0]))
         friction-hole (->> (cylinder (/ 1.7 2) 10)
                            (with-fn 8))
         friction-hole-right (translate [5 0 0] friction-hole)
         friction-hole-left (translate [-5 0 0] friction-hole)
-        hotswap-base-shape (->> (cube 14 5.80 1.8)
-                                (translate [-1 4 -2.1]))
-        hotswap-base-hold-shape (->> (cube (/ 12 2) (- 6.2 4) 1.8)
-                                     (translate [(/ 12 4) (/ (- 6.2 4) 1) -2.1]))
-        hotswap-pad (cube 4.00 3.0 2)
-        hotswap-pad-plus (translate [(- 0 (+ (/ 12.9 2) (/ 2.55 2))) 2.54 -2.1]
-                                    hotswap-pad)
-        hotswap-pad-minus (translate [(+ (/ 10.9 2) (/ 2.55 2)) 5.08 -2.1]
-                                     hotswap-pad)
-        wire-track (cube 4 (+ keyswitch-height 3) 1.8)
-        column-wire-track (->> wire-track
-                               (translate [9.5 0 -2.4]))
-        diode-wire-track (->> (cube 2 10 1.8)
-                              (translate [-7 8 -2.1]))
-        hotswap-base (union
-                      (difference hotswap-base-shape
-                                  hotswap-base-hold-shape)
-                      hotswap-pad-plus
-                      hotswap-pad-minus)
-        diode-holder (->> (cube 2 4 1.8)
-                          (translate [-7 5 -2.1]))
+        hotswap-base-shape (->> (cube 19 6.2 3)
+                                (translate [0 4 -2.6]))
         hotswap-holder (difference swap-holder
                                    main-axis-hole
                                    plus-hole
-                                   (mirror [-1 0 0] plus-hole)
                                    minus-hole
-                                   (mirror [-1 0 0] minus-hole)
+                                   plus-hole-mirrored
+                                   minus-hole-mirrored
                                    friction-hole-left
                                    friction-hole-right
-                                   hotswap-base
-                                   (mirror [-1 0 0] hotswap-base))]
+                                   hotswap-base-shape)]
     (difference (union plate-half
                        (->> plate-half
                             (mirror [1 0 0])
                             (mirror [0 1 0]))
-                       hotswap-holder)
-                #_diode-holder
-                #_diode-wire-track
-                column-wire-track)))
+                       (if use-hotswap? hotswap-holder ())))))
 
 ;;;;;;;;;;;;;;;;
 ;; SA Keycaps ;;

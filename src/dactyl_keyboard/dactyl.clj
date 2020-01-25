@@ -13,14 +13,14 @@
 ;; Shape parameters ;;
 ;;;;;;;;;;;;;;;;;;;;;;
 
-(def nrows 4)
-(def ncols 5)
+(def nrows 5)
+(def ncols 6)
 
 (def α (/ π 12))                        ; curvature of the columns
 (def β (/ π 36))                        ; curvature of the rows
 (def centerrow (- nrows 3))             ; controls front-back tilt
 (def centercol 4)                       ; controls left-right tilt / tenting (higher number is more tenting)
-(def tenting-angle (/ π 9))            ; or, change this for more precise tenting control
+(def tenting-angle (/ π 12))            ; or, change this for more precise tenting control
 (def column-style
   (if (> nrows 5) :orthographic :standard))  ; options include :standard, :orthographic, and :fixed
 
@@ -33,7 +33,7 @@
 ; :two  means only 2 1.5us used.
 ; :four means 2 1.5us and 2 1us.
 ; :six  means the usual dactyl.
-(def thumb-count :six)
+(def thumb-count :two)
 
 ; if you don't want the side nubs, set this
 ; parameter as false.
@@ -52,7 +52,7 @@
 ; this parameter as true
 (def use-promicro-usb-hole? false)
 
-(def use-hotswap? false)
+(def use-hotswap? true)
 
 (defn column-offset [column] (cond
                                (= column 2) [0 2.82 -4.5]
@@ -61,12 +61,12 @@
 
 (def thumb-offsets [6 -3 7])
 
-(def keyboard-z-offset 4)               ; controls overall height; original=9 with centercol=3; use 16 for centercol=2
+(def keyboard-z-offset 9)               ; controls overall height; original=9 with centercol=3; use 16 for centercol=2
 
 (def extra-width 2.5)                   ; extra space between the base of keys; original= 2
 (def extra-height 1.0)                  ; original= 0.5
 
-(def wall-z-offset -15)                 ; length of the first downward-sloping part of the wall (negative)
+(def wall-z-offset -5)                 ; length of the first downward-sloping part of the wall (negative)
 (def wall-xy-offset 5)                  ; offset in the x and/or y direction for the first downward-sloping part of the wall (negative)
 (def wall-thickness 2)                  ; wall thickness parameter; originally 5
 
@@ -124,16 +124,16 @@
                          (translate [0 (/ (+ keyswitch-height 3) 4) -1.5]))
         main-axis-hole (->> (cylinder (/ 4.0 2) 10)
                             (with-fn 12))
-        plus-hole (->> (cylinder (/ 2.9 2) 10)
+        plus-hole (->> (cylinder (/ 3.3 2) 10)
                        (with-fn 8)
                        (translate [-3.81 2.54 0]))
-        minus-hole (->> (cylinder (/ 2.9 2) 10)
+        minus-hole (->> (cylinder (/ 3.3 2) 10)
                         (with-fn 8)
                         (translate [2.54 5.08 0]))
-        plus-hole-mirrored (->> (cylinder (/ 2.9 2) 10)
+        plus-hole-mirrored (->> (cylinder (/ 3.3 2) 10)
                                 (with-fn 8)
                                 (translate [3.81 2.54 0]))
-        minus-hole-mirrored (->> (cylinder (/ 2.9 2) 10)
+        minus-hole-mirrored (->> (cylinder (/ 3.3 2) 10)
                                  (with-fn 8)
                                  (translate [-2.54 5.08 0]))
         friction-hole (->> (cylinder (/ 1.7 2) 10)
@@ -431,10 +431,14 @@
    (thumb-15x-layout single-plate)
    (thumb-15x-layout larger-plate)))
 
-(def thumb-post-tr (translate [(- (/ mount-width 2) post-adj)  (- (/ mount-height  1.15) post-adj) 0] web-post))
-(def thumb-post-tl (translate [(+ (/ mount-width -2) post-adj) (- (/ mount-height  1.15) post-adj) 0] web-post))
-(def thumb-post-bl (translate [(+ (/ mount-width -2) post-adj) (+ (/ mount-height -1.15) post-adj) 0] web-post))
-(def thumb-post-br (translate [(- (/ mount-width 2) post-adj)  (+ (/ mount-height -1.15) post-adj) 0] web-post))
+(def thumb-post-tr (translate [(- (/ mount-width 2) post-adj)
+                               (- (/ mount-height  1.15) post-adj) 0] web-post))
+(def thumb-post-tl (translate [(+ (/ mount-width -2) post-adj)
+                               (- (/ mount-height  1.15) post-adj) 0] web-post))
+(def thumb-post-bl (translate [(+ (/ mount-width -2) post-adj)
+                               (+ (/ mount-height -1.15) post-adj) 0] web-post))
+(def thumb-post-br (translate [(- (/ mount-width 2) post-adj)
+                               (+ (/ mount-height -1.15) post-adj) 0] web-post))
 
 (def thumb-connectors
   (union
@@ -546,7 +550,6 @@
 (defn left-key-place [row direction shape]
   (translate (left-key-position row direction) shape))
 
-
 (defn wall-locate1 [dx dy] [(* dx wall-thickness)
                             (* dy wall-thickness)
                             -1])
@@ -652,16 +655,26 @@
    ; thumb tweeners
    (wall-brace thumb-tr-place  0 -1 thumb-post-br (partial key-place 3 lastrow)  0 -1 web-post-bl)
    ; clunky bit on the top left thumb connection  (normal connectors don't work well)
-   (bottom-hull
-    (left-key-place cornerrow -1 (translate (wall-locate2 -1 0) web-post))
-    (left-key-place cornerrow -1 (translate (wall-locate3 -1 0) web-post))
-    (thumb-ml-place (translate (wall-locate2 -0.3 (case thumb-count :two 0 1)) web-post-tr))
-    (thumb-ml-place (translate (wall-locate3 -0.3 (case thumb-count :two 0 1)) web-post-tr)))
+   (case thumb-count
+     :two (bottom-hull
+           (left-key-place cornerrow -1 (translate (wall-locate2 -1 0) web-post))
+           (left-key-place cornerrow -1 (translate (wall-locate3 -1 0) web-post))
+           (thumb-tl-place (translate (wall-locate2 -2 -0.1) web-post-tl))
+           (thumb-tl-place (translate (wall-locate3 -2 -0.1) web-post-tl)))
+     (bottom-hull
+      (left-key-place cornerrow -1 (translate (wall-locate2 -1 0) web-post))
+      (left-key-place cornerrow -1 (translate (wall-locate3 -1 0) web-post))
+      (thumb-ml-place (translate (wall-locate2 -0.3 1) web-post-tr))
+      (thumb-ml-place (translate (wall-locate3 -0.3 1) web-post-tr))))
    (hull
     (left-key-place cornerrow -1 (translate (wall-locate2 -1 0) web-post))
     (left-key-place cornerrow -1 (translate (wall-locate3 -1 0) web-post))
-    (thumb-ml-place (translate (wall-locate2 -0.3 (case thumb-count :two 0 1)) web-post-tr))
-    (thumb-ml-place (translate (wall-locate3 -0.3 (case thumb-count :two 0 1)) web-post-tr))
+    (case thumb-count
+      :two (thumb-tl-place (translate (wall-locate2 -2 -0.1) web-post-tl))
+      (thumb-ml-place (translate (wall-locate2 -0.3 (case thumb-count :two 0 1)) web-post-tr)))
+    (case thumb-count
+      :two (thumb-tl-place (translate (wall-locate3 -2 -0.1) web-post-tl))
+      (thumb-ml-place (translate (wall-locate3 -0.3 (case thumb-count :two 0 1)) web-post-tr)))
     (thumb-tl-place thumb-post-tl))
    (hull
     (left-key-place cornerrow -1 web-post)
@@ -753,7 +766,7 @@
                     (+ (/ trrs-holder-thickness -2) (second trrs-holder-position))
                     (+ (/ (last trrs-holder-hole-size) 2) trrs-holder-thickness)]))))
 
-(def pro-micro-position (map + (key-position 0 1 (wall-locate3 -1 0)) [-6 2 -15]))
+(def pro-micro-position (map + (key-position 0 1 (wall-locate3 -1 0)) [-10 2 -30]))
 (def pro-micro-space-size [4 10 12]) ; z has no wall;
 (def pro-micro-wall-thickness 2)
 (def pro-micro-holder-size
@@ -831,9 +844,9 @@
          (translate [(first position) (second position) (/ height 2)]))))
 
 (defn screw-insert-all-shapes [bottom-radius top-radius height]
-  (union (screw-insert 0 0                bottom-radius top-radius height)
-         (screw-insert 2 (+ lastrow 0.3)  bottom-radius top-radius height)
-         (screw-insert 3 0                bottom-radius top-radius height)))
+  (union #_(screw-insert 0 0                bottom-radius top-radius height)
+         #_(screw-insert 2 (+ lastrow 0.3)  bottom-radius top-radius height)
+         #_(screw-insert 3 0                bottom-radius top-radius height)))
 
 (def screw-insert-height 3.8)
 (def screw-insert-bottom-radius (/ 5.31 2))
@@ -850,8 +863,10 @@
 (def wire-post-overhang 3.5)
 (def wire-post-diameter 2.6)
 (defn wire-post [direction offset]
-  (->> (union (translate [0 (* wire-post-diameter -0.5 direction) 0] (cube wire-post-diameter wire-post-diameter wire-post-height))
-              (translate [0 (* wire-post-overhang -0.5 direction) (/ wire-post-height -2)] (cube wire-post-diameter wire-post-overhang wire-post-diameter)))
+  (->> (union (translate [0 (* wire-post-diameter -0.5 direction) 0]
+                         (cube wire-post-diameter wire-post-diameter wire-post-height))
+              (translate [0 (* wire-post-overhang -0.5 direction) (/ wire-post-height -2)]
+                         (cube wire-post-diameter wire-post-overhang wire-post-diameter)))
        (translate [0 (- offset) (+ (/ wire-post-height -2) 3)])
        (rotate (/ α -2) [1 0 0])
        (translate [3 (/ mount-height -2) 0])))
@@ -881,7 +896,8 @@
             (if use-promicro-usb-hole?
               (union pro-micro-holder
                      trrs-usb-holder-holder)
-              (union usb-holder)) ; teensy-holder))
+              (union pro-micro-holder
+                     usb-holder)) ; teensy-holder))
             (if use-trrs? trrs-holder ()))
      (if use-promicro-usb-hole?
        (union trrs-usb-holder-space
@@ -896,16 +912,14 @@
 (spit "things/right.scad"
       (write-scad model-right))
 
-#_
-(def key-plate-right
-  (union key-holes
-         connectors
-         thumb
-         thumb-connectors))
+#_(def key-plate-right
+    (union key-holes
+           connectors
+           thumb
+           thumb-connectors))
 
-#_
-(spit "things/key-plate-right.scad"
-      (write-scad key-plate-right))
+#_(spit "things/key-plate-right.scad"
+        (write-scad key-plate-right))
 
 (spit "things/plate-right.scad"
       (write-scad (->> single-plate
@@ -914,35 +928,32 @@
 (spit "things/left.scad"
       (write-scad (mirror [-1 0 0] model-right)))
 
-#_
-(spit "things/right-test.scad"
-      (write-scad
-       (union
-        key-holes
-        connectors
-        thumb
-        thumb-connectors
-        case-walls
-        thumbcaps
-        caps
-        teensy-holder
-        rj9-holder
-        usb-holder-hole)))
+#_(spit "things/right-test.scad"
+        (write-scad
+         (union
+          key-holes
+          connectors
+          thumb
+          thumb-connectors
+          case-walls
+          thumbcaps
+          caps
+          teensy-holder
+          rj9-holder
+          usb-holder-hole)))
 
-#_
-(spit "things/right-plate.scad"
-      (write-scad
-       (cut
-        (translate [0 0 -0.1]
-                   (difference (union case-walls
-                                      teensy-holder
+#_(spit "things/right-plate.scad"
+        (write-scad
+         (cut
+          (translate [0 0 -0.1]
+                     (difference (union case-walls
+                                        teensy-holder
                                           ; rj9-holder
-                                      screw-insert-outers)
-                               (translate [0 0 -10] screw-insert-screw-holes))))))
+                                        screw-insert-outers)
+                                 (translate [0 0 -10] screw-insert-screw-holes))))))
 
-#_
-(spit "things/test.scad"
-      (write-scad
-       (difference usb-holder usb-holder-hole)))
+#_(spit "things/test.scad"
+        (write-scad
+         (difference usb-holder usb-holder-hole)))
 
 (defn -main [dum] 1)  ; dummy to make it easier to batch

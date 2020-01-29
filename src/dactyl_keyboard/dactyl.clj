@@ -91,7 +91,7 @@
 (def thumb-offsets [6 -3 7])
 
 ; controls overall height; original=9 with centercol=3; use 16 for centercol=2
-(def keyboard-z-offset 12)
+(def keyboard-z-offset 9)
 
 ; extra space between the base of keys; original= 2
 (def extra-width 2.5)
@@ -845,7 +845,7 @@
                     (+ (/ trrs-holder-thickness -2) (second trrs-holder-position))
                     (+ (/ (last trrs-holder-hole-size) 2) trrs-holder-thickness)]))))
 
-(def pro-micro-position (map + (key-position 0 1 (wall-locate3 -1 0)) [-6 2 -15]))
+(def pro-micro-position (map + (key-position -1 0 (wall-locate3 -1 0)) [-8 0 -50]))
 (def pro-micro-space-size [4 10 12]) ; z has no wall;
 (def pro-micro-wall-thickness 2)
 (def pro-micro-holder-size
@@ -983,7 +983,8 @@
                        (if use-promicro-usb-hole?
                          (union pro-micro-holder
                                 trrs-usb-holder-holder)
-                         usb-holder)
+                         (union pro-micro-holder
+                                usb-holder))
                        (if use-trrs? trrs-holder ()))
                 (if use-promicro-usb-hole?
                   (union trrs-usb-holder-space

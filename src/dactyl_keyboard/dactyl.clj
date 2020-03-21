@@ -13,14 +13,14 @@
 ;; Shape parameters ;;
 ;;;;;;;;;;;;;;;;;;;;;;
 
-(def nrows 5)
-(def ncols 6)
+(def nrows 4)
+(def ncols 5)
 
 (def α (/ π 12))                        ; curvature of the columns
 (def β (/ π 36))                        ; curvature of the rows
 (def centerrow (- nrows 3))             ; controls front-back tilt
 (def centercol 4)                       ; controls left-right tilt / tenting (higher number is more tenting)
-(def tenting-angle (/ π 12))            ; or, change this for more precise tenting control
+(def tenting-angle (/ π 7))            ; or, change this for more precise tenting control
 (def column-style
   (if (> nrows 5) :orthographic :standard))  ; options include :standard, :orthographic, and :fixed
 
@@ -52,7 +52,7 @@
 ; this parameter as true
 (def use-promicro-usb-hole? false)
 
-(def use-hotswap? true)
+(def use-hotswap? false)
 
 (defn column-offset [column] (cond
                                (= column 2) [0 2.82 -4.5]
@@ -766,7 +766,7 @@
                     (+ (/ trrs-holder-thickness -2) (second trrs-holder-position))
                     (+ (/ (last trrs-holder-hole-size) 2) trrs-holder-thickness)]))))
 
-(def pro-micro-position (map + (key-position 0 1 (wall-locate3 -1 0)) [-10 2 -30]))
+(def pro-micro-position (map + (key-position 0 1 (wall-locate3 -1 0)) [-8 22 -45]))
 (def pro-micro-space-size [4 10 12]) ; z has no wall;
 (def pro-micro-wall-thickness 2)
 (def pro-micro-holder-size

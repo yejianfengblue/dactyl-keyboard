@@ -729,7 +729,7 @@
                     (+ (/ trrs-holder-thickness -2) (second trrs-holder-position))
                     (+ (/ (last trrs-holder-hole-size) 2) trrs-holder-thickness)]))))
 
-(def pro-micro-position (map + (key-position 0 1 (wall-locate3 -1 0)) [-6 2 -15]))
+(def pro-micro-position (map + (key-position 0 0 (wall-locate3 -1 0)) [-3 2 -30]))
 (def pro-micro-space-size [4 10 12]) ; z has no wall;
 (def pro-micro-wall-thickness 2)
 (def pro-micro-holder-size
@@ -807,12 +807,12 @@
          (translate [(first position) (second position) (/ height 2)]))))
 
 (defn screw-insert-all-shapes [bottom-radius top-radius height]
-  (let [lastloc (+ lastcol 0.5)]
+  (let [lastloc (+ lastcol 0.1)]
     (union (screw-insert 0       0               bottom-radius top-radius height)
-           (screw-insert 0       (- lastrow 0.8) bottom-radius top-radius height)
-           (screw-insert 2       (+ lastrow 0.2) bottom-radius top-radius height)
+           #_(screw-insert 0       (- lastrow 0.8) bottom-radius top-radius height)
+           (screw-insert 2       (+ lastrow 0.3) bottom-radius top-radius height)
            (screw-insert 3       0               bottom-radius top-radius height)
-           #_(screw-insert lastloc 1               bottom-radius top-radius height))))
+           (screw-insert lastloc 0.5             bottom-radius top-radius height))))
 (def screw-insert-height 3.8)
 (def screw-insert-bottom-radius (/ 5.31 2))
 (def screw-insert-top-radius (/ 5.1 2))
@@ -866,7 +866,8 @@
                        (if use-promicro-usb-hole?
                          (union pro-micro-holder
                                 trrs-usb-holder-holder)
-                         usb-holder)
+                         (union usb-holder
+                                pro-micro-holder))
                        (if use-trrs? trrs-holder ()))
                 (if use-promicro-usb-hole?
                   (union trrs-usb-holder-space
@@ -902,11 +903,13 @@
       (write-scad
        (cut
         (translate [0 0 -0.1]
-                   (difference (union case-walls
-                                      teensy-holder
-                                          ; rj9-holder
-                                      screw-insert-outers)
-                               (translate [0 0 -10] screw-insert-screw-holes))))))
+                   (difference
+                    (union case-walls
+                           #_teensy-holder
+                           usb-holder
+                           rj9-holder
+                           screw-insert-outers)
+                    (translate [0 0 -10] screw-insert-screw-holes))))))
 
 (spit "things/test.scad"
       (write-scad

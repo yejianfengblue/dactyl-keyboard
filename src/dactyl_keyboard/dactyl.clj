@@ -13,14 +13,14 @@
 ;; Shape parameters ;;
 ;;;;;;;;;;;;;;;;;;;;;;
 
-(def nrows 4)
-(def ncols 5)
+(def nrows 5)
+(def ncols 6)
 
 (def α (/ π 12))                        ; curvature of the columns
 (def β (/ π 36))                        ; curvature of the rows
 (def centerrow (- nrows 3))             ; controls front-back tilt
 (def centercol 4)                       ; controls left-right tilt / tenting (higher number is more tenting)
-(def tenting-angle (/ π 7))            ; or, change this for more precise tenting control
+(def tenting-angle (/ π 8))            ; or, change this for more precise tenting control
 (def column-style
   (if (> nrows 5) :orthographic :standard))  ; options include :standard, :orthographic, and :fixed
 
@@ -33,7 +33,7 @@
 ; :two  means only 2 1.5us used.
 ; :four means 2 1.5us and 2 1us.
 ; :six  means the usual dactyl.
-(def thumb-count :two)
+(def thumb-count :six)
 
 ; if you don't want the side nubs, set this
 ; parameter as false.
@@ -52,7 +52,7 @@
 ; this parameter as true
 (def use-promicro-usb-hole? false)
 
-(def use-hotswap? false)
+(def use-hotswap? true)
 
 (defn column-offset [column] (cond
                                (= column 2) [0 2.82 -4.5]
@@ -61,7 +61,7 @@
 
 (def thumb-offsets [6 -3 7])
 
-(def keyboard-z-offset 9)               ; controls overall height; original=9 with centercol=3; use 16 for centercol=2
+(def keyboard-z-offset 12)               ; controls overall height; original=9 with centercol=3; use 16 for centercol=2
 
 (def extra-width 2.5)                   ; extra space between the base of keys; original= 2
 (def extra-height 1.0)                  ; original= 0.5
@@ -140,7 +140,7 @@
                            (with-fn 8))
         friction-hole-right (translate [5 0 0] friction-hole)
         friction-hole-left (translate [-5 0 0] friction-hole)
-        hotswap-base-shape (->> (cube 19 6.2 3)
+        hotswap-base-shape (->> (cube 19 6.2 3.5)
                                 (translate [0 4 -2.6]))
         hotswap-holder (difference swap-holder
                                    main-axis-hole
@@ -766,7 +766,7 @@
                     (+ (/ trrs-holder-thickness -2) (second trrs-holder-position))
                     (+ (/ (last trrs-holder-hole-size) 2) trrs-holder-thickness)]))))
 
-(def pro-micro-position (map + (key-position 0 1 (wall-locate3 -1 0)) [-8 22 -45]))
+(def pro-micro-position (map + (key-position 0 1 (wall-locate3 -1 0)) [-3 22 -45]))
 (def pro-micro-space-size [4 10 12]) ; z has no wall;
 (def pro-micro-wall-thickness 2)
 (def pro-micro-holder-size

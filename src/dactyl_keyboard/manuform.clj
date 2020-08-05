@@ -1416,7 +1416,7 @@
         :configuration-stagger-ring           [0 0 0]
         :configuration-stagger-pinky          [0 -13 6]
         :configuration-use-wide-pinky?        false
-        :configuration-z-offset               6
+        :configuration-z-offset               4
         :configuration-use-wire-post?         false
         :configuration-use-screw-inserts?     false
 
@@ -1424,7 +1424,7 @@
         :configuration-show-caps?             false
         :configuration-plate-projection?      false})
 
-#_(spit "things/right.scad"
+(spit "things/right.scad"
         (write-scad (model-right c)))
 
 #_(spit "things/right-plate.scad"

@@ -1136,7 +1136,7 @@
         :configuration-use-screw-inserts?   false
         :configuration-show-caps?           false})
 
-(spit "things/lightcycle-cherry-top-right.scad"
+#_(spit "things/lightcycle-cherry-top-right.scad"
         (write-scad (dactyl-top-right c)))
 
 #_(spit "things/light-cycle-plate-right.scad"

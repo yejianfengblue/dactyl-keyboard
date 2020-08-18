@@ -1107,17 +1107,17 @@
 (defn dactyl-plate-left [c]
   (mirror [-1 0 0] (dactyl-plate-right c)))
 
-(def c {:configuration-ncols                6
+(def c {:configuration-ncols                5
         :configuration-use-numrow?          false
-        :configuration-use-lastrow?         true
-        :configuration-thumb-count          :six
+        :configuration-use-lastrow?         false
+        :configuration-thumb-count          :two
         :configuration-switch-type          :box
-        :configuration-use-wide-pinky?      true
+        :configuration-use-wide-pinky?      false
         :configuration-hide-last-pinky?     false
 
         :configuration-alpha                (/ pi 12)
         :configuration-beta                 (/ pi 24)
-        :configuration-tenting-angle        (/ pi 12)
+        :configuration-tenting-angle        (/ pi 7)
         :configuration-thumb-alpha          (/ pi 12)
         :configuration-thumb-beta           (/ pi 36)
         :configuration-thumb-tenting-angle  (/ pi 12)
@@ -1127,16 +1127,16 @@
         :configuration-use-hotswap?         false
         :configuration-thumb-offset-x       -54
         :configuration-thumb-offset-y       -45
-        :configuration-thumb-offset-z       23
-        :configuration-z-offset             18
+        :configuration-thumb-offset-z       30
+        :configuration-z-offset             15
         :configuration-manuform-offset?     true
         :configuration-use-border?          true
-        :configuration-thick-wall?          false
+        :configuration-thick-wall?          true
 
         :configuration-use-screw-inserts?   false
-        :configuration-show-caps?           true})
+        :configuration-show-caps?           false})
 
-#_(spit "things/lightcycle-cherry-top-right.scad"
+(spit "things/lightcycle-cherry-top-right.scad"
         (write-scad (dactyl-top-right c)))
 
 #_(spit "things/light-cycle-plate-right.scad"

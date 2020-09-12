@@ -214,6 +214,7 @@
         use-alps?           (case switch-type
                               :alps true
                               false) #_(get c :configuration-use-alps?)
+        use-choc?           (case switch-type :choc true false)
         use-hotswap?        (get c :configuration-use-hotswap?)
         plate-projection?   (get c :configuration-plate-projection? false)
         alps-fill-in        (translate [0 0 (/ plate-thickness 2)] (cube alps-width alps-height plate-thickness))
@@ -255,8 +256,9 @@
                                    left-wall
                                    (if create-side-nub? (with-fn 100 side-nub) ()))
         ; the bottom of the hole.
+        swap-holder-z-offset (if use-choc? 2 -1.5)
         swap-holder         (->> (cube (+ keyswitch-width 3) (/ (+ keyswitch-height 3) 2) 3)
-                                 (translate [0 (/ (+ keyswitch-height 3) 4) -1.5]))
+                                 (translate [0 (/ (+ keyswitch-height 3) 4) swap-holder-z-offset]))
         ; for the main axis
         main-axis-hole      (->> (cylinder (/ 4.0 2) 10)
                                  (with-fn 12))
@@ -276,8 +278,9 @@
                                  (with-fn 8))
         friction-hole-right (translate [5 0 0] friction-hole)
         friction-hole-left  (translate [-5 0 0] friction-hole)
+        hotswap-base-z-offset (if use-choc? 0 -2.6)
         hotswap-base-shape  (->> (cube 19 6.2 3.5)
-                                 (translate [0 4 -2.6]))
+                                 (translate [0 4 hotswap-base-z-offset]))
         hotswap-holder      (difference swap-holder
                                         main-axis-hole
                                         plus-hole

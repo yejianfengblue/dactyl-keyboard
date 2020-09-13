@@ -63,6 +63,7 @@
         switch-type                 (case (get p "keys.switch-type")
                                       "mx" :mx
                                       "alps" :alps
+                                      "choc" :choc
                                       :box)
         param-inner-column          (parse-bool (get p "keys.inner-column"))
         param-hide-last-pinky       (parse-bool (get p "keys.hide-last-pinky"))

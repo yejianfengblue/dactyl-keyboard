@@ -84,14 +84,14 @@
         param-wide-pinky            (parse-bool (get p "form.wide-pinky"))
         param-wire-post             (parse-bool (get p "form.wire-post"))
         param-screw-inserts         (parse-bool (get p "form.screw-inserts"))
-        param-index-y               (parse-float (get p "form.index-y"))
-        param-index-z               (parse-float (get p "form.index-z"))
-        param-middle-y              (parse-float (get p "form.middle-y"))
-        param-middle-z              (parse-float (get p "form.middle-z"))
-        param-ring-y                (parse-float (get p "form.ring-y"))
-        param-ring-z                (parse-float (get p "form.ring-z"))
-        param-pinky-y               (parse-float (get p "form.pinky-y"))
-        param-pinky-z               (parse-float (get p "form.pinky-z"))
+        param-index-y               (parse-float (get p "form.stagger-index-y"))
+        param-index-z               (parse-float (get p "form.stagger-index-z"))
+        param-middle-y              (parse-float (get p "form.stagger-middle-y"))
+        param-middle-z              (parse-float (get p "form.stagger-middle-z"))
+        param-ring-y                (parse-float (get p "form.stagger-ring-y"))
+        param-ring-z                (parse-float (get p "form.stagger-ring-z"))
+        param-pinky-y               (parse-float (get p "form.stagger-pinky-y"))
+        param-pinky-z               (parse-float (get p "form.stagger-pinky-z"))
 
         stagger-index               [0 param-index-y param-index-z]
         stagger-middle              [0 param-middle-y param-middle-z]

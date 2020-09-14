@@ -1,261 +1,382 @@
-{% extends "wrapper.html" %}
-{% block content %}
+{% extends "wrapper.html" %} {% block content %}
 
 <script>
-    function setkeyboard(ncols, nrows, thumbcount, innercolumn, lastrow, widepinky) {
-        document.getElementById("keys.columns").value = ncols;
-        document.getElementById("keys.rows").value = nrows;
-        document.getElementById("keys.thumb-count").value = thumbcount;
-        document.getElementById("keys.inner-column").value = innercolumn;
-        document.getElementById("keys.last-row").value = lastrow;
-        document.getElementById("form.wide-pinky").value = widepinky;
-    }
+  function setkeyboard(
+    ncols,
+    nrows,
+    thumbcount,
+    innercolumn,
+    lastrow,
+    widepinky
+  ) {
+    document.getElementById("keys.columns").value = ncols;
+    document.getElementById("keys.rows").value = nrows;
+    document.getElementById("keys.thumb-count").value = thumbcount;
+    document.getElementById("keys.inner-column").value = innercolumn;
+    document.getElementById("keys.last-row").value = lastrow;
+    document.getElementById("form.wide-pinky").value = widepinky;
+  }
 
-    function setminidox() {
-        setkeyboard(5, 4, "three", "false", "zero", "false");
-    }
+  function setminidox() {
+    setkeyboard(5, 4, "three", "false", "zero", "false");
+  }
 
-    function setcorne() {
-        setkeyboard(6, 4, "three", "false", "zero", "false");
-    }
+  function setcorne() {
+    setkeyboard(6, 4, "three", "false", "zero", "false");
+  }
 
-    function setergodox() {
-        setkeyboard(6, 5, "six", "true", "full", "true");
-    }
+  function setergodox() {
+    setkeyboard(6, 5, "six", "true", "full", "true");
+  }
 </script>
 <div class="row">
-    <div class="column column-75">
-        <br>
-        <h2>Manuform</h2>
-    </div>
+  <div class="column column-75">
+    <br />
+    <h2>Manuform</h2>
+  </div>
 </div>
 <div class="row">
-    <div class="colum column-75">
-        <p>If you have downloaded JSON config from this site in the past, you might want to try to open it here again:
-        </p>
-        <input type="file" name="jsonloader" id="jsonloader" onchange="shove_json()">
-        <br>
-        <br>
-        <br>
-    </div>
+  <div class="colum column-75">
+    <p>
+      If you have downloaded JSON config from this site in the past, you might
+      want to try to open it here again:
+    </p>
+    <input
+      type="file"
+      name="jsonloader"
+      id="jsonloader"
+      onchange="shove_json()"
+    />
+    <br />
+    <br />
+    <br />
+  </div>
 </div>
 <div class="row">
-    <div class="column column-75">
-        <form method="POST" action="/manuform">
-            <label for="keys">
-                <h3>Keys</h3>
-            </label>
-            <fieldset name="keys" id="keys">
-                <label for="keys.columns">Number of columns (4 - 7)</label>
-                <input type="number" name="keys.columns" id="keys.columns" value=5 min="4" max="9">
-                <label for="keys.rows">Number of rows (3 - 6)</label>
-                <input type="number" name="keys.rows" id="keys.rows" value=4 min="3" max="7">
-                <label for="keys.thumb-count">Thumb Key Count</label>
-                <select id="keys.thumb-count" name="keys.thumb-count">
-                    <option value="six">6 (Default)</option>
-                    <option value="five">5 (Mini)</option>
-                    <option value="four">4</option>
-                    <option value="three">3 (Minidox)</option>
-                    <option value="two">2</option>
-                </select>
-                <label for="keys.last-row">Last Row Key Counts?</label>
-                <select id="keys.last-row" name="keys.last-row">
-                    <option value="two">Two (Default Dactyl Manuform).</option>
-                    <option value="zero">No last row.</option>
-                    <option value="full">Use all keys.</option>
-                </select>
-                <label for="keys.switch-type">Key Hole</label>
-                <select id="keys.switch-type" name="keys.switch-type">
-                    <option value="box">Box and MX</option>
-                    <option value="mx">MX</option>
-                    <option value="alps">Alps</option>
-                </select>
-                <label for="keys.inner-column">Inner Column?</label>
-                <select id="keys.inner-column" name="keys.inner-column">
-                    <option value="false">No</option>
-                    <option value="true">Yes</option>
-                </select>
-                <label for="keys.hide-last-pinky">Hide Bottom Pinky? (see Kinesis Advantage's Layout)</label>
-                <select id="keys.hide-last-pinky" name="keys.hide-last-pinky">
-                    <option value="false">No</option>
-                    <option value="true">Yes</option>
-                </select>
-            </fieldset>
-            <label for="curve">
-                <h3>Curvature & Tenting</h3>
-            </label>
-            <fieldset name="curve" id="curve">
-                <label for="curve.alpha">Column's Curvature</label>
-                <select id="curve.alpha" name="curve.alpha">
-                    <option value=12>pi/12</option>
-                    {% for cc in column-curvature %}
-                    <option value={{cc}}>pi/{{cc}}</option>
-                    {% endfor %}
-                </select>
-                <label for="curve.pinky-alpha">Pinky's Column's Curvature</label>
-                <select id="curve.pinky-alpha" name="curve.pinky-alpha">
-                    {% for pcc in pinky-column-curvature %}
-                    <option value={{pcc}}>pi/{{pcc}}</option>
-                    {% endfor %}
-                </select>
-                <label for="curve.beta">Row's Curvature</label>
-                <select id="curve.beta" name="curve.beta" value="pi/15">
-                    {% for rc in row-curvature %}
-                    <option value={{rc}}>pi/{{rc}}</option>
-                    {% endfor %}
-                </select>
-                <label for="curve.centecol">Center of the curvature for the column</label>
-                <select id="curve.centercol" name="curve.centercol">
-                    <option value=4>Pinky finger's column</option>
-                    <option value=3>Ring finger's column</option>
-                    <option value=2>Middle finger's column</option>
-                    <option value=1>Index finger's column.</option>
-                </select>
-                <label for="curve.tenting">Tenting Angle</label>
-                <select id="curve.tenting" name="curve.tenting">
-                    {% for ta in tenting-angle %}
-                    <option value={{ta}}>pi/{{ta}}</option>
-                    {% endfor %}
-                </select>
-            </fieldset>
-            <label for="connector">
-                <h3>Connectors</h3>
-            </label>
-            <fieldset name="connector" id="connector">
-                <label for="connector.external">Use loligagger's external holder ?</label>
-                <select id="connector.external" name="connector.external" onchange="toggle_connectors_fields()">
-                    <option value="false">No</option>
-                    <option value="true">Yes</option>
-                </select>
-                <label for="connector.trrs">Connector</label>
-                <select id="connector.trrs" name="connector.trrs">
-                    <option value="false">RJ9</option>
-                    <option value="true">TRRS</option>
-                </select>
-                <label for="connector.micro-usb">USB Hole</label>
-                <select id="connector.micro-usb" name="connector.micro-usb">
-                    <option value="false">Mini</option>
-                    <option value="true">Micro</option>
-                </select>
-            </fieldset>
-            <label for="form">
-                <h3>Form of the Case</h3>
-            </label>
-            <fieldset name="form" id="form">
-                <label for="form.hotswap">Dongguan Kaihua Electronics Co., Ltd
-                    (originally named Longhua Electronics)'s Hotswap Socket?</label>
-                <select id="form.hotswap" name="form.hotswap">
-                    <option value="false">No</option>
-                    <option value="true">Yes</option>
-                </select>
-                <label for="form.stagger">Stagger?</label>
-                <select id="form.stagger" name="form.stagger">
-                    <option value="true">Yes</option>
-                    <option value="false">No</option>
-                </select>
-                <label for="form.index-measurement">Index Finger Measurement (Only used if Stagger? set yes)</label>
-                <div class="row" id="form.index-measurement">
-                    <div class="column column-50">
-                        <label for="form.index-y">Y</label>
-                        <input type="number" name="form.index-y" id="form.index-y" value="0" step="0.1">
-                    </div>
-                    <div class="column column-50">
-                        <label for="form.index-z">Z</label>
-                        <input type="number" name="form.index-z" id="form.index-z" value="0" step="0.1">
-                    </div>
-                </div>
-                <label for="form.middle-measurement">Middle Finger Measurement (Only used if Stagger? set yes)</label>
-                <div class="row" id="form.middle-measurement">
-                    <div class="column column-50">
-                        <label for="form.middle-y">Y</label>
-                        <input type="number" name="form.middle-y" id="form.middle-y" value="2.8" step="0.1">
-                    </div>
-                    <div class="column column-50">
-                        <label for="form.middle-z">Z</label>
-                        <input type="number" name="form.middle-z" id="form.middle-z" value="-6.5" step="0.1">
-                    </div>
-                </div>
-                <label for="form.ring-measurement">Ring Finger Measurement (Only used if Stagger? set yes)</label>
-                <div class="row" id="form.ring-measurement">
-                    <div class="column column-50">
-                        <label for="form.ring-y">Y</label>
-                        <input type="number" name="form.ring-y" id="form.ring-y" value= "0" step="0.1">
-                    </div>
-                    <div class="column column-50">
-                        <label for="form.ring-z">Z</label>
-                        <input type="number" name="form.ring-z" id="form.ring-z" value="0" step="0.1">
-                    </div>
-                </div>
-                <label for="form.pinky-measurement">Pinky Finger Measurement (Only used if Stagger? set yes)</label>
-                <div class="row" id="form.pinky-measurement">
-                    <div class="column column-50">
-                        <label for="form.pinky-y">Y</label>
-                        <input type="number" name="form.pinky-y" id="form.pinky-y" value="-13" step="0.1">
-                    </div>
-                    <div class="column column-50">
-                        <label for="form.pinky-z">Z</label>
-                        <input type="number" name="form.pinky-z" id="form.pinky-z" value="6" step="0.1">
-                    </div>
-                </div>
-                <label for="form.wide-pinky">Wide Pinky?</label>
-                <select id="form.wide-pinky" name="form.wide-pinky">
-                    <option value="false">No</option>
-                    <option value="true">Yes</option>
-                </select>
-                <label for="form.height-offset">Height Offset</label>
-                <select id="form.height-offset" name="form.height-offset">
-                    {% for ho in height-offset %}
-                    <option value={{ho}}>{{ho}}mm</option>
-                    {% endfor %}
-                </select>
-                <label for="form.wire-post">Wire Posts?</label>
-                <select id="form.wire-post" name="form.wire-post">
-                    <option value="false">No</option>
-                    <option value="true">Yes</option>
-                </select>
-                <label for="form.screw-inserts">Screw inserts</label>
-                <select id="form.screw-inserts" name="form.screw-inserts">
-                    <option value="false">No screw inserts</option>
-                    <option value="true">Screw inserts</option>
-                </select>
-            </fieldset>
-            <label for="misc">
-                <h3>Miscelania</h3>
-            </label>
-            <fieldset name="misc" id="misc">
-                <label for="misc.keycaps">Show Keycaps?</label>
-                <select id="misc.keycaps" name="misc.keycaps">
-                    <option value="false">No</option>
-                    <option value="true">Yes</option>
-                </select>
-                <label for="misc.right-side">Right side or left side?</label>
-                <select id="misc.right-side" name="misc.right-side">
-                    <option value="true">Right</option>
-                    <option value="false">Left</option>
-                </select>
-            </fieldset>
-            <input class="button-primary" type="submit" name="generate-case" value="Generate Case">
-            <input class="button-primary" type="submit" name="generate-plate" value="Generate Plate">
-            <input class="button-primary" type="submit" name="generate-json" value="Generate JSON">
-        </form>
-        <p>Loligagger's external holder files:</p>
-        <ul>
-            <li><a href="loligagger-external-holder-promicro-v1.stl">Promicro V1</a></li>
-            <li><a href="loligagger-external-holder-promicro-v2.stl">Promicro V2</a></li>
-            <li><a href="loligagger-external-holder-elite-c-v1.stl">Elite-C V1</a></li>
-        </ul>
-        <p>BrownElvis' external holder files:</p>
-        <ul>
-            <li><a href="loligagger-external-holder-promicro-v3-extended.stl">Promicro V3</a></li>
-        </ul>
-    </div>
-    <div class="column column-25">
-        <h3>Defaults:</h3>
-        <button onclick="setminidox()">Minidox</button>
-        <br>
-        <button onclick="setcorne()">Corne</button>
-        <br>
-        <button onclick="setergodox()">Ergodox</button>
-    </div>
+  <div class="column column-75">
+    <form method="POST" action="/manuform">
+      <label for="keys">
+        <h3>Keys</h3>
+      </label>
+      <fieldset name="keys" id="keys">
+        <label for="keys.columns">Number of columns (4 - 7)</label>
+        <input
+          type="number"
+          name="keys.columns"
+          id="keys.columns"
+          value="5"
+          min="4"
+          max="9"
+        />
+        <label for="keys.rows">Number of rows (3 - 6)</label>
+        <input
+          type="number"
+          name="keys.rows"
+          id="keys.rows"
+          value="4"
+          min="3"
+          max="7"
+        />
+        <label for="keys.thumb-count">Thumb Key Count</label>
+        <select id="keys.thumb-count" name="keys.thumb-count">
+          <option value="six">6 (Default)</option>
+          <option value="five">5 (Mini)</option>
+          <option value="four">4</option>
+          <option value="three">3 (Minidox)</option>
+          <option value="two">2</option>
+        </select>
+        <label for="keys.last-row">Last Row Key Counts?</label>
+        <select id="keys.last-row" name="keys.last-row">
+          <option value="two">Two (Default Dactyl Manuform).</option>
+          <option value="zero">No last row.</option>
+          <option value="full">Use all keys.</option>
+        </select>
+        <label for="keys.switch-type">Key Hole</label>
+        <select id="keys.switch-type" name="keys.switch-type">
+          <option value="box">Box and MX</option>
+          <option value="mx">MX</option>
+          <option value="alps">Alps</option>
+          <option value="choc">Choc (Experimental)</option>
+        </select>
+        <label for="keys.inner-column">Inner Column?</label>
+        <select id="keys.inner-column" name="keys.inner-column">
+          <option value="false">No</option>
+          <option value="true">Yes</option>
+        </select>
+        <label for="keys.hide-last-pinky"
+          >Hide Bottom Pinky? (see Kinesis Advantage's Layout)</label
+        >
+        <select id="keys.hide-last-pinky" name="keys.hide-last-pinky">
+          <option value="false">No</option>
+          <option value="true">Yes</option>
+        </select>
+      </fieldset>
+      <label for="curve">
+        <h3>Curvature & Tenting</h3>
+      </label>
+      <fieldset name="curve" id="curve">
+        <label for="curve.alpha">Column's Curvature</label>
+        <select id="curve.alpha" name="curve.alpha">
+          <option value="12">pi/12</option>
+          {% for cc in column-curvature %}
+          <option value="{{cc}}">pi/{{cc}}</option>
+          {% endfor %}
+        </select>
+        <label for="curve.pinky-alpha">Pinky's Column's Curvature</label>
+        <select id="curve.pinky-alpha" name="curve.pinky-alpha">
+          {% for pcc in pinky-column-curvature %}
+          <option value="{{pcc}}">pi/{{pcc}}</option>
+          {% endfor %}
+        </select>
+        <label for="curve.beta">Row's Curvature</label>
+        <select id="curve.beta" name="curve.beta" value="pi/15">
+          {% for rc in row-curvature %}
+          <option value="{{rc}}">pi/{{rc}}</option>
+          {% endfor %}
+        </select>
+        <label for="curve.centecol"
+          >Center of the curvature for the column</label
+        >
+        <select id="curve.centercol" name="curve.centercol">
+          <option value="4">Pinky finger's column</option>
+          <option value="3">Ring finger's column</option>
+          <option value="2">Middle finger's column</option>
+          <option value="1">Index finger's column.</option>
+        </select>
+        <label for="curve.tenting">Tenting Angle</label>
+        <select id="curve.tenting" name="curve.tenting">
+          {% for ta in tenting-angle %}
+          <option value="{{ta}}">pi/{{ta}}</option>
+          {% endfor %}
+        </select>
+      </fieldset>
+      <label for="connector">
+        <h3>Connectors</h3>
+      </label>
+      <fieldset name="connector" id="connector">
+        <label for="connector.external"
+          >Use loligagger's external holder ?</label
+        >
+        <select
+          id="connector.external"
+          name="connector.external"
+          onchange="toggle_connectors_fields()"
+        >
+          <option value="false">No</option>
+          <option value="true">Yes</option>
+        </select>
+        <label for="connector.trrs">Connector</label>
+        <select id="connector.trrs" name="connector.trrs">
+          <option value="false">RJ9</option>
+          <option value="true">TRRS</option>
+        </select>
+        <label for="connector.micro-usb">USB Hole</label>
+        <select id="connector.micro-usb" name="connector.micro-usb">
+          <option value="false">Mini</option>
+          <option value="true">Micro</option>
+        </select>
+      </fieldset>
+      <label for="form">
+        <h3>Form of the Case</h3>
+      </label>
+      <fieldset name="form" id="form">
+        <label for="form.hotswap"
+          >Dongguan Kaihua Electronics Co., Ltd (originally named Longhua
+          Electronics)'s Hotswap Socket?</label
+        >
+        <select id="form.hotswap" name="form.hotswap">
+          <option value="false">No</option>
+          <option value="true">Yes</option>
+        </select>
+        <label for="form.stagger">Stagger?</label>
+        <select id="form.stagger" name="form.stagger">
+          <option value="true">Yes</option>
+          <option value="false">No</option>
+        </select>
+        <label for="form.index-measurement"
+          >Index Finger Measurement (Only used if Stagger? set yes)</label
+        >
+        <div class="row" id="form.index-measurement">
+          <div class="column column-50">
+            <label for="form.stagger-index-y">Y</label>
+            <input
+              type="number"
+              name="form.stagger-index-y"
+              id="form.stagger-index-y"
+              value="0"
+              step="0.1"
+            />
+          </div>
+          <div class="column column-50">
+            <label for="form.index-z">Z</label>
+            <input
+              type="number"
+              name="form.stagger-index-z"
+              id="form.stagger-index-z"
+              value="0"
+              step="0.1"
+            />
+          </div>
+        </div>
+        <label for="form.middle-measurement"
+          >Middle Finger Measurement (Only used if Stagger? set yes)</label
+        >
+        <div class="row" id="form.middle-measurement">
+          <div class="column column-50">
+            <label for="form.stagger-middle-y">Y</label>
+            <input
+              type="number"
+              name="form.stagger-middle-y"
+              id="form.stagger-middle-y"
+              value="2.8"
+              step="0.1"
+            />
+          </div>
+          <div class="column column-50">
+            <label for="form.stagger-middle-z">Z</label>
+            <input
+              type="number"
+              name="form.stagger-middle-z"
+              id="form.stagger-middle-z"
+              value="-6.5"
+              step="0.1"
+            />
+          </div>
+        </div>
+        <label for="form.ring-measurement"
+          >Ring Finger Measurement (Only used if Stagger? set yes)</label
+        >
+        <div class="row" id="form.ring-measurement">
+          <div class="column column-50">
+            <label for="form.stagger-ring-y">Y</label>
+            <input
+              type="number"
+              name="form.stagger-ring-y"
+              id="form.stagger-ring-y"
+              value="0"
+              step="0.1"
+            />
+          </div>
+          <div class="column column-50">
+            <label for="form.stagger-ring-z">Z</label>
+            <input
+              type="number"
+              name="form.stagger-ring-z"
+              id="form.stagger-ring-z"
+              value="0"
+              step="0.1"
+            />
+          </div>
+        </div>
+        <label for="form.pinky-measurement"
+          >Pinky Finger Measurement (Only used if Stagger? set yes)</label
+        >
+        <div class="row" id="form.pinky-measurement">
+          <div class="column column-50">
+            <label for="form.stagger-pinky-y">Y</label>
+            <input
+              type="number"
+              name="form.stagger-pinky-y"
+              id="form.stagger-pinky-y"
+              value="-13"
+              step="0.1"
+            />
+          </div>
+          <div class="column column-50">
+            <label for="form.stagger-pinky-z">Z</label>
+            <input
+              type="number"
+              name="form.stagger-pinky-z"
+              id="form.stagger-pinky-z"
+              value="6"
+              step="0.1"
+            />
+          </div>
+        </div>
+        <label for="form.wide-pinky">Wide Pinky?</label>
+        <select id="form.wide-pinky" name="form.wide-pinky">
+          <option value="false">No</option>
+          <option value="true">Yes</option>
+        </select>
+        <label for="form.height-offset">Height Offset</label>
+        <select id="form.height-offset" name="form.height-offset">
+          {% for ho in height-offset %}
+          <option value="{{ho}}">{{ho}}mm</option>
+          {% endfor %}
+        </select>
+        <label for="form.wire-post">Wire Posts?</label>
+        <select id="form.wire-post" name="form.wire-post">
+          <option value="false">No</option>
+          <option value="true">Yes</option>
+        </select>
+        <label for="form.screw-inserts">Screw inserts</label>
+        <select id="form.screw-inserts" name="form.screw-inserts">
+          <option value="false">No screw inserts</option>
+          <option value="true">Screw inserts</option>
+        </select>
+      </fieldset>
+      <label for="misc">
+        <h3>Miscelania</h3>
+      </label>
+      <fieldset name="misc" id="misc">
+        <label for="misc.keycaps">Show Keycaps?</label>
+        <select id="misc.keycaps" name="misc.keycaps">
+          <option value="false">No</option>
+          <option value="true">Yes</option>
+        </select>
+        <label for="misc.right-side">Right side or left side?</label>
+        <select id="misc.right-side" name="misc.right-side">
+          <option value="true">Right</option>
+          <option value="false">Left</option>
+        </select>
+      </fieldset>
+      <input
+        class="button-primary"
+        type="submit"
+        name="generate-case"
+        value="Generate Case"
+      />
+      <input
+        class="button-primary"
+        type="submit"
+        name="generate-plate"
+        value="Generate Plate"
+      />
+      <input
+        class="button-primary"
+        type="submit"
+        name="generate-json"
+        value="Generate JSON"
+      />
+    </form>
+    <p>Loligagger's external holder files:</p>
+    <ul>
+      <li>
+        <a href="loligagger-external-holder-promicro-v1.stl">Promicro V1</a>
+      </li>
+      <li>
+        <a href="loligagger-external-holder-promicro-v2.stl">Promicro V2</a>
+      </li>
+      <li>
+        <a href="loligagger-external-holder-elite-c-v1.stl">Elite-C V1</a>
+      </li>
+    </ul>
+    <p>BrownElvis' external holder files:</p>
+    <ul>
+      <li>
+        <a href="loligagger-external-holder-promicro-v3-extended.stl"
+          >Promicro V3</a
+        >
+      </li>
+    </ul>
+  </div>
+  <div class="column column-25">
+    <h3>Defaults:</h3>
+    <button onclick="setminidox()">Minidox</button>
+    <br />
+    <button onclick="setcorne()">Corne</button>
+    <br />
+    <button onclick="setergodox()">Ergodox</button>
+  </div>
 </div>
 {% endblock %}

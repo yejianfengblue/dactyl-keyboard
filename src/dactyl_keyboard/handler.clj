@@ -31,8 +31,8 @@
   (.format (java.text.SimpleDateFormat. "yyyy.MM.dd-hh.mm.ss") (new java.util.Date)))
 
 (defn manuform [_]
-  (render-file "manuform.html" {:column-curvature       (range 9 22)
-                                :pinky-column-curvature (range 12 4 -1)
+  (render-file "manuform.html" {:column-curvature       (range 4 22)
+                                :pinky-column-curvature (range 12 3 -1)
                                 :row-curvature          (range 36 17 -1)
                                 :tenting-angle          (range 15 5 -1)
                                 :thumb-tenting-angle    (range 24 15 -1)

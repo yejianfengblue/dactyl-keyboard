@@ -256,7 +256,7 @@
                                    left-wall
                                    (if create-side-nub? (with-fn 100 side-nub) ()))
         ; the bottom of the hole.
-        swap-holder-z-offset (if use-choc? 2 -1.5)
+        swap-holder-z-offset (if use-choc? 0 -1.5)
         swap-holder         (->> (cube (+ keyswitch-width 3) (/ (+ keyswitch-height 3) 2) 3)
                                  (translate [0 (/ (+ keyswitch-height 3) 4) swap-holder-z-offset]))
         ; for the main axis
@@ -267,18 +267,18 @@
                                  (translate (if use-choc? [-5 3 0] [-3.81 2.54 0])))
         minus-hole          (->> (cylinder (/ 3.3 2) 10)
                                  (with-fn 8)
-                                 (translate (if use-choc? [0 5.5 0] [2.54 5.08 0])))
+                                 (translate (if use-choc? [0 5 0] [2.54 5.08 0])))
         plus-hole-mirrored  (->> (cylinder (/ 3.3 2) 10)
                                  (with-fn 8)
                                  (translate (if use-choc? [5 3 0] [3.81 2.54 0])))
         minus-hole-mirrored (->> (cylinder (/ 3.3 2) 10)
                                  (with-fn 8)
-                                 (translate (if use-choc? [0 5.5 0] [-2.54 5.08 0])))
-        friction-hole       (->> (cylinder (/ 1.7 2) 10)
+                                 (translate (if use-choc? [0 5 0] [-2.54 5.08 0])))
+        friction-hole       (->> (cylinder (if use-choc? 1 (/ 1.7 2)) 10)
                                  (with-fn 8))
         friction-hole-right (translate [5 0 0] friction-hole)
         friction-hole-left  (translate [-5 0 0] friction-hole)
-        hotswap-base-z-offset (if use-choc? 0 -2.6)
+        hotswap-base-z-offset (if use-choc? -2 -2.6)
         hotswap-base-shape  (->> (cube 19 6.2 3.5)
                                  (translate [0 4 hotswap-base-z-offset]))
         hotswap-holder      (difference swap-holder

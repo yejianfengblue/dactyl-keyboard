@@ -149,6 +149,12 @@
           <option value="{{ta}}">pi/{{ta}}</option>
           {% endfor %}
         </select>
+        <label for="curve.rotate-x">Rotation around row axis</label>
+        <select id="curve.rotate-x" name="curve.rotate-x">
+          {% for ta in rotate-x %}
+          <option value="-{{ta}}">-pi/{{ta}}</option>
+          {% endfor %}
+        </select>
       </fieldset>
       <label for="connector">
         <h3>Connectors</h3>

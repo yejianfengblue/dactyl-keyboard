@@ -1404,6 +1404,7 @@
         :configuration-beta                   (/ pi 36)
         :configuration-centercol              4
         :configuration-tenting-angle          (/ pi 12)
+        :configuration-rotate-x               (/ pi 36)
 
         :configuration-use-promicro-usb-hole? false
         :configuration-use-trrs?              false

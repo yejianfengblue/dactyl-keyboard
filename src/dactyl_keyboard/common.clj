@@ -147,6 +147,7 @@
         tenting-angle     (get c :configuration-tenting-angle)
         switch-type       (get c :configuration-switch-type)
         keyboard-z-offset (get c :configuration-z-offset)
+        rotate-x-angle  (get c :configuration-rotate-x-angle)
         column-angle      (* beta (- centercol column))
         placed-shape      (->> shape
                                (translate-fn [(offset-for-column c
@@ -162,6 +163,7 @@
                                (translate-fn (dm-column-offset c column)))]
     (->> placed-shape
          (rotate-y-fn  tenting-angle)
+         (rotate-x-fn  rotate-x-angle)
          (translate-fn [0 0 keyboard-z-offset]))))
 
 (defn rotate-around-x [angle position]

@@ -68,6 +68,8 @@
 
 ; this is the function that puts the key switch holes
 ; based on the row and the column.
+
+
 (defn key-place
   "Puts the keys' shape to its place based on it's column and row."
   [c column row shape]
@@ -136,8 +138,7 @@
         hide-pinky          (fn [column row]
                               (not (and (= last-row-count :full)
                                         hide-last-pinky?
-                                        (last-pinky-location column row))))
-        ]
+                                        (last-pinky-location column row))))]
     (apply
      union
      (for [column (if use-inner-column? (range -1 ncols) (columns ncols))
@@ -200,8 +201,7 @@
         hide-pinky          (fn [column row]
                               (not (and (= last-row-count :full)
                                         hide-last-pinky?
-                                        (last-pinky-location column row))))
-        ]
+                                        (last-pinky-location column row))))]
     (union
      (apply
       union
@@ -317,7 +317,7 @@
         x-rotation  (if (= thumb-count :five) 10 -6)
         y-rotation  (if (= thumb-count :five) -23 -34)
         z-rotation  (if (= thumb-count :five) 25 48)
-        movement    (if (= thumb-count :five) [-23 -34 -6] [-29 -40 -13]) ]
+        movement    (if (= thumb-count :five) [-23 -34 -6] [-29 -40 -13])]
     (->> shape
          (rotate (deg2rad x-rotation) [1 0 0])
          (rotate (deg2rad y-rotation) [0 1 0])
@@ -355,11 +355,11 @@
         z-rotation  (if (= thumb-count :five) 35 52)
         movement    (if (= thumb-count :five) [-51 -25 -11.5] [-56.3 -43.3 -23.5])]
     (->> shape
-       (rotate (deg2rad x-rotation) [1 0 0])
-       (rotate (deg2rad y-rotation) [0 1 0])
-       (rotate (deg2rad z-rotation) [0 0 1])
-       (translate (thumborigin c))
-       (translate movement))))
+         (rotate (deg2rad x-rotation) [1 0 0])
+         (rotate (deg2rad y-rotation) [0 1 0])
+         (rotate (deg2rad z-rotation) [0 0 1])
+         (translate (thumborigin c))
+         (translate movement))))
 
 (defn thumb-1x-layout [c shape]
   (let [thumb-count (get c :configuration-thumb-count)]
@@ -449,7 +449,7 @@
             (key-place c 2 cornerrow web-post-bl)
             (key-place c 2 lastrow web-post-tr)
             (key-place c 2 cornerrow web-post-br)
-            (key-place c 3 cornerrow web-post-bl)) )))
+            (key-place c 3 cornerrow web-post-bl)))))
 
 (defn thumb-connector-three [c]
   (let [row-count (get c :configuration-last-row-count)
@@ -862,7 +862,7 @@
         lastrow       (flastrow nrows)
         cornerrow     (fcornerrow nrows)
         row-count     (get c :configuration-last-row-count)
-        thumb-tr-post (if (= (get c :configuration-thumb-count) :five ) web-post-br thumb-post-br)]
+        thumb-tr-post (if (= (get c :configuration-thumb-count) :five) web-post-br thumb-post-br)]
     (union
      (wall-brace (partial thumb-tr-place c)  0 -1 thumb-tr-post
                  (partial (partial key-place c) 3 (case row-count :zero cornerrow lastrow))  0 -1 web-post-bl)
@@ -1156,7 +1156,7 @@
                      5 -1
                      6 -2
                      -3)]
-    ( key-position c 1 0 (map - (wall-locate2  0 y-addition) [0 (/ mount-height 2) 0]))))
+    (key-position c 1 0 (map - (wall-locate2  0 y-addition) [0 (/ mount-height 2) 0]))))
 
 (defn trrs-usb-holder-position [c]
   (map + [17 19.3 0] [(first (trrs-usb-holder-ref c)) (second (trrs-usb-holder-ref c)) 2]))
@@ -1439,7 +1439,6 @@
                                           ; rj9-holder
                                         screw-insert-outers)
                                  (translate [0 0 -10] screw-insert-screw-holes))))))
-
 
 #_(spit "things/left.scad"
         (write-scad (mirror [-1 0 0] model-right)))

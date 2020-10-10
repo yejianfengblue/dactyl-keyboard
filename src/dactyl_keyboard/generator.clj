@@ -26,7 +26,8 @@
                  :pinky-alpha (get confs :configuration-pinky-alpha)
                  :beta        (get confs :configuration-beta)
                  :centercol   (get confs :configuration-centercol)
-                 :tenting     (get confs :configuration-tenting-angle)}
+                 :tenting     (get confs :configuration-tenting-angle)
+                 :rotate-x     (get confs :configuration-rotate-x-angle)}
      :connector {:external  (get confs :configuration-use-external-holder?)
                  :trrs      (get confs :configuration-use-trrs?)
                  :micro-usb (get confs :configuration-use-promicro-usb-hole?)}

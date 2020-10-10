@@ -35,6 +35,7 @@
                                 :pinky-column-curvature (range 12 3 -1)
                                 :row-curvature          (range 36 17 -1)
                                 :tenting-angle          (range 15 5 -1)
+                                :rotate-x               (range 36 5 -1)
                                 :thumb-tenting-angle    (range 24 15 -1)
                                 :height-offset          (range 4 26 2)}))
 
@@ -73,6 +74,7 @@
         param-beta                  (parse-int (get p "curve.beta"))
         param-centercol             (parse-int (get p "curve.centercol"))
         param-tenting-angle         (parse-int (get p "curve.tenting"))
+        param-rotate-x-angle        (parse-int (get p "curve.rotate-x"))
 
         param-use-external-holder   (parse-bool (get p "connector.external"))
         param-trrs-connector        (parse-bool (get p "connector.trrs"))
@@ -120,6 +122,7 @@
                                      :configuration-beta                   (if generate-json? param-beta (/ pi param-beta))
                                      :configuration-centercol              param-centercol
                                      :configuration-tenting-angle          (if generate-json? param-tenting-angle (/ pi param-tenting-angle))
+                                     :configuration-rotate-x-angle         (if generate-json? param-rotate-x-angle (/ pi param-rotate-x-angle))
                                      :configuration-plate-projection?      generate-plate?
 
                                      :configuration-use-external-holder?   param-use-external-holder
@@ -270,6 +273,7 @@
                         :configuration-beta                   (/ pi (get curve :beta 36))
                         :configuration-centercol              (get curve :centercol 4)
                         :configuration-tenting-angle          (/ pi (get curve :tenting 15))
+                        :configuration-rotate-x-angle         (/ pi (get curve :rotate-x 15))
 
                         :configuration-use-external-holder?   (get connector :external false)
                         :configuration-use-trrs?              (get connector :trrs false)

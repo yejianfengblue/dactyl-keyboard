@@ -14,7 +14,8 @@
   :plugins [[lein-exec "0.3.7"]
             [lein-auto "0.1.3"]
             [lein-ring "0.12.5"]
-            [cider/cider-nrepl "0.24.0"]]
+            [cider/cider-nrepl "0.24.0"]
+            [lein-cljfmt "0.7.0"]]
   :aliases {"generate-lightcycle" ["exec" "-p" "src/dactyl_keyboard/lightcycle.clj"]
             "generate-manuform" ["exec" "-p" "src/dactyl_keyboard/manuform.clj"]}
   :ring {:handler dactyl-keyboard.handler/app

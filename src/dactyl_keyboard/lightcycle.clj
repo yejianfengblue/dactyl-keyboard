@@ -116,8 +116,7 @@
         hide-pinky           (fn [column row]
                                (not (and use-lastrow?
                                          hide-last-pinky?
-                                         (last-pinky-location column row))))
-        ]
+                                         (last-pinky-location column row))))]
     (apply union
            (for [column columns
                  row    rows
@@ -342,7 +341,7 @@
                            (translate [0 (- (extended-plate-height %)) 0]))]
     ;;Connecting main thumb keys.
     (union
-     (case thumb-count 
+     (case thumb-count
        :eight (union
                (triangle-hulls (thumb-place c 0  0  (thumb-bl 1))
                                (thumb-place c 1  0  (thumb-br 1))
@@ -365,7 +364,7 @@
                                (thumb-place c 0  0 (thumb-bl 1))
                                (thumb-place c 1  0 (thumb-br 1))))
        (triangle-hulls #_(thumb-place c 1 -1/2 (thumb-tl 2))
-                       (thumb-place c 0 -1/2 (thumb-bl 2))
+        (thumb-place c 0 -1/2 (thumb-bl 2))
                        (thumb-place c 1 -1/2 (thumb-br 2))
                        (thumb-place c 0 -1/2 (thumb-tl 2))
                        (thumb-place c 1 -1/2 (thumb-tr 2))
@@ -564,7 +563,7 @@
   (let [thickness   (if thick-wall? 2 1)]
     (->> (sphere thickness)
          (translate coords)
-         (with-fn wall-sphere-n) )))
+         (with-fn wall-sphere-n))))
 
 (defn scale-to-range [start end x]
   (+ start (* (- end start) x)))

@@ -32,12 +32,16 @@
   13)
 
 (def sa-profile-key-height 12.7)
+(def choc-profile-key-height 3.5)
 
 (def plate-thickness 5)
 (def mount-width (+ keyswitch-width 3.5))
 (def mount-height (+ keyswitch-height 3.5))
 
-(def cap-top-height (+ plate-thickness sa-profile-key-height))
+(defn profile-key-height [switch-type] (case switch-type :choc choc-profile-key-height sa-profile-key-height))
+
+(defn cap-top-height [switch-type]
+  (+ plate-thickness (profile-key-height switch-type)))
 
 ;;;;;;;;;;;;;;;;;
 ;; placement function ;;
@@ -97,18 +101,18 @@
 (defn frow-radius
   "It computes the radius of the row's curve. It takes the value of `pi` divided
    by `alpha` to compute the said radius."
-  [alpha]
+  [alpha switch-type]
   (+ (/ (/ (+ mount-height extra-height) 2)
         (Math/sin (/ alpha 2)))
-     cap-top-height))
+     (cap-top-height switch-type)))
 
 (defn fcolumn-radius
   "It computes the radius of the column's curve. It takes the value of `pi` divided
    by `beta` to compute the said radius."
-  [beta]
+  [beta switch-type]
   (+ (/ (/ (+ mount-width extra-width) 2)
         (Math/sin (/ beta 2)))
-     cap-top-height))
+     (cap-top-height switch-type)))
 
 ; when set `use-wide-pinky?`,
 ; you will get 1.5u keys for the outermost pinky keys.
@@ -141,6 +145,7 @@
         centercol         (get c :configuration-centercol 2)
         centerrow         (fcenterrow (get c :configuration-nrows 5))
         tenting-angle     (get c :configuration-tenting-angle)
+        switch-type       (get c :configuration-switch-type)
         keyboard-z-offset (get c :configuration-z-offset)
         column-angle      (* beta (- centercol column))
         placed-shape      (->> shape
@@ -148,12 +153,12 @@
                                                                  column
                                                                  row)
                                               0
-                                              (- (frow-radius alpha))])
+                                              (- (frow-radius alpha switch-type))])
                                (rotate-x-fn  (* alpha (- centerrow row)))
-                               (translate-fn [0 0 (frow-radius alpha)])
-                               (translate-fn [0 0 (- (fcolumn-radius beta))])
+                               (translate-fn [0 0 (frow-radius alpha switch-type)])
+                               (translate-fn [0 0 (- (fcolumn-radius beta switch-type))])
                                (rotate-y-fn  column-angle)
-                               (translate-fn [0 0 (fcolumn-radius beta)])
+                               (translate-fn [0 0 (fcolumn-radius beta switch-type)])
                                (translate-fn (dm-column-offset c column)))]
     (->> placed-shape
          (rotate-y-fn  tenting-angle)

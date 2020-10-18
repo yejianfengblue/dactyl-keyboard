@@ -12,6 +12,12 @@ To tinker around this thing, follow these steps:
 4. Change something in `src/dactyl_keyboard/handler.clj`.
 5. Open [localhost:3030](http://localhost:3030).
 
+### With Nix
+
+1. run `direnv allow` when you first cd into the project
+2. nix will then install and cache dependencies
+3. running `lein ring server-headless` will run the server with hot-reloading on port 3030
+
 ## Deployment
 
 To deploy it in a computer, follow these steps:

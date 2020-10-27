@@ -61,7 +61,7 @@
                                       "zero" :zero
                                       "full" :full
                                       :two)
-        switch-type                 (case (get p "keys.switch-type")
+        param-switch-type           (case (get p "keys.switch-type")
                                       "mx" :mx
                                       "alps" :alps
                                       "choc" :choc
@@ -113,7 +113,7 @@
                                      :configuration-ncols                  param-ncols
                                      :configuration-thumb-count            param-thumb-count
                                      :configuration-last-row-count         param-last-row-count
-                                     :configuration-switch-type            switch-type
+                                     :configuration-switch-type            param-switch-type
                                      :configuration-use-inner-column?      param-inner-column
                                      :configuration-hide-last-pinky?       param-hide-last-pinky
 
@@ -170,6 +170,11 @@
                                     "six" :six
                                     "eight" :eight
                                     :five)
+        param-switch-type         (case (get p "keys.switch-type")
+                                    "mx" :mx
+                                    "alps" :alps
+                                    "choc" :choc
+                                    :box)
         param-hide-last-pinky     (parse-bool (get p "keys.hide-last-pinky"))
         param-alpha               (parse-int (get p "curve.alpha"))
         param-beta                (parse-int (get p "curve.beta"))
@@ -205,6 +210,7 @@
                                    :configuration-thumb-count          param-thumb-count
                                    :configuration-hide-last-pinky?     param-hide-last-pinky
                                    :configuration-use-wide-pinky?      param-use-wide-pinky
+                                   :configuration-switch-type          param-switch-type
 
                                    :configuration-alpha                (if generate-json? param-alpha (/ pi param-alpha))
                                    :configuration-beta                 (if generate-json? param-beta (/ pi param-beta))
@@ -307,6 +313,7 @@
         c              {:configuration-ncols                (get keys :columns 5)
                         :configuration-use-numrow?          (get keys :num-row false)
                         :configuration-use-lastrow?         (get keys :last-row false)
+                        :configuration-switch-type          (keyword (get keys :switch-type "box"))
                         :configuration-thumb-count          (keyword (get keys :thumb-count "two"))
                         :configuration-create-side-nub?     false
                         :configuration-use-alps?            false

@@ -60,18 +60,19 @@
         beta             (get c :configuration-beta)
         tenting-angle    (get c :configuration-tenting-angle)
         z-offset         (get c :configuration-z-offset)
+        switch-type      (get c :configuration-switch-type)
         manuform-offset? (get c :configuration-manuform-offset? false)
         offset           (if manuform-offset?
                            (manuform-column-offset column)
                            (column-offset column))
         column-angle     (* beta (- 2 column))
         placed-shape     (->> shape
-                              (translate [(wide-pinky c column row) 0 (- (frow-radius alpha))])
+                              (translate [(wide-pinky c column row) 0 (- (frow-radius alpha switch-type))])
                               (rotate (* alpha (- 2 row)) [1 0 0])
-                              (translate [0 0 (frow-radius alpha)])
-                              (translate [0 0 (- (fcolumn-radius beta))])
+                              (translate [0 0 (frow-radius alpha switch-type)])
+                              (translate [0 0 (- (fcolumn-radius beta switch-type))])
                               (rotate column-angle [0 1 0])
-                              (translate [0 0 (fcolumn-radius beta)])
+                              (translate [0 0 (fcolumn-radius beta switch-type)])
                               (translate offset))]
     (->> placed-shape
          (rotate tenting-angle [0 1 0])
@@ -88,14 +89,15 @@
                                   (> row 2))
                            [0 -10.35 8.64]
                            [0 -4.35 8.64])
+        switch-type      (get c :configuration-switch-type)
         column-angle     (* beta (- 2 column))
         placed-shape     (->> shape
-                              (translate [0 0 (- (frow-radius alpha))])
+                              (translate [0 0 (- (frow-radius alpha switch-type))])
                               (rotate (* alpha (- 2 row)) [1 0 0])
-                              (translate [0 0 (frow-radius alpha)])
-                              (translate [0 0 (- (fcolumn-radius beta))])
+                              (translate [0 0 (frow-radius alpha switch-type)])
+                              (translate [0 0 (- (fcolumn-radius beta switch-type))])
                               (rotate column-angle [0 1 0])
-                              (translate [0 0 (fcolumn-radius beta)])
+                              (translate [0 0 (fcolumn-radius beta switch-type)])
                               (translate column-offset))]
     (->> placed-shape
          (rotate tenting-angle [0 1 0])

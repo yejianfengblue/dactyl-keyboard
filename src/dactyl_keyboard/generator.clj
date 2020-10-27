@@ -53,6 +53,7 @@
   {:keys      {:columns         (get confs :configuration-ncols)
                :num-row         (get confs :configuration-use-numrow?)
                :last-row        (get confs :configuration-use-lastrow?)
+               :switch-type     (get confs :configuration-switch-type)
                :thumb-count     (get confs :configuration-thumb-count)
                :hide-last-pinky (get confs :configuration-hide-last-pinky?)}
    :curve     {:alpha         (get confs :configuration-alpha)

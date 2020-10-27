@@ -4,6 +4,7 @@
         "num-row": false,
         "last-row": false,
         "thumb-count": "two",
+        "switch-type": "box",
         "hide-last-pinky": false
     },
     "curve": {

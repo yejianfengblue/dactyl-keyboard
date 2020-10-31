@@ -323,7 +323,7 @@
         x-rotation  (if (= thumb-count :five) 10 -6)
         y-rotation  (if (= thumb-count :five) -23 -34)
         z-rotation  (if (= thumb-count :five) 25 48)
-        movement    (if (= thumb-count :five) [-23 -34 -6] [-29 -40 -13])]
+        movement    (if (= thumb-count :five) [-23 -34 -6] [-29 -41 -13])]
     (->> shape
          (rotate (deg2rad x-rotation) [1 0 0])
          (rotate (deg2rad y-rotation) [0 1 0])
@@ -333,7 +333,7 @@
 
 (defn thumb-ml-place [c shape]
   (let [thumb-count (get c :configuration-thumb-count)
-        movement    (if (= thumb-count :three) [-53 -26 -12] [-51 -25 -12])]
+        movement    (if (= thumb-count :three) [-53 -26 -12] [-52 -26 -12])]
     (->> shape
          (rotate (deg2rad   6) [1 0 0])
          (rotate (deg2rad -34) [0 1 0])
@@ -516,19 +516,19 @@
             (thumb-tr-place c thumb-post-tl)
             (thumb-tr-place c thumb-post-bl))
            (triangle-hulls
-            (thumb-mr-place c web-post-tl)
-            (thumb-ml-place c web-post-bl)
-            (thumb-mr-place c web-post-tr)
-            (thumb-ml-place c web-post-br))
-           (triangle-hulls    ; top two to the middle two, starting on the left
-            (thumb-tl-place c thumb-post-tl)
             (thumb-ml-place c web-post-tr)
-            (thumb-tl-place c thumb-post-bl)
+            (thumb-tl-place c thumb-post-tl)
             (thumb-ml-place c web-post-br)
-            (thumb-tl-place c thumb-post-br)
+            (thumb-tl-place c thumb-post-bl)
+            (thumb-ml-place c web-post-bl)
+            (thumb-mr-place c web-post-tl))
+           (triangle-hulls
+            (thumb-mr-place c web-post-tl)
+            (thumb-tl-place c thumb-post-bl)
             (thumb-mr-place c web-post-tr)
-            (thumb-tr-place c thumb-post-bl)
+            (thumb-tl-place c thumb-post-br)
             (thumb-mr-place c web-post-br)
+            (thumb-tr-place c thumb-post-bl)
             (thumb-tr-place c thumb-post-br))
            (triangle-hulls    ; top two to the main keyboard, starting on the left
             (thumb-tl-place c thumb-post-tl)
@@ -632,16 +632,31 @@
             (thumb-tl-place c thumb-post-br)
             (thumb-tr-place c thumb-post-tl)
             (thumb-tr-place c thumb-post-bl))
-           (triangle-hulls    ; bottom two on the right
-            (thumb-br-place c web-post-tr)
-            (thumb-br-place c web-post-br)
+           (triangle-hulls
+            (thumb-ml-place c web-post-tr)
+            (thumb-tl-place c thumb-post-tl)
+            (thumb-ml-place c web-post-br)
+            (thumb-tl-place c thumb-post-bl)
+            (thumb-ml-place c web-post-bl)
+            (thumb-mr-place c web-post-tl))
+           (triangle-hulls
             (thumb-mr-place c web-post-tl)
-            (thumb-mr-place c web-post-bl))
-           (triangle-hulls    ; bottom two on the left
+            (thumb-tl-place c thumb-post-bl)
+            (thumb-mr-place c web-post-tr)
+            (thumb-tl-place c thumb-post-br)
+            (thumb-mr-place c web-post-br)
+            (thumb-tr-place c thumb-post-bl)
+            (thumb-tr-place c thumb-post-br))
+           (triangle-hulls
+            (thumb-ml-place c web-post-tl)
             (thumb-bl-place c web-post-tr)
             (thumb-bl-place c web-post-br)
-            (thumb-ml-place c web-post-tl)
             (thumb-ml-place c web-post-bl))
+           (triangle-hulls
+            (thumb-br-place c web-post-tr)
+            (thumb-mr-place c web-post-tl)
+            (thumb-br-place c web-post-br)
+            (thumb-mr-place c web-post-bl))
            (triangle-hulls    ; centers of the bottom four
             (thumb-br-place c web-post-tl)
             (thumb-bl-place c web-post-bl)
@@ -1398,25 +1413,29 @@
 (defn plate-left [c]
   (mirror [-1 0 0] (plate-right c)))
 
-(def c {:configuration-nrows                  5
-        :configuration-ncols                  6
+(def c {:configuration-nrows                  4
+        :configuration-ncols                  5
         :configuration-thumb-count            :six
         :configuration-last-row-count         :two
         :configuration-switch-type            :box
         :configuration-use-inner-column?      false
+        :configuration-hide-last-pinky?       true
 
         :configuration-alpha                  (/ pi 12)
         :configuration-pinky-alpha            (/ pi 12)
         :configuration-beta                   (/ pi 36)
         :configuration-centercol              4
         :configuration-tenting-angle          (/ pi 12)
-        :configuration-rotate-x               (/ pi 36)
+        :configuration-rotate-x-angle         (/ pi 36)
 
         :configuration-use-promicro-usb-hole? false
         :configuration-use-trrs?              false
         :configuration-use-external-holder?   false
 
         :configuration-use-hotswap?           false
+        :configuration-thumb-offset-x         6
+        :configuration-thumb-offset-y         -3
+        :configuration-thumb-offset-z         7
         :configuration-stagger?               true
         :configuration-stagger-index          [0 0 0]
         :configuration-stagger-middle         [0 2.8 -6.5]
@@ -1427,8 +1446,7 @@
         :configuration-use-wire-post?         false
         :configuration-use-screw-inserts?     false
 
-        :configuration-hide-last-pinky?       false
-        :configuration-show-caps?             false
+        :configuration-show-caps?             true
         :configuration-plate-projection?      false})
 
 #_(spit "things/right.scad"

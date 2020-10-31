@@ -224,21 +224,23 @@
         use-choc?           (case switch-type :choc true false)
         use-hotswap?        (get c :configuration-use-hotswap?)
         plate-projection?   (get c :configuration-plate-projection? false)
-        alps-fill-in        (translate [0 0 (/ plate-thickness 2)] (cube alps-width alps-height plate-thickness))
-        mx-fill-in          (translate [0 0 (/ plate-thickness 2)] (cube keyswitch-width keyswitch-height plate-thickness))
-        fill-in             (if use-alps? alps-fill-in mx-fill-in)
+        fill-in             (translate [0 0 (/ plate-thickness 2)] (cube alps-width alps-height plate-thickness))
         holder-thickness    1.65
-        top-wall            (if use-alps?
-                              (->> (cube (+ keyswitch-width 3) 2.7 plate-thickness)
+        top-wall            (case switch-type
+                              :alps (->> (cube (+ keyswitch-width 3) 2.7 plate-thickness)
                                    (translate [0
                                                (+ (/ 2.7 2) (/ alps-height 2))
                                                (/ plate-thickness 2)]))
-                              (->> (cube (+ keyswitch-width 3.3) holder-thickness plate-thickness)
+                              :mx (->> (cube (+ keyswitch-width 3.3) holder-thickness plate-thickness)
                                    (translate [0
-                                               (+ (/ holder-thickness 2) (/ (+ keyswitch-height 0.0) 2))
-                                               (/ plate-thickness 2)])))
-        left-wall           (if use-alps?
-                              (union (->> (cube 2 (+ keyswitch-height 3) plate-thickness)
+                                               (+ (/ holder-thickness 2) (/ keyswitch-height 2))
+                                               (/ plate-thickness 2)]))
+                              :choc (->> (cube (+ keyswitch-width 3.3) holder-thickness (* plate-thickness 0.65))
+                                   (translate [0
+                                               (+ (/ holder-thickness 2) (/ keyswitch-height 2))
+                                               (* plate-thickness 0.7)])))
+        left-wall           (case switch-type
+                              :alps (union (->> (cube 2 (+ keyswitch-height 3) plate-thickness)
                                           (translate [(+ (/ 2 2) (/ 15.6 2))
                                                       0
                                                       (/ plate-thickness 2)]))
@@ -247,10 +249,14 @@
                                                       0
                                                       (- plate-thickness
                                                          (/ alps-notch-height 2))])))
-                              (->> (cube holder-thickness (+ keyswitch-height 3.3) plate-thickness)
-                                   (translate [(+ (/ holder-thickness 2) (/ (+ keyswitch-width 0.0) 2))
+                              :mx (->> (cube holder-thickness (+ keyswitch-height 3.3) plate-thickness)
+                                   (translate [(+ (/ holder-thickness 2) (/ keyswitch-width 2))
                                                0
-                                               (/ plate-thickness 2)])))
+                                               (/ plate-thickness 2)]))
+                              :choc (->> (cube holder-thickness (+ keyswitch-height 3.3) (* plate-thickness 0.65))
+                                   (translate [(+ (/ holder-thickness 2) (/ keyswitch-width 2))
+                                               0
+                                               (* plate-thickness 0.7)])))
         side-nub            (->> (binding [*fn* 30] (cylinder 1 2.75))
                                  (rotate (/ pi 2) [1 0 0])
                                  (translate [(+ (/ keyswitch-width 2)) 0 1])
@@ -283,9 +289,9 @@
                                  (translate (if use-choc? [0 5 0] [-2.54 5.08 0])))
         friction-hole       (->> (cylinder (if use-choc? 1 (/ 1.7 2)) 10)
                                  (with-fn 8))
-        friction-hole-right (translate [5 0 0] friction-hole)
-        friction-hole-left  (translate [-5 0 0] friction-hole)
-        hotswap-base-z-offset (if use-choc? -0.5 -2.6)
+        friction-hole-right (translate [(if use-choc? 6 5) 0 0] friction-hole)
+        friction-hole-left  (translate [(if use-choc? -6 -5) 0 0] friction-hole)
+        hotswap-base-z-offset (if use-choc? 0.2 -2.6)
         hotswap-base-shape  (->> (cube 19 6.2 3.5)
                                  (translate [0 3 hotswap-base-z-offset]))
         hotswap-holder      (difference swap-holder

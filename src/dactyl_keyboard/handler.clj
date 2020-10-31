@@ -86,6 +86,9 @@
         param-wide-pinky            (parse-bool (get p "form.wide-pinky"))
         param-wire-post             (parse-bool (get p "form.wire-post"))
         param-screw-inserts         (parse-bool (get p "form.screw-inserts"))
+        param-thumb-offset-x        (parse-float (get p "form.thumb-offset-x"))
+        param-thumb-offset-y        (parse-float (get p "form.thumb-offset-y"))
+        param-thumb-offset-z        (parse-float (get p "form.thumb-offset-z"))
         param-index-y               (parse-float (get p "form.stagger-index-y"))
         param-index-z               (parse-float (get p "form.stagger-index-z"))
         param-middle-y              (parse-float (get p "form.stagger-middle-y"))
@@ -130,6 +133,9 @@
                                      :configuration-use-promicro-usb-hole? param-use-promicro-usb-hole
 
                                      :configuration-use-hotswap?           param-hotswap
+                                     :configuration-thumb-offset-x         param-thumb-offset-x
+                                     :configuration-thumb-offset-y         param-thumb-offset-y
+                                     :configuration-thumb-offset-z         param-thumb-offset-z
                                      :configuration-stagger?               param-stagger
                                      :configuration-stagger-index          stagger-index
                                      :configuration-stagger-middle         stagger-middle
@@ -253,6 +259,9 @@
         curve          (get body :curve)
         connector      (get body :connector)
         form           (get body :form)
+        thumb-x        (get form :thumb-offset-x 6)
+        thumb-y        (get form :thumb-offset-y -3)
+        thumb-z        (get form :thumb-offset-z 7)
         index-y        (get form :stagger-index-y 0)
         index-z        (get form :stagger-index-z 0)
         middle-y       (get form :stagger-middle-y 2.8)
@@ -285,6 +294,9 @@
                         :configuration-use-trrs?              (get connector :trrs false)
                         :configuration-use-promicro-usb-hole? (get connector :micro-usb false)
 
+                        :configuration-thumb-offset-x         thumb-x
+                        :configuration-thumb-offset-y         thumb-y
+                        :configuration-thumb-offset-z         thumb-z
                         :configuration-use-hotswap?           (get form :hotswap false)
                         :configuration-stagger?               (get form :stagger true)
                         :configuration-stagger-index          stagger-index

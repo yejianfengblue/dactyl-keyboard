@@ -194,6 +194,41 @@
           <option value="false">No</option>
           <option value="true">Yes</option>
         </select>
+        <label for="form.thumb-offsets"
+          >Thumb cluster offsets</label
+        >
+        <div class="row" id="form.thumb-offsets">
+          <div class="column column-33">
+            <label for="form.thumb-offset-x">X (toward the pinky)</label>
+            <input
+              type="number"
+              name="form.thumb-offset-x"
+              id="form.thumb-offset-x"
+              value="6"
+              step="0.1"
+            />
+          </div>
+          <div class="column column-33">
+            <label for="form.thumb-offset-y">Y (toward the index)</label>
+            <input
+              type="number"
+              name="form.thumb-offset-y"
+              id="form.thumb-offset-y"
+              value="-3"
+              step="0.1"
+            />
+          </div>
+          <div class="column column-33">
+            <label for="form.thumb-offset-z">Z (altitude)</label>
+            <input
+              type="number"
+              name="form.thumb-offset-z"
+              id="form.thumb-offset-z"
+              value="7"
+              step="0.1"
+            />
+          </div>
+        </div>
         <label for="form.stagger">Stagger?</label>
         <select id="form.stagger" name="form.stagger">
           <option value="true">Yes</option>

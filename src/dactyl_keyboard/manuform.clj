@@ -6,13 +6,6 @@
             [dactyl-keyboard.common :refer :all]))
 
 (def column-style :standard)
-; it dictates the location of the thumb cluster.
-; the first member of the vector is x axis, second one y axis,
-; while the last one is y axis.
-; the higher x axis value is, the closer it to the pinky.
-; the higher y axis value is, the closer it to the alphas.
-; the higher z axis value is, the higher it is.
-(def thumb-offsets [6 -3 7])
 
 ; controls overall height; original=9 with centercol=3; use 16 for centercol=2
 ;(def keyboard-z-offset 4)
@@ -277,6 +270,19 @@
 ;; Thumbs ;;
 ;;;;;;;;;;;;
 
+; it dictates the location of the thumb cluster.
+; the first member of the vector is x axis, second one y axis,
+; while the last one is y axis.
+; the higher x axis value is, the closer it to the pinky.
+; the higher y axis value is, the closer it to the alphas.
+; the higher z axis value is, the higher it is.
+(defn thumb-offsets [c]
+  (let [x-offset (get c :configuration-thumb-offset-x)
+        y-offset (get c :configuration-thumb-offset-y)
+        z-offset (get c :configuration-thumb-offset-z)]
+    [x-offset y-offset z-offset ]))
+ 
+
 ; this is where the original position of the thumb switches defined.
 ; each and every thumb keys is derived from this value.
 ; the value itself is defined from the 'm' key's position in qwerty layout
@@ -284,7 +290,7 @@
 (defn thumborigin [c]
   (let [cornerrow (fcornerrow (get c :configuration-nrows))]
     (map + (key-position c 1 cornerrow [(/ mount-width 2) (- (/ mount-height 2)) 0])
-         thumb-offsets)))
+         (thumb-offsets c))))
 
 (defn thumb-tr-place [c shape]
   (let [thumb-count (get c :configuration-thumb-count)

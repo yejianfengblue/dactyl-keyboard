@@ -228,17 +228,17 @@
         holder-thickness    1.65
         top-wall            (case switch-type
                               :alps (->> (cube (+ keyswitch-width 3) 2.7 plate-thickness)
-                                   (translate [0
-                                               (+ (/ 2.7 2) (/ alps-height 2))
-                                               (/ plate-thickness 2)]))
-                              :mx (->> (cube (+ keyswitch-width 3.3) holder-thickness plate-thickness)
-                                   (translate [0
-                                               (+ (/ holder-thickness 2) (/ keyswitch-height 2))
-                                               (/ plate-thickness 2)]))
+                                         (translate [0
+                                                     (+ (/ 2.7 2) (/ alps-height 2))
+                                                     (/ plate-thickness 2)]))
                               :choc (->> (cube (+ keyswitch-width 3.3) holder-thickness (* plate-thickness 0.65))
+                                         (translate [0
+                                                     (+ (/ holder-thickness 2) (/ keyswitch-height 2))
+                                                     (* plate-thickness 0.7)]))
+                              (->> (cube (+ keyswitch-width 3.3) holder-thickness plate-thickness)
                                    (translate [0
                                                (+ (/ holder-thickness 2) (/ keyswitch-height 2))
-                                               (* plate-thickness 0.7)])))
+                                               (/ plate-thickness 2)])))
         left-wall           (case switch-type
                               :alps (union (->> (cube 2 (+ keyswitch-height 3) plate-thickness)
                                           (translate [(+ (/ 2 2) (/ 15.6 2))
@@ -249,14 +249,14 @@
                                                       0
                                                       (- plate-thickness
                                                          (/ alps-notch-height 2))])))
-                              :mx (->> (cube holder-thickness (+ keyswitch-height 3.3) plate-thickness)
-                                   (translate [(+ (/ holder-thickness 2) (/ keyswitch-width 2))
-                                               0
-                                               (/ plate-thickness 2)]))
                               :choc (->> (cube holder-thickness (+ keyswitch-height 3.3) (* plate-thickness 0.65))
                                    (translate [(+ (/ holder-thickness 2) (/ keyswitch-width 2))
                                                0
-                                               (* plate-thickness 0.7)])))
+                                               (* plate-thickness 0.7)]))
+                              (->> (cube holder-thickness (+ keyswitch-height 3.3) plate-thickness)
+                                   (translate [(+ (/ holder-thickness 2) (/ keyswitch-width 2))
+                                               0
+                                               (/ plate-thickness 2)])))
         side-nub            (->> (binding [*fn* 30] (cylinder 1 2.75))
                                  (rotate (/ pi 2) [1 0 0])
                                  (translate [(+ (/ keyswitch-width 2)) 0 1])

@@ -397,7 +397,8 @@
 (def larger-plate
   (let [plate-height (/ (- sa-double-length mount-height) 3)
         top-plate    (->> (cube mount-width plate-height web-thickness)
-                          (translate [0 (/ (+ plate-height mount-height) 2)
+                          (translate [0
+                                      (/ (+ plate-height mount-height -0.20) 2)
                                       (- plate-thickness (/ web-thickness 2))]))]
     (union top-plate (mirror [0 1 0] top-plate))))
 
@@ -666,16 +667,6 @@
             (thumb-ml-place c web-post-bl)
             (thumb-mr-place c web-post-tr)
             (thumb-ml-place c web-post-br))
-           (triangle-hulls    ; top two to the middle two, starting on the left
-            (thumb-tl-place c thumb-post-tl)
-            (thumb-ml-place c web-post-tr)
-            (thumb-tl-place c thumb-post-bl)
-            (thumb-ml-place c web-post-br)
-            (thumb-tl-place c thumb-post-br)
-            (thumb-mr-place c web-post-tr)
-            (thumb-tr-place c thumb-post-bl)
-            (thumb-mr-place c web-post-br)
-            (thumb-tr-place c thumb-post-br))
            (triangle-hulls    ; top two to the main keyboard, starting on the left
             (thumb-tl-place c thumb-post-tl)
             (key-place c 0 cornerrow web-post-bl)
@@ -1413,13 +1404,13 @@
 (defn plate-left [c]
   (mirror [-1 0 0] (plate-right c)))
 
-(def c {:configuration-nrows                  4
-        :configuration-ncols                  5
+(def c {:configuration-nrows                  5
+        :configuration-ncols                  6
         :configuration-thumb-count            :six
         :configuration-last-row-count         :two
         :configuration-switch-type            :box
         :configuration-use-inner-column?      false
-        :configuration-hide-last-pinky?       true
+        :configuration-hide-last-pinky?       false
 
         :configuration-alpha                  (/ pi 12)
         :configuration-pinky-alpha            (/ pi 12)
@@ -1442,11 +1433,11 @@
         :configuration-stagger-ring           [0 0 0]
         :configuration-stagger-pinky          [0 -13 6]
         :configuration-use-wide-pinky?        false
-        :configuration-z-offset               4
+        :configuration-z-offset               8
         :configuration-use-wire-post?         false
         :configuration-use-screw-inserts?     false
 
-        :configuration-show-caps?             true
+        :configuration-show-caps?             false
         :configuration-plate-projection?      false})
 
 #_(spit "things/right.scad"

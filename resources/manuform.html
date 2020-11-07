@@ -18,15 +18,18 @@
   }
 
   function setminidox() {
-    setkeyboard(5, 4, "three", "false", "zero", "false");
+    setkeyboard(5, 4, "three", "normal", "zero", "false");
   }
 
   function setcorne() {
-    setkeyboard(6, 4, "three", "false", "zero", "false");
+    setkeyboard(6, 4, "three", "normal", "zero", "false");
   }
 
   function setergodox() {
-    setkeyboard(6, 5, "six", "true", "full", "true");
+    setkeyboard(6, 5, "six", "ergodox", "full", "true");
+  }
+  function set() {
+    setkeyboard(6, 5, "six", "ergodox", "full", "true");
   }
 </script>
 <div class="row">
@@ -98,10 +101,11 @@
           <option value="alps">Alps</option>
           <option value="choc">Choc (Experimental)</option>
         </select>
-        <label for="keys.inner-column">Inner Column?</label>
+        <label for="keys.inner-column">Inner Index Finger's Column?</label>
         <select id="keys.inner-column" name="keys.inner-column">
-          <option value="false">No</option>
-          <option value="true">Yes</option>
+          <option value="normal">Normal</option>
+          <option value="ergodox">Use inner column (like ergodox)</option>
+          <option value="ginny">Without</option>
         </select>
         <label for="keys.hide-last-pinky"
           >Hide Bottom Pinky? (see Kinesis Advantage's Layout)</label

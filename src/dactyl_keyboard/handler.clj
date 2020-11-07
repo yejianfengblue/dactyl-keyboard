@@ -66,7 +66,11 @@
                                       "alps" :alps
                                       "choc" :choc
                                       :box)
-        param-inner-column          (parse-bool (get p "keys.inner-column"))
+        ;; param-inner-column          (parse-bool (get p "keys.inner-column"))
+        param-inner-column          (case (get p "keys.inner-column")
+                                      "ginny" :ginny
+                                      "ergodox" :ergodox
+                                      :normie)
         param-hide-last-pinky       (parse-bool (get p "keys.hide-last-pinky"))
 
         param-alpha                 (parse-int (get p "curve.alpha"))
@@ -117,7 +121,7 @@
                                      :configuration-thumb-count            param-thumb-count
                                      :configuration-last-row-count         param-last-row-count
                                      :configuration-switch-type            param-switch-type
-                                     :configuration-use-inner-column?      param-inner-column
+                                     :configuration-inner-column           param-inner-column
                                      :configuration-hide-last-pinky?       param-hide-last-pinky
 
                                      :configuration-alpha                  (if generate-json? param-alpha (/ pi param-alpha))

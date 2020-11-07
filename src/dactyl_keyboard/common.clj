@@ -205,6 +205,13 @@
        (key-position c 0 row [(* mount-width -0.5) (* direction mount-height 0.5) 0])
        [left-wall-x-offset 0 left-wall-z-offset]))
 
+(defn index-key-position
+  "determines the position of the left column key position."
+  [c row direction]
+  (map -
+       (key-position c 1 row [(* mount-width -0.5) (* direction mount-height 0.5) 0])
+       [left-wall-x-offset 0 left-wall-z-offset]))
+
 ;;;;;;;;;;;;;;;;;
 ;; Switch Hole ;;
 ;;;;;;;;;;;;;;;;;
@@ -421,7 +428,7 @@
                (union (translate [0 2 0] (cube 10.78  9 18.38))
                       (translate [0 0 5] (cube 10.78 13  5))))))
 
-(def usb-holder-size [6.5 10.0 13.6])
+(def usb-holder-size [6.5 13.0 13.6])
 (def usb-holder-thickness 4)
 (defn usb-holder
   "TODO: doc"

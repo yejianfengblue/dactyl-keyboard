@@ -33,8 +33,13 @@
 (defn columns
   "It creates an array for column placement. Where 0 being inner index
    finger's column, 1 being index finger's column, 2 middle finger's, and so on."
-  [ncols]
-  (range 0 ncols))
+  [inner ncols]
+  (let [init (case inner
+               :ergodox -1
+               :normie 0
+               :ginny 1)]
+    (range init ncols)))
+
 (defn inner-columns
   "It creates an array for column placement. Where -1 being inner-inner index
    finger's column, 1 being index finger's column, 2 middle finger's, and so on."
@@ -74,12 +79,14 @@
 (defn key-holes
   "Determines which keys should be generated based on the configuration."
   [c]
-  (let [ncols               (get c :configuration-ncols)
+  (let [inner               (get c :configuration-inner-column)
+        ncols               (get c :configuration-ncols)
         nrows               (get c :configuration-nrows)
         hide-last-pinky?    (get c :configuration-hide-last-pinky?)
         last-row-count      (get c :configuration-last-row-count)
         lastrow             (flastrow nrows)
         lastcol             (flastcol ncols)
+        cornerrow           (fcornerrow nrows)
         last-pinky-location (fn [column row]
                               (and (= row lastrow)
                                    (= column lastcol)))
@@ -88,14 +95,18 @@
                                         hide-last-pinky?
                                         (last-pinky-location column row))))]
     (apply union
-           (for [column (columns ncols)
+           (for [column (columns inner ncols)
                  row    (rows nrows)
                  :when  (case last-row-count
                           :zero (not= row lastrow)
                           :two (or (.contains [2 3] column)
                                    (not= row lastrow))
                           :full (or (not (.contains [0 1] column)) (not= row lastrow)))
-                 :when  (hide-pinky column row)]
+                 :when  (hide-pinky column row)
+                 :when  (case inner
+                          :ergodox (not (and (= column -1)
+                                             (<= cornerrow row)))
+                          true)]
              (->> (color [1 1 0] (single-plate c))
                   (key-place c column row))))))
 
@@ -116,7 +127,8 @@
                         (key-inner-place c -1 row))))))
 
 (defn caps [c]
-  (let [use-inner-column?   (get c :configuration-use-inner-column?)
+  (let [inner               (get c :configuration-inner-column)
+        ;; use-inner-column?   (get c :configuration-use-inner-column?)
         last-row-count      (get c :configuration-last-row-count)
         use-wide-pinky?     (get c :configuration-use-wide-pinky?)
         ncols               (get c :configuration-ncols)
@@ -134,14 +146,18 @@
                                         (last-pinky-location column row))))]
     (apply
      union
-     (for [column (if use-inner-column? (range -1 ncols) (columns ncols))
+     (for [column (columns inner ncols) #_(if use-inner-column? (range -1 ncols) (columns inner ncols))
            row    (rows nrows)
            :when  (case last-row-count
                     :zero (not= row lastrow)
                     :two (or (.contains [2 3] column)
                              (not= row lastrow))
                     :full (or (not (.contains [0 1] column)) (not= row lastrow)))
-           :when  (if use-inner-column?
+           :when  (case inner
+                   :ergodox (not (and (= column -1)
+                                      (<= cornerrow row)))
+                   true)
+           #_:when  #_(if use-inner-column?
                     (not (and (.contains [-1] column)
                               (or (= row cornerrow)
                                   (= row lastrow))))
@@ -179,7 +195,12 @@
   "It creates the wall which connects to each keys in the main body based
    on the configuration provided."
   [c]
-  (let [use-inner-column?   (get c :configuration-use-inner-column?)
+  (let [inner               (get c :configuration-inner-column)
+        init                (case inner
+                              :ergodox -1
+                              :normie 0
+                              :ginny 1)
+        ;; use-inner-column?   (get c :configuration-use-inner-column?)
         last-row-count      (get c :configuration-last-row-count)
         ncols               (get c :configuration-ncols)
         nrows               (get c :configuration-nrows)
@@ -206,7 +227,7 @@
         ())
       (concat
       ;; Row connections
-       (for [column (range (if use-inner-column? -1 0) (dec ncols))
+       (for [column (range init (dec ncols))
              row    (range 0 (inc lastrow))
              :when  (case last-row-count
                       :zero (or (not= row lastrow)
@@ -226,7 +247,7 @@
             ())))
 
       ;; Column connections
-       (for [column (if use-inner-column? (inner-columns ncols) (columns ncols))
+       (for [column (columns inner ncols)
              row    (range 0 lastrow)
              :when  (case last-row-count
                       :zero (not= row cornerrow)
@@ -243,7 +264,7 @@
             ())))
 
       ;; Diagonal connections
-       (for [column (range (if use-inner-column? -1 0) (dec ncols))
+       (for [column (range init (dec ncols))
              row    (range 0 lastrow)
              :when  (case last-row-count
                       :full (not (or (and (= row lastrow)
@@ -435,7 +456,10 @@
             (thumb-tr-place c thumb-post-bl))
            (triangle-hulls    ; top two to the main keyboard, starting on the left
             (thumb-tl-place c thumb-post-tl)
-            (key-place c 0 cornerrow web-post-bl)
+            ;; (key-place c 0 cornerrow web-post-bl)
+            (if (not= :ginny (get c :configuration-inner-column))
+              (key-place c 0 cornerrow web-post-bl)
+              ())
             (thumb-tl-place c thumb-post-tr)
             (key-place c 0 cornerrow web-post-br)
             (thumb-tr-place c thumb-post-tl)
@@ -477,7 +501,10 @@
       (thumb-ml-place c thumb-post-br))
      (triangle-hulls    ; top two to the main keyboard, starting on the left
       (thumb-tl-place c thumb-post-tl)
-      (key-place c 0 cornerrow web-post-bl)
+      ;; (key-place c 0 cornerrow web-post-bl)
+      (if (not= :ginny (get c :configuration-inner-column))
+        (key-place c 0 cornerrow web-post-bl)
+        ())
       (thumb-tl-place c thumb-post-tr)
       (key-place c 0 cornerrow web-post-br)
       (thumb-tr-place c thumb-post-tl)
@@ -533,7 +560,10 @@
             (thumb-tr-place c thumb-post-br))
            (triangle-hulls    ; top two to the main keyboard, starting on the left
             (thumb-tl-place c thumb-post-tl)
-            (key-place c 0 cornerrow web-post-bl)
+            ;; (key-place c 0 cornerrow web-post-bl)
+            (if (not= :ginny (get c :configuration-inner-column))
+              (key-place c 0 cornerrow web-post-bl)
+              ())
             (thumb-tl-place c thumb-post-tr)
             (key-place c 0 cornerrow web-post-br)
             (thumb-tr-place c thumb-post-tl)
@@ -669,7 +699,10 @@
             (thumb-ml-place c web-post-br))
            (triangle-hulls    ; top two to the main keyboard, starting on the left
             (thumb-tl-place c thumb-post-tl)
-            (key-place c 0 cornerrow web-post-bl)
+            ;; (key-place c 0 cornerrow web-post-bl)
+            (if (not= :ginny (get c :configuration-inner-column))
+              (key-place c 0 cornerrow web-post-bl)
+              ())
             (thumb-tl-place c thumb-post-tr)
             (key-place c 0 cornerrow web-post-br)
             (thumb-tr-place c thumb-post-tl)
@@ -712,6 +745,9 @@
 
 (defn left-key-place [c row direction shape]
   (translate (left-key-position c row direction) shape))
+
+(defn index-key-place [c row direction shape]
+  (translate (index-key-position c row direction) shape))
 
 (defn inner-key-place [c row direction shape]
   (translate (inner-key-position c row direction) shape))
@@ -805,69 +841,54 @@
 (defn back-wall [c]
   (let [ncols             (get c :configuration-ncols)
         lastcol           (flastcol ncols)
-        use-inner-column? (get c :configuration-use-inner-column?)]
+        inner             (get c :configuration-inner-column)
+        init              (case inner
+                            :ergodox -1
+                            :normie 0
+                            :ginny 1)]
     (union
-     (for [x (range (if use-inner-column? -1 0) ncols)]
+     (for [x (range init ncols)]
        (key-wall-brace c x 0 0 1 web-post-tl x       0 0 1 web-post-tr))
-     (for [x (range (if use-inner-column?  0 1) ncols)]
+     (for [x (range (+ init 1) ncols)]
        (key-wall-brace c x 0 0 1 web-post-tl (dec x) 0 0 1 web-post-tr))
      (key-wall-brace c lastcol 0 0 1 web-post-tr lastcol 0 1 0 web-post-tr))))
 
 (defn left-wall [c]
   (let [nrows             (get c :configuration-nrows)
+        inner             (get c :configuration-inner-column)
         lastrow           (flastrow nrows)
         cornerrow         (fcornerrow nrows)
-        use-inner-column? (get c :configuration-use-inner-column?)]
+        ;; use-inner-column? (get c :configuration-use-inner-column?)
+        end               (case inner
+                            :ergodox cornerrow
+                            lastrow)
+        partial-place     (case inner
+                            :ergodox (partial inner-key-place c)
+                            :normie (partial left-key-place c)
+                            :ginny (partial index-key-place c))
+        init              (case inner :ergodox -1 :normie 0 :ginny 1)]
     (union
-     (for [y (range 0 (if use-inner-column? cornerrow lastrow))]
+     (for [y (range 0 end #_(if use-inner-column? cornerrow lastrow))]
        (union
-        (wall-brace (partial (if use-inner-column?
-                               (partial inner-key-place c)
-                               (partial left-key-place c))
-                             y  1) -1 0 web-post
-                    (partial (if use-inner-column?
-                               (partial inner-key-place c)
-                               (partial left-key-place c))
-                             y -1) -1 0 web-post)
-        (hull (key-place c (if use-inner-column? -1 0) y web-post-tl)
-              (key-place c (if use-inner-column? -1 0) y web-post-bl)
-              ((if use-inner-column?
-                 (partial inner-key-place c)
-                 (partial left-key-place c))
-               y  1 web-post)
-              ((if use-inner-column?
-                 (partial inner-key-place c)
-                 (partial left-key-place c))
-               y -1 web-post))))
-     (for [y (range 1 (if use-inner-column? cornerrow lastrow))]
+        (wall-brace (partial partial-place y 1) -1 0 web-post
+                    (partial partial-place y -1) -1 0 web-post)
+        (hull (key-place c init y web-post-tl)
+              (key-place c init y web-post-bl)
+              (partial-place y  1 web-post)
+              (partial-place y -1 web-post))))
+     (for [y (range 1 (case inner :ergodox cornerrow lastrow))]
        (union
-        (wall-brace (partial (if use-inner-column?
-                               (partial inner-key-place c)
-                               (partial left-key-place c))
-                             (dec y) -1) -1 0 web-post
-                    (partial (if use-inner-column?
-                               (partial inner-key-place c)
-                               (partial left-key-place c))
-                             y        1) -1 0 web-post)
-        (hull (key-place c (if use-inner-column? -1 0) y       web-post-tl)
-              (key-place c (if use-inner-column? -1 0) (dec y) web-post-bl)
-              ((if use-inner-column?
-                 (partial inner-key-place c)
-                 (partial left-key-place c))
-               y        1 web-post)
-              ((if use-inner-column?
-                 (partial inner-key-place c)
-                 (partial left-key-place c)) (dec y) -1 web-post))))
-     (wall-brace (partial key-place c (if use-inner-column? -1 0) 0) 0 1 web-post-tl
-                 (partial (if use-inner-column?
-                            (partial inner-key-place c)
-                            (partial left-key-place c)) 0 1)  0 1 web-post)
-     (wall-brace (partial (if use-inner-column?
-                            (partial inner-key-place c)
-                            (partial left-key-place c)) 0 1)  0 1 web-post
-                 (partial (if use-inner-column?
-                            (partial inner-key-place c)
-                            (partial left-key-place c)) 0 1) -1 0 web-post))))
+        (wall-brace (partial partial-place (dec y) -1) -1 0 web-post
+                    (partial partial-place y        1) -1 0 web-post)
+        (hull (key-place c init y       web-post-tl)
+              (key-place c init (dec y) web-post-bl)
+              (partial-place y        1 web-post)
+              (partial-place (dec y) -1 web-post))))
+     (wall-brace (partial key-place c init 0) 0 1 web-post-tl
+                 (partial partial-place 0 1)  0 1 web-post)
+     (wall-brace (partial partial-place 0 1)  0 1 web-post
+                 (partial partial-place 0 1) -1 0 web-post))))
+
 (defn front-wall [c]
   (let [ncols         (get c :configuration-ncols)
         nrows         (get c :configuration-nrows)
@@ -1038,38 +1059,38 @@
       (thumb-wall-six c))))
 
 (defn second-thumb-to-body [c]
-  (let [thumb-count       (get c :configuration-thumb-count)
-        use-inner-column? (get c :configuration-use-inner-column?)
-        nrows             (get c :configuration-nrows)
-        cornerrow         (fcornerrow nrows)
-        middlerow         (fmiddlerow nrows)
-        body-gap-default  (bottom-hull
-                           (if use-inner-column?
-                             (inner-key-place c middlerow -1 (translate (wall-locate2 -1 0) web-post))
-                             (left-key-place  c cornerrow -1 (translate (wall-locate2 -1 0) web-post)))
-                           (if use-inner-column?
-                             (inner-key-place c middlerow -1 (translate (wall-locate3 -1 0) web-post))
-                             (left-key-place  c cornerrow -1 (translate (wall-locate3 -1 0) web-post)))
-                           (thumb-ml-place c (translate (wall-locate2 -0.3 1) (if (= thumb-count :three) thumb-post-tr web-post-tr)))
-                           (thumb-ml-place c (translate (wall-locate3 -0.3 1) (if (= thumb-count :three) thumb-post-tr web-post-tr))))
-        body-gap-two      (bottom-hull
-                           (if use-inner-column?
-                             (inner-key-place c middlerow -1 (translate (wall-locate2 -1 0) web-post))
-                             (left-key-place  c cornerrow -1 (translate (wall-locate2 -1 0) web-post)))
-                           (if use-inner-column?
-                             (inner-key-place c middlerow -1 (translate (wall-locate3 -1 0) web-post))
-                             (left-key-place  c cornerrow -1 (translate (wall-locate3 -1 0) web-post)))
-                           (thumb-tl-place c (translate (wall-locate2 -1 0) thumb-post-tl))
-                           (thumb-tl-place c (translate (wall-locate3 -1 0) thumb-post-tl)))
-        body-gap-five     (bottom-hull
-                           (if use-inner-column?
-                             (inner-key-place c middlerow -1 (translate (wall-locate2 -1 0) web-post))
-                             (left-key-place  c cornerrow -1 (translate (wall-locate2 -1 0) web-post)))
-                           (if use-inner-column?
-                             (inner-key-place c middlerow -1 (translate (wall-locate3 -1 0) web-post))
-                             (left-key-place  c cornerrow -1 (translate (wall-locate3 -1 0) web-post)))
-                           (thumb-tl-place c (translate (wall-locate2 -0.9 0) thumb-post-tl))
-                           (thumb-tl-place c (translate (wall-locate3 -0.9 0) thumb-post-tl)))]
+  (let [thumb-count      (get c :configuration-thumb-count)
+        ;; use-inner-column? (get c :configuration-use-inner-column?)
+        inner            (get c :configuration-inner-column)
+        nrows            (get c :configuration-nrows)
+        cornerrow        (fcornerrow nrows)
+        middlerow        (fmiddlerow nrows)
+        inner-placement  (case inner
+                           :ergodox (partial inner-key-place)
+                           :normie (partial left-key-place)
+                           :ginny (partial index-key-place))
+        innerrow         (case inner
+                           :ergodox middlerow
+                           cornerrow)
+        init             (case inner
+                           :ergodox -1
+                           :normie 0
+                           :ginny 1)
+        body-gap-default (bottom-hull
+                          (inner-placement c innerrow -1 (translate (wall-locate2 -1 0) web-post))
+                          (inner-placement c innerrow -1 (translate (wall-locate3 -1 0) web-post))
+                          (thumb-ml-place c (translate (wall-locate2 -0.3 1) (if (= thumb-count :three) thumb-post-tr web-post-tr)))
+                          (thumb-ml-place c (translate (wall-locate3 -0.3 1) (if (= thumb-count :three) thumb-post-tr web-post-tr))))
+        body-gap-two     (bottom-hull
+                          (inner-placement c innerrow -1 (translate (wall-locate2 -1 0) web-post))
+                          (inner-placement c innerrow -1 (translate (wall-locate3 -1 0) web-post))
+                          (thumb-tl-place c (translate (wall-locate2 -1 0) thumb-post-tl))
+                          (thumb-tl-place c (translate (wall-locate3 -1 0) thumb-post-tl)))
+        body-gap-five    (bottom-hull
+                          (inner-placement c innerrow -1 (translate (wall-locate2 -1 0) web-post))
+                          (inner-placement c innerrow -1 (translate (wall-locate3 -1 0) web-post))
+                          (thumb-tl-place c (translate (wall-locate2 -0.9 0) thumb-post-tl))
+                          (thumb-tl-place c (translate (wall-locate3 -0.9 0) thumb-post-tl)))]
     (union
      (case thumb-count
        :two body-gap-two
@@ -1081,12 +1102,8 @@
              (thumb-tl-place c thumb-post-tl))
        ())
      (hull
-      (if use-inner-column?
-        (inner-key-place c middlerow -1 (translate (wall-locate2 -1 0) web-post))
-        (left-key-place  c cornerrow -1 (translate (wall-locate2 -1 0) web-post)))
-      (if use-inner-column?
-        (inner-key-place c middlerow -1 (translate (wall-locate3 -1 0) web-post))
-        (left-key-place  c cornerrow -1 (translate (wall-locate3 -1 0) web-post)))
+      (inner-placement c innerrow -1 (translate (wall-locate2 -1 0) web-post))
+      (inner-placement c innerrow -1 (translate (wall-locate3 -1 0) web-post))
       (case thumb-count
         :two ()
         :five (thumb-bl-place c (translate (wall-locate2 -0.5 1) web-post-tr))
@@ -1096,38 +1113,30 @@
         :five (thumb-bl-place c (translate (wall-locate3 -0.5 1) web-post-tr))
         (thumb-ml-place c (translate (wall-locate3 -0.3 1) (if (= thumb-count :three) thumb-post-tr web-post-tr))))
       (thumb-tl-place c thumb-post-tl))
-     (if use-inner-column?
-       (hull
-        (inner-key-place c middlerow -1 web-post)
-        (inner-key-place c middlerow -1 (translate (wall-locate1 -1 0) web-post))
-        (inner-key-place c middlerow -1 (translate (wall-locate2 -1 0) web-post))
-        (inner-key-place c middlerow -1 (translate (wall-locate3 -1 0) web-post))
-        (thumb-tl-place c thumb-post-tl))
-       (hull
-        (left-key-place c cornerrow -1 web-post)
-        (left-key-place c cornerrow -1 (translate (wall-locate1 -1 0) web-post))
-        (left-key-place c cornerrow -1 (translate (wall-locate2 -1 0) web-post))
-        (left-key-place c cornerrow -1 (translate (wall-locate3 -1 0) web-post))
-        (thumb-tl-place c thumb-post-tl)))
-     (if use-inner-column?
-       (hull
-        (inner-key-place c middlerow -1 web-post)
-        (inner-key-place c middlerow -1 (translate (wall-locate1 -1 0) web-post))
-        (key-place c -1 middlerow web-post-bl)
-        (key-place c -1 middlerow (translate (wall-locate1 -1 0) web-post-bl))
-        (thumb-tl-place c thumb-post-tl))
-       (hull
-        (left-key-place c cornerrow -1 web-post)
-        (left-key-place c cornerrow -1 (translate (wall-locate1 -1 0) web-post))
-        (key-place c 0 cornerrow web-post-bl)
-        (key-place c 0 cornerrow (translate (wall-locate1 -1 0) web-post-bl))
-        (thumb-tl-place c thumb-post-tl)))
-     (if use-inner-column?
-       (triangle-hulls
-        (thumb-tl-place c thumb-post-tl)
-        (key-place c  0 cornerrow web-post-bl)
-        (key-place c -1 middlerow web-post-bl)
-        (key-place c -1 cornerrow web-post-tr))
+     (hull
+      (inner-placement c innerrow -1 web-post)
+      (inner-placement c innerrow -1 (translate (wall-locate1 -1 0) web-post))
+      (inner-placement c innerrow -1 (translate (wall-locate2 -1 0) web-post))
+      (inner-placement c innerrow -1 (translate (wall-locate3 -1 0) web-post))
+      (thumb-tl-place c thumb-post-tl))
+     (hull
+      (inner-placement c innerrow -1 web-post)
+      (inner-placement c innerrow -1 (translate (wall-locate1 -1 0) web-post))
+      (key-place c init innerrow web-post-bl)
+      (key-place c init innerrow (translate (wall-locate1 -1 0) web-post-bl))
+      (thumb-tl-place c thumb-post-tl))
+     (hull
+      (inner-placement c innerrow -1 web-post)
+      (inner-placement c innerrow -1 (translate (wall-locate1 -1 0) web-post))
+      (key-place c init innerrow web-post-bl)
+      (key-place c init innerrow (translate (wall-locate1 -1 0) web-post-bl))
+      (thumb-tl-place c thumb-post-tl))
+     (case inner
+       :ergodox (triangle-hulls
+                 (thumb-tl-place c thumb-post-tl)
+                 (key-place c  0 cornerrow web-post-bl)
+                 (key-place c -1 middlerow web-post-bl)
+                 (key-place c -1 cornerrow web-post-tr))
        ())
      (case thumb-count
        :two ()
@@ -1154,10 +1163,18 @@
    (second-thumb-to-body c)))
 
 (defn frj9-start [c]
-  (map + [0 -3  0] (key-position c 1 0 (map + (wall-locate3 0 1) [0 (/ mount-height  2) 0]))))
+  (let [x-position (case (get c :configuration-inner-column)
+                     :ergodox 0
+                     :normie 0.1
+                     :ginny 1)]
+    (map + [0 -3  0] (key-position c x-position 0 (map + (wall-locate3 0 1) [0 (/ mount-height  2) 0])))))
 
 (defn fusb-holder-position [c]
-  (key-position c 2 0 (map + (wall-locate2 0 1) [0 (/ mount-height 2) 0])))
+  (let [x-position (case (get c :configuration-inner-column)
+                     :ergodox 1
+                     :normie 1
+                     :ginny 1.6)]
+    (key-position c x-position 0 (map + (wall-locate2 0 1) [0 (/ mount-height 2) 0]))))
 
 (defn trrs-usb-holder-ref [c]
   (let [nrows      (get c :configuration-nrows)
@@ -1404,20 +1421,20 @@
 (defn plate-left [c]
   (mirror [-1 0 0] (plate-right c)))
 
-(def c {:configuration-nrows                  5
-        :configuration-ncols                  6
+(def c {:configuration-nrows                  2
+        :configuration-ncols                  5
         :configuration-thumb-count            :six
-        :configuration-last-row-count         :two
+        :configuration-last-row-count         :zero
         :configuration-switch-type            :box
-        :configuration-use-inner-column?      false
+        :configuration-inner-column           :ginny
         :configuration-hide-last-pinky?       false
 
-        :configuration-alpha                  (/ pi 12)
-        :configuration-pinky-alpha            (/ pi 12)
-        :configuration-beta                   (/ pi 36)
+        :configuration-alpha                  (/ pi 10)
+        :configuration-pinky-alpha            (/ pi 10)
+        :configuration-beta                   (/ pi 26)
         :configuration-centercol              4
         :configuration-tenting-angle          (/ pi 12)
-        :configuration-rotate-x-angle         (/ pi 36)
+        :configuration-rotate-x-angle         (/ pi -36)
 
         :configuration-use-promicro-usb-hole? false
         :configuration-use-trrs?              false
@@ -1433,7 +1450,7 @@
         :configuration-stagger-ring           [0 0 0]
         :configuration-stagger-pinky          [0 -13 6]
         :configuration-use-wide-pinky?        false
-        :configuration-z-offset               8
+        :configuration-z-offset               4
         :configuration-use-wire-post?         false
         :configuration-use-screw-inserts?     false
 

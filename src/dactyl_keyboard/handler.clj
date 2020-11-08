@@ -35,7 +35,7 @@
                                 :pinky-column-curvature (range 12 3 -1)
                                 :row-curvature          (range 36 17 -1)
                                 :tenting-angle          (range 15 5 -1)
-                                :rotate-x               (range 36 5 -1)
+                                :rotate-x               (range 36 -36 -1)
                                 :thumb-tenting-angle    (range 24 15 -1)
                                 :height-offset          (range 4 26 2)}))
 
@@ -68,8 +68,8 @@
                                       :box)
         ;; param-inner-column          (parse-bool (get p "keys.inner-column"))
         param-inner-column          (case (get p "keys.inner-column")
-                                      "ginny" :ginny
-                                      "ergodox" :ergodox
+                                      "innie" :innie
+                                      "ergodox" :outie
                                       :normie)
         param-hide-last-pinky       (parse-bool (get p "keys.hide-last-pinky"))
 

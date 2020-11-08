@@ -35,9 +35,9 @@
    finger's column, 1 being index finger's column, 2 middle finger's, and so on."
   [inner ncols]
   (let [init (case inner
-               :ergodox -1
+               :outie -1
                :normie 0
-               :ginny 1)]
+               :innie 1)]
     (range init ncols)))
 
 (defn inner-columns
@@ -104,10 +104,11 @@
                           :full (or (not (.contains [0 1] column)) (not= row lastrow)))
                  :when  (hide-pinky column row)
                  :when  (case inner
-                          :ergodox (not (and (= column -1)
+                          :outie (not (and (= column -1)
                                              (<= cornerrow row)))
                           true)]
-             (->> (color [1 1 0] (single-plate c))
+             (->> (single-plate c)
+                  (color [1 1 0])
                   (key-place c column row))))))
 
 (defn key-inner-place
@@ -128,7 +129,6 @@
 
 (defn caps [c]
   (let [inner               (get c :configuration-inner-column)
-        ;; use-inner-column?   (get c :configuration-use-inner-column?)
         last-row-count      (get c :configuration-last-row-count)
         use-wide-pinky?     (get c :configuration-use-wide-pinky?)
         ncols               (get c :configuration-ncols)
@@ -146,7 +146,7 @@
                                         (last-pinky-location column row))))]
     (apply
      union
-     (for [column (columns inner ncols) #_(if use-inner-column? (range -1 ncols) (columns inner ncols))
+     (for [column (columns inner ncols)
            row    (rows nrows)
            :when  (case last-row-count
                     :zero (not= row lastrow)
@@ -154,14 +154,9 @@
                              (not= row lastrow))
                     :full (or (not (.contains [0 1] column)) (not= row lastrow)))
            :when  (case inner
-                   :ergodox (not (and (= column -1)
+                   :outie (not (and (= column -1)
                                       (<= cornerrow row)))
                    true)
-           #_:when  #_(if use-inner-column?
-                    (not (and (.contains [-1] column)
-                              (or (= row cornerrow)
-                                  (= row lastrow))))
-                    true)
            :when  (hide-pinky column row)]
        (->> (sa-cap (if (and use-wide-pinky?
                              (= column lastcol)
@@ -197,10 +192,9 @@
   [c]
   (let [inner               (get c :configuration-inner-column)
         init                (case inner
-                              :ergodox -1
+                              :outie -1
                               :normie 0
-                              :ginny 1)
-        ;; use-inner-column?   (get c :configuration-use-inner-column?)
+                              :innie 1)
         last-row-count      (get c :configuration-last-row-count)
         ncols               (get c :configuration-ncols)
         nrows               (get c :configuration-nrows)
@@ -457,7 +451,7 @@
            (triangle-hulls    ; top two to the main keyboard, starting on the left
             (thumb-tl-place c thumb-post-tl)
             ;; (key-place c 0 cornerrow web-post-bl)
-            (if (not= :ginny (get c :configuration-inner-column))
+            (if (not= :innie (get c :configuration-inner-column))
               (key-place c 0 cornerrow web-post-bl)
               ())
             (thumb-tl-place c thumb-post-tr)
@@ -502,7 +496,7 @@
      (triangle-hulls    ; top two to the main keyboard, starting on the left
       (thumb-tl-place c thumb-post-tl)
       ;; (key-place c 0 cornerrow web-post-bl)
-      (if (not= :ginny (get c :configuration-inner-column))
+      (if (not= :innie (get c :configuration-inner-column))
         (key-place c 0 cornerrow web-post-bl)
         ())
       (thumb-tl-place c thumb-post-tr)
@@ -561,7 +555,7 @@
            (triangle-hulls    ; top two to the main keyboard, starting on the left
             (thumb-tl-place c thumb-post-tl)
             ;; (key-place c 0 cornerrow web-post-bl)
-            (if (not= :ginny (get c :configuration-inner-column))
+            (if (not= :innie (get c :configuration-inner-column))
               (key-place c 0 cornerrow web-post-bl)
               ())
             (thumb-tl-place c thumb-post-tr)
@@ -700,7 +694,7 @@
            (triangle-hulls    ; top two to the main keyboard, starting on the left
             (thumb-tl-place c thumb-post-tl)
             ;; (key-place c 0 cornerrow web-post-bl)
-            (if (not= :ginny (get c :configuration-inner-column))
+            (if (not= :innie (get c :configuration-inner-column))
               (key-place c 0 cornerrow web-post-bl)
               ())
             (thumb-tl-place c thumb-post-tr)
@@ -843,9 +837,9 @@
         lastcol           (flastcol ncols)
         inner             (get c :configuration-inner-column)
         init              (case inner
-                            :ergodox -1
+                            :outie -1
                             :normie 0
-                            :ginny 1)]
+                            :innie 1)]
     (union
      (for [x (range init ncols)]
        (key-wall-brace c x 0 0 1 web-post-tl x       0 0 1 web-post-tr))
@@ -858,17 +852,16 @@
         inner             (get c :configuration-inner-column)
         lastrow           (flastrow nrows)
         cornerrow         (fcornerrow nrows)
-        ;; use-inner-column? (get c :configuration-use-inner-column?)
         end               (case inner
-                            :ergodox cornerrow
+                            :outie cornerrow
                             lastrow)
         partial-place     (case inner
-                            :ergodox (partial inner-key-place c)
+                            :outie (partial inner-key-place c)
                             :normie (partial left-key-place c)
-                            :ginny (partial index-key-place c))
-        init              (case inner :ergodox -1 :normie 0 :ginny 1)]
+                            :innie (partial index-key-place c))
+        init              (case inner :outie -1 :normie 0 :innie 1)]
     (union
-     (for [y (range 0 end #_(if use-inner-column? cornerrow lastrow))]
+     (for [y (range 0 end)]
        (union
         (wall-brace (partial partial-place y 1) -1 0 web-post
                     (partial partial-place y -1) -1 0 web-post)
@@ -876,7 +869,7 @@
               (key-place c init y web-post-bl)
               (partial-place y  1 web-post)
               (partial-place y -1 web-post))))
-     (for [y (range 1 (case inner :ergodox cornerrow lastrow))]
+     (for [y (range 1 (case inner :outie cornerrow lastrow))]
        (union
         (wall-brace (partial partial-place (dec y) -1) -1 0 web-post
                     (partial partial-place y        1) -1 0 web-post)
@@ -1060,22 +1053,21 @@
 
 (defn second-thumb-to-body [c]
   (let [thumb-count      (get c :configuration-thumb-count)
-        ;; use-inner-column? (get c :configuration-use-inner-column?)
         inner            (get c :configuration-inner-column)
         nrows            (get c :configuration-nrows)
         cornerrow        (fcornerrow nrows)
         middlerow        (fmiddlerow nrows)
         inner-placement  (case inner
-                           :ergodox (partial inner-key-place)
+                           :outie (partial inner-key-place)
                            :normie (partial left-key-place)
-                           :ginny (partial index-key-place))
+                           :innie (partial index-key-place))
         innerrow         (case inner
-                           :ergodox middlerow
+                           :outie middlerow
                            cornerrow)
         init             (case inner
-                           :ergodox -1
+                           :outie -1
                            :normie 0
-                           :ginny 1)
+                           :innie 1)
         body-gap-default (bottom-hull
                           (inner-placement c innerrow -1 (translate (wall-locate2 -1 0) web-post))
                           (inner-placement c innerrow -1 (translate (wall-locate3 -1 0) web-post))
@@ -1132,7 +1124,7 @@
       (key-place c init innerrow (translate (wall-locate1 -1 0) web-post-bl))
       (thumb-tl-place c thumb-post-tl))
      (case inner
-       :ergodox (triangle-hulls
+       :outie (triangle-hulls
                  (thumb-tl-place c thumb-post-tl)
                  (key-place c  0 cornerrow web-post-bl)
                  (key-place c -1 middlerow web-post-bl)
@@ -1164,16 +1156,16 @@
 
 (defn frj9-start [c]
   (let [x-position (case (get c :configuration-inner-column)
-                     :ergodox 0
+                     :outie 0
                      :normie 0.1
-                     :ginny 1)]
+                     :innie 1)]
     (map + [0 -3  0] (key-position c x-position 0 (map + (wall-locate3 0 1) [0 (/ mount-height  2) 0])))))
 
 (defn fusb-holder-position [c]
   (let [x-position (case (get c :configuration-inner-column)
-                     :ergodox 1
+                     :outie 1
                      :normie 1
-                     :ginny 1.6)]
+                     :innie 1.6)]
     (key-position c x-position 0 (map + (wall-locate2 0 1) [0 (/ mount-height 2) 0]))))
 
 (defn trrs-usb-holder-ref [c]
@@ -1313,21 +1305,29 @@
   (translate (map + (external-holder-position c) [-1.5 (* -1 wall-thickness) 3]) external-holder-cube))
 
 (defn screw-placement [c bottom-radius top-radius height]
-  (let [use-wide-pinky?   (get c :configuration-use-wide-pinky?)
-        use-inner-column? (get c :configuration-use-inner-column?)
-        lastcol           (flastcol (get c :configuration-ncols))
-        lastrow           (flastrow (get c :configuration-nrows))
-        lastloc           (if-not use-wide-pinky? (+ lastcol 0.1) (+ lastcol 0.5))
-        thumb-count       (get c :configuration-thumb-count)
-        is-five?          (= thumb-count :five)
-        var-middle-last   (if is-five? -0 0.2)
-        y-middle-last     (+ lastrow var-middle-last)
-        x-middle-last     (if is-five? 1.6 2)]
-    (union (screw-insert c (if use-inner-column? -1   0) 0               bottom-radius top-radius height)
-           (screw-insert c (if use-inner-column? -1.5 0) (- lastrow 0.8) bottom-radius top-radius height)
-           (screw-insert c x-middle-last                 y-middle-last   bottom-radius top-radius height)
-           (screw-insert c 3                             0               bottom-radius top-radius height)
-           (screw-insert c lastloc                       1               bottom-radius top-radius height))))
+  (let [use-wide-pinky? (get c :configuration-use-wide-pinky?)
+        inner           (get c :configuration-inner-column)
+        first-screw-x   (case inner
+                          :innie 1
+                          :normie 0
+                          :outie -1)
+        second-screw-x  (case inner
+                          :innie 1.5
+                          :normie 0
+                          :outie -1.5)
+        lastcol         (flastcol (get c :configuration-ncols))
+        lastrow         (flastrow (get c :configuration-nrows))
+        lastloc         (if-not use-wide-pinky? (+ lastcol 0.1) (+ lastcol 0.5))
+        thumb-count     (get c :configuration-thumb-count)
+        is-five?        (= thumb-count :five)
+        var-middle-last (if is-five? -0 0.2)
+        y-middle-last   (+ lastrow var-middle-last)
+        x-middle-last   (if is-five? 1.6 2)]
+    (union (screw-insert c first-screw-x  0               bottom-radius top-radius height)
+           (screw-insert c second-screw-x (- lastrow 0.8) bottom-radius top-radius height)
+           (screw-insert c x-middle-last  y-middle-last   bottom-radius top-radius height)
+           (screw-insert c 3              0               bottom-radius top-radius height)
+           (screw-insert c lastloc        1               bottom-radius top-radius height))))
 
 (def wire-post-height 7)
 (def wire-post-overhang 3.5)
@@ -1354,8 +1354,7 @@
       (key-place c column row (translate [5 0 0]  (wire-post c  1 0)))))))
 
 (defn model-right [c]
-  (let [use-inner-column?          (get c :configuration-use-inner-column?)
-        show-caps?                 (get c :configuration-show-caps?)
+  (let [show-caps?                 (get c :configuration-show-caps?)
         use-external-holder?       (get c :configuration-use-external-holder?)
         use-promicro-usb-hole?     (get c :configuration-use-promicro-usb-hole?)
         use-screw-inserts?         (get c :configuration-use-screw-inserts?)
@@ -1370,7 +1369,6 @@
          (if use-wire-post? (wire-posts c) ())
          (if-not use-trrs? (rj9-holder frj9-start c) ()))
         ())
-      (if use-inner-column? (inner-key-holes c) ())
       (key-holes c)
       (thumb c)
       (connectors c)
@@ -1421,20 +1419,20 @@
 (defn plate-left [c]
   (mirror [-1 0 0] (plate-right c)))
 
-(def c {:configuration-nrows                  2
+(def c {:configuration-nrows                  4
         :configuration-ncols                  5
-        :configuration-thumb-count            :six
+        :configuration-thumb-count            :two
         :configuration-last-row-count         :zero
         :configuration-switch-type            :box
-        :configuration-inner-column           :ginny
+        :configuration-inner-column           :normie
         :configuration-hide-last-pinky?       false
 
         :configuration-alpha                  (/ pi 10)
         :configuration-pinky-alpha            (/ pi 10)
         :configuration-beta                   (/ pi 26)
         :configuration-centercol              4
-        :configuration-tenting-angle          (/ pi 12)
-        :configuration-rotate-x-angle         (/ pi -36)
+        :configuration-tenting-angle          (/ pi 8)
+        :configuration-rotate-x-angle         (/ pi 180)
 
         :configuration-use-promicro-usb-hole? false
         :configuration-use-trrs?              false

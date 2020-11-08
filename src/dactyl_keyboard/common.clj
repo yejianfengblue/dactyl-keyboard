@@ -78,7 +78,11 @@
    starts the row from the higher row (F row -> num row -> top row)
    and the homerow is number 3 from the last after thumb and bottom row."
   [nrows]
-  (- nrows 3))
+  (let [subtractor (case nrows
+                     3 2.5
+                     2 2
+                     3)]
+    (- nrows subtractor)))
 
 (defn flastrow
   "Determines where the last row should be located at."

@@ -295,8 +295,7 @@
   (let [x-offset (get c :configuration-thumb-offset-x)
         y-offset (get c :configuration-thumb-offset-y)
         z-offset (get c :configuration-thumb-offset-z)]
-    [x-offset y-offset z-offset ]))
- 
+    [x-offset y-offset z-offset]))
 
 ; this is where the original position of the thumb switches defined.
 ; each and every thumb keys is derived from this value.
@@ -307,64 +306,74 @@
     (map + (key-position c 1 cornerrow [(/ mount-width 2) (- (/ mount-height 2)) 0])
          (thumb-offsets c))))
 
-(defn thumb-tr-place [c shape]
-  (let [thumb-count (get c :configuration-thumb-count)
-        x-rotation  (if (= thumb-count :five) 14 10)
-        y-rotation  (if (= thumb-count :five) -15 -23)
-        z-rotation  (if (= thumb-count :five) 10 10)
-        movement    (if (= thumb-count :five) [-15 -10 5] [-12 -16 3])]
-    (->> shape
-         (rotate (deg2rad x-rotation) [1 0 0])
-         (rotate (deg2rad y-rotation) [0 1 0])
-         (rotate (deg2rad z-rotation) [0 0 1])
-         (translate (thumborigin c))
-         (translate movement))))
+; TODO include tenting in x and z?
+(defn thumb-tenting [c]
+  (let [y-tenting (get c :configuration-thumb-tenting-y)]
+  y-tenting))
+
+(defn thumb-key-height
+  "It computes the height of the thumb key. TODO: mount-width is just an approximation, the correct value needs to be determined"
+  [angle mult]
+    (* mult (* mount-width (Math/sin angle))))
 
 (defn thumb-tl-place [c shape]
   (let [thumb-count (get c :configuration-thumb-count)
         x-rotation  (if (= thumb-count :five) 10 10)
-        y-rotation  (if (= thumb-count :five) -23 -23)
         z-rotation  (case thumb-count :three 20 :five 25 10)
-        movement    (case thumb-count :five [-35 -16 -2] [-35 -15 -2])]
+        movement    (case thumb-count :five [-35 -16 0] [-35 -15 0])]
     (->> shape
          (rotate (deg2rad x-rotation) [1 0 0])
-         (rotate (deg2rad y-rotation) [0 1 0])
+         (rotate (thumb-tenting c) [0 1 0])
          (rotate (deg2rad z-rotation) [0 0 1])
          (translate (thumborigin c))
          (translate movement))))
 
-(defn thumb-mr-place [c shape]
+(defn thumb-tr-place [c shape]
   (let [thumb-count (get c :configuration-thumb-count)
-        x-rotation  (if (= thumb-count :five) 10 -6)
-        y-rotation  (if (= thumb-count :five) -23 -34)
-        z-rotation  (if (= thumb-count :five) 25 48)
-        movement    (if (= thumb-count :five) [-23 -34 -6] [-29 -41 -13])]
+        x-rotation  (if (= thumb-count :five) 14 10)
+        z-rotation  (if (= thumb-count :five) 10 10)
+        z-offset (thumb-key-height (thumb-tenting c) -1)
+        movement    (if (= thumb-count :five) [-15 -10 z-offset] [-12 -16 z-offset])]
     (->> shape
          (rotate (deg2rad x-rotation) [1 0 0])
-         (rotate (deg2rad y-rotation) [0 1 0])
+         (rotate (thumb-tenting c) [0 1 0])
          (rotate (deg2rad z-rotation) [0 0 1])
          (translate (thumborigin c))
          (translate movement))))
 
 (defn thumb-ml-place [c shape]
   (let [thumb-count (get c :configuration-thumb-count)
-        movement    (if (= thumb-count :three) [-53 -26 -12] [-52 -26 -12])]
+        z-offset (thumb-key-height (thumb-tenting c) 1)
+        movement    (if (= thumb-count :three) [-53 -26 z-offset] [-52 -26 z-offset])]
     (->> shape
          (rotate (deg2rad   6) [1 0 0])
-         (rotate (deg2rad -34) [0 1 0])
+         (rotate (thumb-tenting c) [0 1 0])
          (rotate (deg2rad  40) [0 0 1])
+         (translate (thumborigin c))
+         (translate movement))))
+
+(defn thumb-mr-place [c shape]
+  (let [thumb-count (get c :configuration-thumb-count)
+        x-rotation  (if (= thumb-count :five) 10 -6)
+        z-rotation  (if (= thumb-count :five) 25 48)
+        z-offset (thumb-key-height (thumb-tenting c) 1)
+        movement    (if (= thumb-count :five) [-23 -34 z-offset] [-29 -41 z-offset])]
+    (->> shape
+         (rotate (deg2rad x-rotation) [1 0 0])
+         (rotate (thumb-tenting c) [0 1 0])
+         (rotate (deg2rad z-rotation) [0 0 1])
          (translate (thumborigin c))
          (translate movement))))
 
 (defn thumb-br-place [c shape]
   (let [thumb-count (get c :configuration-thumb-count)
         x-rotation  (if (= thumb-count :five) 6 -16)
-        y-rotation  (if (= thumb-count :five) -34 -33)
         z-rotation  (if (= thumb-count :five) 35 54)
-        movement    (if (= thumb-count :five) [-39 -43 -16] [-37.8 -55.3 -25.3])]
+        z-offset (thumb-key-height (thumb-tenting c) 2)
+        movement    (if (= thumb-count :five) [-39 -43 z-offset] [-37.8 -55.3 z-offset])]
     (->> shape
          (rotate (deg2rad x-rotation) [1 0 0])
-         (rotate (deg2rad y-rotation) [0 1 0])
+         (rotate (thumb-tenting c) [0 1 0])
          (rotate (deg2rad z-rotation) [0 0 1])
          (translate (thumborigin c))
          (translate movement))))
@@ -374,10 +383,11 @@
         x-rotation  (if (= thumb-count :five) 6 -4)
         y-rotation  (if (= thumb-count :five) -32 -35)
         z-rotation  (if (= thumb-count :five) 35 52)
-        movement    (if (= thumb-count :five) [-51 -25 -11.5] [-56.3 -43.3 -23.5])]
+        z-offset (thumb-key-height (thumb-tenting c) 2)
+        movement    (if (= thumb-count :five) [-51 -25 z-offset] [-56.3 -43.3 z-offset])]
     (->> shape
          (rotate (deg2rad x-rotation) [1 0 0])
-         (rotate (deg2rad y-rotation) [0 1 0])
+         (rotate (thumb-tenting c) [0 1 0])
          (rotate (deg2rad z-rotation) [0 0 1])
          (translate (thumborigin c))
          (translate movement))))

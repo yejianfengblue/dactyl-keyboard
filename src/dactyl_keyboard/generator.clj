@@ -32,6 +32,7 @@
                  :trrs      (get confs :configuration-use-trrs?)
                  :micro-usb (get confs :configuration-use-promicro-usb-hole?)}
      :form      {:hotswap          (get confs :configuration-use-hotswap?)
+                 :thumb-tenting-y  (get confs :configuration-thumb-tenting-y)
                  :thumb-offset-x   (get confs :configuration-thumb-offset-x)
                  :thumb-offset-y   (get confs :configuration-thumb-offset-y)
                  :thumb-offset-z   (get confs :configuration-thumb-offset-z)

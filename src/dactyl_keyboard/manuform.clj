@@ -11,27 +11,27 @@
 ;(def keyboard-z-offset 4)
 
 
-;; Settings for column-style == :fixed 
-;; The defaults roughly match Maltron settings
-;;   http://patentimages.storage.googleapis.com/EP0219944A2/imgf0002.png
-;; Fixed-z overrides the z portion of the column ofsets above.
-;; NOTE: THIS DOESN'T WORK QUITE LIKE I'D HOPED.
+;; settings for column-style == :fixed 
+;; the defaults roughly match maltron settings
+;;   http://patentimages.storage.googleapis.com/ep0219944a2/imgf0002.png
+;; fixed-z overrides the z portion of the column ofsets above.
+;; note: this doesn't work quite like i'd hoped.
 (def fixed-angles [(deg2rad 10) (deg2rad 10) 0 0 0 (deg2rad -15) (deg2rad -15)])
 (def fixed-x [-41.5 -22.5 0 20.3 41.4 65.5 89.6])  ; relative to the middle finger
 (def fixed-z [12.1    8.3 0  5   10.7 14.5 17.5])
 (def fixed-tenting (deg2rad 0))
 
 ;;;;;;;;;;;;;;;;;;;;;;;
-;; General variables ;;
+;; general variables ;;
 ;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Placement Functions ;;
+;; placement functions ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; an array of columns from 0 to number of columns.
 (defn columns
-  "It creates an array for column placement. Where 0 being inner index
+  "it creates an array for column placement. where 0 being inner index
    finger's column, 1 being index finger's column, 2 middle finger's, and so on."
   [inner ncols]
   (let [init (case inner
@@ -41,17 +41,17 @@
     (range init ncols)))
 
 (defn inner-columns
-  "It creates an array for column placement. Where -1 being inner-inner index
+  "it creates an array for column placement. where -1 being inner-inner index
    finger's column, 1 being index finger's column, 2 middle finger's, and so on."
   [ncols]
   (range -1 ncols))
 (defn rows
-  "It creates an array for row placement. Where 0 being top-most row, 1 second
+  "it creates an array for row placement. where 0 being top-most row, 1 second
    top-most row, and so on."
   [nrows]
   (range 0 nrows))
 (defn inner-rows
-  "It creates an array for row placement for the inner-most column. Where 0 being
+  "it creates an array for row placement for the inner-most column. where 0 being
    top-most row, 1 second top-most row, and so on."
   [nrows]
   (range 0 (fcornerrow nrows)))
@@ -69,7 +69,7 @@
 
 
 (defn key-place
-  "Puts the keys' shape to its place based on it's column and row."
+  "puts the keys' shape to its place based on it's column and row."
   [c column row shape]
   (apply-key-geometry c
                       translate
@@ -77,7 +77,7 @@
                       (fn [angle obj] (rotate angle [0 1 0] obj))
                       column row shape))
 (defn key-holes
-  "Determines which keys should be generated based on the configuration."
+  "determines which keys should be generated based on the configuration."
   [c]
   (let [inner               (get c :configuration-inner-column)
         ncols               (get c :configuration-ncols)
@@ -105,15 +105,15 @@
                  :when  (hide-pinky column row)
                  :when  (case inner
                           :outie (not (and (= column -1)
-                                             (<= cornerrow row)))
+                                           (<= cornerrow row)))
                           true)]
              (->> (single-plate c)
                   (color [1 1 0])
                   (key-place c column row))))))
 
 (defn key-inner-place
-  "It generates the placement of the inner column.
-   TODO: genericisise it."
+  "it generates the placement of the inner column.
+   todo: genericisise it."
   [c column row shape]
   (apply-key-geometry c
                       translate
@@ -154,9 +154,9 @@
                              (not= row lastrow))
                     :full (or (not (.contains [0 1] column)) (not= row lastrow)))
            :when  (case inner
-                   :outie (not (and (= column -1)
-                                      (<= cornerrow row)))
-                   true)
+                    :outie (not (and (= column -1)
+                                     (<= cornerrow row)))
+                    true)
            :when  (hide-pinky column row)]
        (->> (sa-cap (if (and use-wide-pinky?
                              (= column lastcol)
@@ -166,7 +166,7 @@
             (key-place c column row))))))
 
 ;;;;;;;;;;;;;;;;;;;;
-;; Web Connectors ;;
+;; web connectors ;;
 ;;;;;;;;;;;;;;;;;;;;
 
 (defn wide-post-tr [use-wide-pinky?]
@@ -187,7 +187,7 @@
     web-post-br))
 
 (defn connectors
-  "It creates the wall which connects to each keys in the main body based
+  "it creates the wall which connects to each keys in the main body based
    on the configuration provided."
   [c]
   (let [inner               (get c :configuration-inner-column)
@@ -220,7 +220,7 @@
                         (key-place c lastcol lastrow web-post-bl))
         ())
       (concat
-      ;; Row connections
+      ;; row connections
        (for [column (range init (dec ncols))
              row    (range 0 (inc lastrow))
              :when  (case last-row-count
@@ -240,7 +240,7 @@
             (key-place c column row web-post-br)
             ())))
 
-      ;; Column connections
+      ;; column connections
        (for [column (columns inner ncols)
              row    (range 0 lastrow)
              :when  (case last-row-count
@@ -257,7 +257,7 @@
             (key-place c column (inc row) web-post-tl)
             ())))
 
-      ;; Diagonal connections
+      ;; diagonal connections
        (for [column (range init (dec ncols))
              row    (range 0 lastrow)
              :when  (case last-row-count
@@ -282,7 +282,7 @@
        ()))))
 
 ;;;;;;;;;;;;
-;; Thumbs ;;
+;; thumbs ;;
 ;;;;;;;;;;;;
 
 ; it dictates the location of the thumb cluster.
@@ -306,89 +306,110 @@
     (map + (key-position c 1 cornerrow [(/ mount-width 2) (- (/ mount-height 2)) 0])
          (thumb-offsets c))))
 
-; TODO include tenting in x and z?
-(defn thumb-tenting [c]
+; todo include tenting in x and z?
+(defn thumb-tenting-y [c]
   (let [y-tenting (get c :configuration-thumb-tenting-y)]
-  y-tenting))
+    y-tenting))
 
 (defn thumb-key-height
-  "It computes the height of the thumb key. TODO: mount-width is just an approximation, the correct value needs to be determined"
+  "it computes the height of the thumb key.
+   todo: mount-width is just an approximation, the correct value needs to be determined"
   [angle mult]
-    (* mult (* mount-width (Math/sin angle))))
+  (* mult (* mount-width (Math/sin angle))))
+
+(defn thumb-tenting [c default-val custom-rotation]
+  (let [custom-tenting? (get c :configuration-custom-thumb-tenting?)
+        custom-degree (get-in c [custom-rotation])]
+    (if custom-tenting? custom-degree (deg2rad default-val))))
 
 (defn thumb-tl-place [c shape]
-  (let [thumb-count (get c :configuration-thumb-count)
-        x-rotation  (if (= thumb-count :five) 10 10)
-        z-rotation  (case thumb-count :three 20 :five 25 10)
-        movement    (case thumb-count :five [-35 -16 0] [-35 -15 0])]
+  (let [thumb-count     (get c :configuration-thumb-count)
+        x-rotation      (thumb-tenting c 10 :configuration-custom-thumb-tenting-x)
+        y-rotation      (thumb-tenting c -23 :configuration-custom-thumb-tenting-y)
+        z-rotation      (thumb-tenting c (case thumb-count :three 20 :five 25 10) :configuration-custom-thumb-tenting-z)
+        custom-tenting? (get c :configuration-custom-thumb-tenting?)
+        z-movement      (if custom-tenting? 0 -2)
+        movement        (case thumb-count :five [-35 -16 z-movement] [-35 -15 z-movement])]
     (->> shape
-         (rotate (deg2rad x-rotation) [1 0 0])
-         (rotate (thumb-tenting c) [0 1 0])
-         (rotate (deg2rad z-rotation) [0 0 1])
-         (translate (thumborigin c))
-         (translate movement))))
+      (rotate x-rotation [1 0 0])
+      (rotate y-rotation [0 1 0])
+      (rotate z-rotation [0 0 1])
+      (translate (thumborigin c))
+      (translate movement))))
 
 (defn thumb-tr-place [c shape]
   (let [thumb-count (get c :configuration-thumb-count)
-        x-rotation  (if (= thumb-count :five) 14 10)
-        z-rotation  (if (= thumb-count :five) 10 10)
-        z-offset (thumb-key-height (thumb-tenting c) -1)
-        movement    (if (= thumb-count :five) [-15 -10 z-offset] [-12 -16 z-offset])]
+        x-rotation (thumb-tenting c (if (= thumb-count :five) 14 10) :configuration-custom-thumb-tenting-x)
+        y-rotation (thumb-tenting c (if (= thumb-count :five) -15 -23) :configuration-custom-thumb-tenting-y)
+        z-rotation (thumb-tenting c 10 :configuration-custom-thumb-tenting-z)
+        ;; z-offset (thumb-key-height (thumb-tenting c) -1)
+        ;; movement    (if (= thumb-count :five) [-15 -10 z-offset] [-12 -16 z-offset])]
+        movement    (if (= thumb-count :five) [-15 -10 5] [-12 -16 3])]
     (->> shape
-         (rotate (deg2rad x-rotation) [1 0 0])
-         (rotate (thumb-tenting c) [0 1 0])
-         (rotate (deg2rad z-rotation) [0 0 1])
+         (rotate x-rotation [1 0 0])
+         (rotate y-rotation [0 1 0])
+         (rotate z-rotation [0 0 1])
          (translate (thumborigin c))
          (translate movement))))
 
 (defn thumb-ml-place [c shape]
   (let [thumb-count (get c :configuration-thumb-count)
-        z-offset (thumb-key-height (thumb-tenting c) 1)
-        movement    (if (= thumb-count :three) [-53 -26 z-offset] [-52 -26 z-offset])]
+        x-rotation (thumb-tenting c 6 :configuration-custom-thumb-tenting-x)
+        y-rotation (thumb-tenting c -34 :configuration-custom-thumb-tenting-y)
+        z-rotation (thumb-tenting c 40 :configuration-custom-thumb-tenting-z)
+        ;; z-offset    (thumb-key-height (thumb-tenting c) 1)
+        ;; movement    (if (= thumb-count :three) [-53 -26 z-offset] [-52 -26 z-offset])]
+        movement    (if (= thumb-count :three) [-53 -26 -12] [-52 -26 -12])]
     (->> shape
-         (rotate (deg2rad   6) [1 0 0])
-         (rotate (thumb-tenting c) [0 1 0])
-         (rotate (deg2rad  40) [0 0 1])
+         (rotate x-rotation [1 0 0])
+         (rotate y-rotation [0 1 0])
+         (rotate z-rotation [0 0 1])
          (translate (thumborigin c))
          (translate movement))))
 
 (defn thumb-mr-place [c shape]
   (let [thumb-count (get c :configuration-thumb-count)
-        x-rotation  (if (= thumb-count :five) 10 -6)
-        z-rotation  (if (= thumb-count :five) 25 48)
-        z-offset (thumb-key-height (thumb-tenting c) 1)
-        movement    (if (= thumb-count :five) [-23 -34 z-offset] [-29 -41 z-offset])]
+        x-rotation (thumb-tenting c (if (= thumb-count :five) 10 -6) :configuration-custom-thumb-tenting-x)
+        y-rotation (thumb-tenting c (if (= thumb-count :five) -23 -34) :configuration-custom-thumb-tenting-y)
+        z-rotation (thumb-tenting c (if (= thumb-count :five) 25 48) :configuration-custom-thumb-tenting-z)
+        ;; z-offset (thumb-key-height (thumb-tenting c) 1)
+        ;; movement    (if (= thumb-count :five) [-23 -34 z-offset] [-29 -41 z-offset])]
+        movement    (if (= thumb-count :five) [-23 -34 -6] [-29 -41 -13])]
     (->> shape
-         (rotate (deg2rad x-rotation) [1 0 0])
-         (rotate (thumb-tenting c) [0 1 0])
-         (rotate (deg2rad z-rotation) [0 0 1])
-         (translate (thumborigin c))
-         (translate movement))))
-
-(defn thumb-br-place [c shape]
-  (let [thumb-count (get c :configuration-thumb-count)
-        x-rotation  (if (= thumb-count :five) 6 -16)
-        z-rotation  (if (= thumb-count :five) 35 54)
-        z-offset (thumb-key-height (thumb-tenting c) 2)
-        movement    (if (= thumb-count :five) [-39 -43 z-offset] [-37.8 -55.3 z-offset])]
-    (->> shape
-         (rotate (deg2rad x-rotation) [1 0 0])
-         (rotate (thumb-tenting c) [0 1 0])
-         (rotate (deg2rad z-rotation) [0 0 1])
+         (rotate x-rotation [1 0 0])
+         (rotate y-rotation [0 1 0])
+         (rotate z-rotation [0 0 1])
          (translate (thumborigin c))
          (translate movement))))
 
 (defn thumb-bl-place [c shape]
   (let [thumb-count (get c :configuration-thumb-count)
-        x-rotation  (if (= thumb-count :five) 6 -4)
-        y-rotation  (if (= thumb-count :five) -32 -35)
-        z-rotation  (if (= thumb-count :five) 35 52)
-        z-offset (thumb-key-height (thumb-tenting c) 2)
-        movement    (if (= thumb-count :five) [-51 -25 z-offset] [-56.3 -43.3 z-offset])]
+        x-rotation (thumb-tenting c (if (= thumb-count :five) 6 -4) :configuration-custom-thumb-tenting-x)
+        y-rotation (thumb-tenting c (if (= thumb-count :five) -32 -35) :configuration-custom-thumb-tenting-y)
+        z-rotation (thumb-tenting c (if (= thumb-count :five) 35 52) :configuration-custom-thumb-tenting-z)
+        ;; z-offset (thumb-key-height (thumb-tenting c) 2)
+        movement    (if (= thumb-count :five) [-51 -25 -11.5] [-56.3 -43.3 -23.5])]
     (->> shape
-         (rotate (deg2rad x-rotation) [1 0 0])
-         (rotate (thumb-tenting c) [0 1 0])
-         (rotate (deg2rad z-rotation) [0 0 1])
+         (rotate x-rotation [1 0 0])
+        ;;  (rotate (thumb-tenting c) [0 1 0])
+         (rotate y-rotation [0 1 0])
+         (rotate z-rotation [0 0 1])
+         (translate (thumborigin c))
+         (translate movement))))
+
+(defn thumb-br-place [c shape]
+  (let [thumb-count (get c :configuration-thumb-count)
+        x-rotation (thumb-tenting c (if (= thumb-count :five) 6 -16) :configuration-custom-thumb-tenting-x)
+        y-rotation (thumb-tenting c (if (= thumb-count :five) -34 -33) :configuration-custom-thumb-tenting-y)
+        z-rotation (thumb-tenting c (if (= thumb-count :five) 35 54) :configuration-custom-thumb-tenting-z)
+        ;; z-offset (thumb-key-height (thumb-tenting c) 2)
+        movement    (if (= thumb-count :five) [-39 -43 -16] [-37.8 -55.3 -25.3])]
+        ;; movement    (if (= thumb-count :five) [-39 -43 z-offset] [-37.8 -55.3 z-offset])]
+    (->> shape
+         (rotate x-rotation [1 0 0])
+        ;;  (rotate (thumb-tenting c) [0 1 0])
+         (rotate y-rotation [0 1 0])
+         (rotate z-rotation [0 0 1])
          (translate (thumborigin c))
          (translate movement))))
 
@@ -1135,10 +1156,10 @@
       (thumb-tl-place c thumb-post-tl))
      (case inner
        :outie (triangle-hulls
-                 (thumb-tl-place c thumb-post-tl)
-                 (key-place c  0 cornerrow web-post-bl)
-                 (key-place c -1 middlerow web-post-bl)
-                 (key-place c -1 cornerrow web-post-tr))
+               (thumb-tl-place c thumb-post-tl)
+               (key-place c  0 cornerrow web-post-bl)
+               (key-place c -1 middlerow web-post-bl)
+               (key-place c -1 cornerrow web-post-tr))
        ())
      (case thumb-count
        :two ()
@@ -1441,7 +1462,7 @@
         :configuration-pinky-alpha            (/ pi 10)
         :configuration-beta                   (/ pi 26)
         :configuration-centercol              4
-        :configuration-tenting-angle          (/ pi 8)
+        :configuration-tenting-angle          (/ pi 12)
         :configuration-rotate-x-angle         (/ pi 180)
 
         :configuration-use-promicro-usb-hole? false
@@ -1452,6 +1473,10 @@
         :configuration-thumb-offset-x         6
         :configuration-thumb-offset-y         -3
         :configuration-thumb-offset-z         7
+        :configuration-custom-thumb-tenting?  false
+        :configuration-custom-thumb-tenting-x (/ pi 0.5)
+        :configuration-custom-thumb-tenting-y (/ pi 0.5)
+        :configuration-custom-thumb-tenting-z (/ pi 0.5)
         :configuration-stagger?               true
         :configuration-stagger-index          [0 0 0]
         :configuration-stagger-middle         [0 2.8 -6.5]
@@ -1465,8 +1490,8 @@
         :configuration-show-caps?             false
         :configuration-plate-projection?      false})
 
-#_(spit "things/right.scad"
-        (write-scad (model-right c)))
+(spit "things/right.scad"
+      (write-scad (model-right c)))
 
 #_(spit "things/right-plate.scad"
         (write-scad (plate-right c)))

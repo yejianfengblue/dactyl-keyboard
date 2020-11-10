@@ -44,12 +44,7 @@
       If you have downloaded JSON config from this site in the past, you might
       want to try to open it here again:
     </p>
-    <input
-      type="file"
-      name="jsonloader"
-      id="jsonloader"
-      onchange="shove_json()"
-    />
+    <input type="file" name="jsonloader" id="jsonloader" onchange="shove_json()" />
     <br />
     <br />
     <br />
@@ -63,23 +58,9 @@
       </label>
       <fieldset name="keys" id="keys">
         <label for="keys.columns">Number of columns (4 - 7)</label>
-        <input
-          type="number"
-          name="keys.columns"
-          id="keys.columns"
-          value="5"
-          min="4"
-          max="9"
-        />
+        <input type="number" name="keys.columns" id="keys.columns" value="5" min="4" max="9" />
         <label for="keys.rows">Number of rows (3 - 6)</label>
-        <input
-          type="number"
-          name="keys.rows"
-          id="keys.rows"
-          value="4"
-          min="3"
-          max="7"
-        />
+        <input type="number" name="keys.rows" id="keys.rows" value="4" min="3" max="7" />
         <label for="keys.thumb-count">Thumb Key Count</label>
         <select id="keys.thumb-count" name="keys.thumb-count">
           <option value="six">6 (Default)</option>
@@ -107,9 +88,7 @@
           <option value="ergodox">Use inner column (like ergodox)</option>
           <option value="innie">Without</option>
         </select>
-        <label for="keys.hide-last-pinky"
-          >Hide Bottom Pinky? (see Kinesis Advantage's Layout)</label
-        >
+        <label for="keys.hide-last-pinky">Hide Bottom Pinky? (see Kinesis Advantage's Layout)</label>
         <select id="keys.hide-last-pinky" name="keys.hide-last-pinky">
           <option value="false">No</option>
           <option value="true">Yes</option>
@@ -138,9 +117,7 @@
           <option value="{{rc}}">pi/{{rc}}</option>
           {% endfor %}
         </select>
-        <label for="curve.centecol"
-          >Center of the curvature for the column</label
-        >
+        <label for="curve.centecol">Center of the curvature for the column</label>
         <select id="curve.centercol" name="curve.centercol">
           <option value="4">Pinky finger's column</option>
           <option value="3">Ring finger's column</option>
@@ -165,14 +142,8 @@
         <h3>Connectors</h3>
       </label>
       <fieldset name="connector" id="connector">
-        <label for="connector.external"
-          >Use loligagger's external holder ?</label
-        >
-        <select
-          id="connector.external"
-          name="connector.external"
-          onchange="toggle_connectors_fields()"
-        >
+        <label for="connector.external">Use loligagger's external holder ?</label>
+        <select id="connector.external" name="connector.external" onchange="toggle_connectors_fields()">
           <option value="false">No</option>
           <option value="true">Yes</option>
         </select>
@@ -191,166 +162,141 @@
         <h3>Form of the Case</h3>
       </label>
       <fieldset name="form" id="form">
-        <label for="form.hotswap"
-          >Dongguan Kaihua Electronics Co., Ltd (originally named Longhua
-          Electronics)'s Hotswap Socket?</label
-        >
+        <label for="form.hotswap">Dongguan Kaihua Electronics Co., Ltd (originally named Longhua
+          Electronics)'s Hotswap Socket?</label>
         <select id="form.hotswap" name="form.hotswap">
           <option value="false">No</option>
           <option value="true">Yes</option>
         </select>
-        <label for="form.thumb-offsets"
-          >Thumb cluster offsets</label
-        >
+        <label for="form.thumb-offsets">Thumb cluster offsets</label>
         <div class="row" id="form.thumb-offsets">
           <div class="column column-33">
             <label for="form.thumb-offset-x">X (toward the pinky)</label>
-            <input
-              type="number"
-              name="form.thumb-offset-x"
-              id="form.thumb-offset-x"
-              value="6"
-              step="0.1"
-            />
+            <input type="number" name="form.thumb-offset-x" id="form.thumb-offset-x" value="6" step="0.1" />
           </div>
           <div class="column column-33">
             <label for="form.thumb-offset-y">Y (toward the index)</label>
-            <input
-              type="number"
-              name="form.thumb-offset-y"
-              id="form.thumb-offset-y"
-              value="-3"
-              step="0.1"
-            />
+            <input type="number" name="form.thumb-offset-y" id="form.thumb-offset-y" value="-3" step="0.1" />
           </div>
           <div class="column column-33">
             <label for="form.thumb-offset-z">Z (altitude)</label>
-            <input
-              type="number"
-              name="form.thumb-offset-z"
-              id="form.thumb-offset-z"
-              value="7"
-              step="0.1"
-            />
+            <input type="number" name="form.thumb-offset-z" id="form.thumb-offset-z" value="7" step="0.1" />
           </div>
         </div>
-        <label for="form.thumb-tenting"
-          >Thumb cluster tenting</label
-        >
-        <div class="row" id="form.thumb-offsets">
+        <label for="form.custom-thumb-tenting">Custom thumb cluster tenting (don't use it)</label>
+        <select name="form.custom-thumb-tenting" id="form.custom-thumb-tenting" onchange="toggle_custom_thumb_fields()">
+          <option value="false">No</option>
+          <option value="true">Yes</option>
+        </select>
+        <div class="row">
+          <div class="column column-33">
+            <label for="form.thumb-tenting-x">X (index-pinky axis)</label>
+            <select id="form.thumb-tenting-x" name="form.thumb-tenting-x">
+              <option value="69">Default (without curvature)</option>
+              {% for ttx in thumb-tenting-x %}
+              <option value="-{{ttx}}">-pi/{{ttx}}</option>
+              {% endfor %}
+            </select>
+          </div>
           <div class="column column-33">
             <label for="form.thumb-tenting-y">Y (index-pinky axis)</label>
             <select id="form.thumb-tenting-y" name="form.thumb-tenting-y">
-              <option value="12">pi/12</option>
+              <option value="69">Default (without curvature)</option>
               {% for tty in thumb-tenting-y %}
               <option value="-{{tty}}">-pi/{{tty}}</option>
               {% endfor %}
             </select>
           </div>
+          <div class="column column-33">
+            <label for="form.thumb-tenting-z">Z (index-pinky axis)</label>
+            <select id="form.thumb-tenting-z" name="form.thumb-tenting-z">
+              <option value="69">Default (without curvature)</option>
+              {% for ttz in thumb-tenting-z %}
+              <option value="-{{ttz}}">-pi/{{ttz}}</option>
+              {% endfor %}
+            </select>
+          </div>
         </div>
+        <!--div class="row" id="custom-thumb-tenting" style="display: none">
+          {% for tloc in thumb-locations %}
+          <div class="row">
+            <div class="column column-33">
+              <label for="form.thumb-tenting-x">{{tloc}} X (index-pinky axis)</label>
+              <select id="form.thumb-tenting-x" name="form.thumb-tenting-{{tloc}}-x">
+                <option value="69">Default (without curvature)</option>
+                {% for ttx in thumb-tenting-x %}
+                <option value="-{{ttx}}">-pi/{{ttx}}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="column column-33">
+              <label for="form.thumb-tenting-y">{{tloc}} Y (index-pinky axis)</label>
+              <select id="form.thumb-tenting-y" name="form.thumb-tenting-{{tloc}}-y">
+                <option value="69">Default (without curvature)</option>
+                {% for tty in thumb-tenting-y %}
+                <option value="-{{tty}}">-pi/{{tty}}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="column column-33">
+              <label for="form.thumb-tenting-z">{{tloc}} Z (index-pinky axis)</label>
+              <select id="form.thumb-tenting-z" name="form.thumb-tenting-{{tloc}}-z">
+                <option value="69">Default (without curvature)</option>
+                {% for ttz in thumb-tenting-z %}
+                <option value="-{{ttz}}">-pi/{{ttz}}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          {% endfor %}
+        </div-->
         <label for="form.stagger">Stagger?</label>
         <select id="form.stagger" name="form.stagger">
           <option value="true">Yes</option>
           <option value="false">No</option>
         </select>
-        <label for="form.index-measurement"
-          >Index Finger Measurement (Only used if Stagger? set yes)</label
-        >
+        <label for="form.index-measurement">Index Finger Measurement (Only used if Stagger? set yes)</label>
         <div class="row" id="form.index-measurement">
           <div class="column column-50">
             <label for="form.stagger-index-y">Y</label>
-            <input
-              type="number"
-              name="form.stagger-index-y"
-              id="form.stagger-index-y"
-              value="0"
-              step="0.1"
-            />
+            <input type="number" name="form.stagger-index-y" id="form.stagger-index-y" value="0" step="0.1" />
           </div>
           <div class="column column-50">
             <label for="form.index-z">Z</label>
-            <input
-              type="number"
-              name="form.stagger-index-z"
-              id="form.stagger-index-z"
-              value="0"
-              step="0.1"
-            />
+            <input type="number" name="form.stagger-index-z" id="form.stagger-index-z" value="0" step="0.1" />
           </div>
         </div>
-        <label for="form.middle-measurement"
-          >Middle Finger Measurement (Only used if Stagger? set yes)</label
-        >
+        <label for="form.middle-measurement">Middle Finger Measurement (Only used if Stagger? set yes)</label>
         <div class="row" id="form.middle-measurement">
           <div class="column column-50">
             <label for="form.stagger-middle-y">Y</label>
-            <input
-              type="number"
-              name="form.stagger-middle-y"
-              id="form.stagger-middle-y"
-              value="2.8"
-              step="0.1"
-            />
+            <input type="number" name="form.stagger-middle-y" id="form.stagger-middle-y" value="2.8" step="0.1" />
           </div>
           <div class="column column-50">
             <label for="form.stagger-middle-z">Z</label>
-            <input
-              type="number"
-              name="form.stagger-middle-z"
-              id="form.stagger-middle-z"
-              value="-6.5"
-              step="0.1"
-            />
+            <input type="number" name="form.stagger-middle-z" id="form.stagger-middle-z" value="-6.5" step="0.1" />
           </div>
         </div>
-        <label for="form.ring-measurement"
-          >Ring Finger Measurement (Only used if Stagger? set yes)</label
-        >
+        <label for="form.ring-measurement">Ring Finger Measurement (Only used if Stagger? set yes)</label>
         <div class="row" id="form.ring-measurement">
           <div class="column column-50">
             <label for="form.stagger-ring-y">Y</label>
-            <input
-              type="number"
-              name="form.stagger-ring-y"
-              id="form.stagger-ring-y"
-              value="0"
-              step="0.1"
-            />
+            <input type="number" name="form.stagger-ring-y" id="form.stagger-ring-y" value="0" step="0.1" />
           </div>
           <div class="column column-50">
             <label for="form.stagger-ring-z">Z</label>
-            <input
-              type="number"
-              name="form.stagger-ring-z"
-              id="form.stagger-ring-z"
-              value="0"
-              step="0.1"
-            />
+            <input type="number" name="form.stagger-ring-z" id="form.stagger-ring-z" value="0" step="0.1" />
           </div>
         </div>
-        <label for="form.pinky-measurement"
-          >Pinky Finger Measurement (Only used if Stagger? set yes)</label
-        >
+        <label for="form.pinky-measurement">Pinky Finger Measurement (Only used if Stagger? set yes)</label>
         <div class="row" id="form.pinky-measurement">
           <div class="column column-50">
             <label for="form.stagger-pinky-y">Y</label>
-            <input
-              type="number"
-              name="form.stagger-pinky-y"
-              id="form.stagger-pinky-y"
-              value="-13"
-              step="0.1"
-            />
+            <input type="number" name="form.stagger-pinky-y" id="form.stagger-pinky-y" value="-13" step="0.1" />
           </div>
           <div class="column column-50">
             <label for="form.stagger-pinky-z">Z</label>
-            <input
-              type="number"
-              name="form.stagger-pinky-z"
-              id="form.stagger-pinky-z"
-              value="6"
-              step="0.1"
-            />
+            <input type="number" name="form.stagger-pinky-z" id="form.stagger-pinky-z" value="6" step="0.1" />
           </div>
         </div>
         <label for="form.wide-pinky">Wide Pinky?</label>
@@ -390,24 +336,9 @@
           <option value="false">Left</option>
         </select>
       </fieldset>
-      <input
-        class="button-primary"
-        type="submit"
-        name="generate-case"
-        value="Generate Case"
-      />
-      <input
-        class="button-primary"
-        type="submit"
-        name="generate-plate"
-        value="Generate Plate"
-      />
-      <input
-        class="button-primary"
-        type="submit"
-        name="generate-json"
-        value="Generate JSON"
-      />
+      <input class="button-primary" type="submit" name="generate-case" value="Generate Case" />
+      <input class="button-primary" type="submit" name="generate-plate" value="Generate Plate" />
+      <input class="button-primary" type="submit" name="generate-json" value="Generate JSON" />
     </form>
     <p>Loligagger's external holder files:</p>
     <ul>
@@ -424,9 +355,7 @@
     <p>BrownElvis' external holder files:</p>
     <ul>
       <li>
-        <a href="loligagger-external-holder-promicro-v3-extended.stl"
-          >Promicro V3</a
-        >
+        <a href="loligagger-external-holder-promicro-v3-extended.stl">Promicro V3</a>
       </li>
     </ul>
   </div>

@@ -33,9 +33,12 @@
 (defn manuform [_]
   (render-file "manuform.html" {:column-curvature       (range 4 22)
                                 :pinky-column-curvature (range 12 3 -1)
-                                :row-curvature         [180 120 90 60 45 30 15]
+                                :row-curvature          (range 36 17 -1)
                                 :tenting-angle          (range 15 3 -1)
+                                ;; :thumb-locations        ["tl" "tr" "ml" "mr" "bl" "br"]
+                                :thumb-tenting-x        (range 15 3 -1)
                                 :thumb-tenting-y        (range 15 3 -1)
+                                :thumb-tenting-z        (range 15 3 -1)
                                 :rotate-x               (range 36 -36 -1)
                                 :height-offset          (range 4 26 2)}))
 
@@ -66,7 +69,6 @@
                                       "alps" :alps
                                       "choc" :choc
                                       :box)
-        ;; param-inner-column          (parse-bool (get p "keys.inner-column"))
         param-inner-column          (case (get p "keys.inner-column")
                                       "innie" :innie
                                       "ergodox" :outie
@@ -90,7 +92,10 @@
         param-wide-pinky            (parse-bool (get p "form.wide-pinky"))
         param-wire-post             (parse-bool (get p "form.wire-post"))
         param-screw-inserts         (parse-bool (get p "form.screw-inserts"))
+        param-custom-thumb-tenting  (parse-bool (get p "form.custom-thumb-tenting"))
+        param-thumb-tenting-x       (parse-float (get p "form.thumb-tenting-x"))
         param-thumb-tenting-y       (parse-float (get p "form.thumb-tenting-y"))
+        param-thumb-tenting-z       (parse-float (get p "form.thumb-tenting-z"))
         param-thumb-offset-x        (parse-float (get p "form.thumb-offset-x"))
         param-thumb-offset-y        (parse-float (get p "form.thumb-offset-y"))
         param-thumb-offset-z        (parse-float (get p "form.thumb-offset-z"))
@@ -138,7 +143,10 @@
                                      :configuration-use-promicro-usb-hole? param-use-promicro-usb-hole
 
                                      :configuration-use-hotswap?           param-hotswap
-                                     :configuration-thumb-tenting-y        (if generate-json? param-thumb-tenting-y (/ pi param-thumb-tenting-y))
+                                     :configuration-custom-thumb-tenting?  param-custom-thumb-tenting
+                                     :configuration-custom-thumb-tenting-x (if generate-json? param-thumb-tenting-x (/ pi param-thumb-tenting-x))
+                                     :configuration-custom-thumb-tenting-y (if generate-json? param-thumb-tenting-y (/ pi param-thumb-tenting-y))
+                                     :configuration-custom-thumb-tenting-z (if generate-json? param-thumb-tenting-z (/ pi param-thumb-tenting-z))
                                      :configuration-thumb-offset-x         param-thumb-offset-x
                                      :configuration-thumb-offset-y         param-thumb-offset-y
                                      :configuration-thumb-offset-z         param-thumb-offset-z
@@ -300,7 +308,7 @@
                         :configuration-use-trrs?              (get connector :trrs false)
                         :configuration-use-promicro-usb-hole? (get connector :micro-usb false)
 
-                        :configuration-thumb-tenting-y        (/ pi (get form :thumb-tenting-y 8))
+                        :configuration-thumb-tenting-y        (/ pi (get form :thumb-tenting-y 69))
                         :configuration-thumb-offset-x         thumb-x
                         :configuration-thumb-offset-y         thumb-y
                         :configuration-thumb-offset-z         thumb-z

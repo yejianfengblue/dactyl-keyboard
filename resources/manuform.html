@@ -234,6 +234,20 @@
             />
           </div>
         </div>
+        <label for="form.thumb-tenting"
+          >Thumb cluster tenting</label
+        >
+        <div class="row" id="form.thumb-offsets">
+          <div class="column column-33">
+            <label for="form.thumb-tenting-y">Y (index-pinky axis)</label>
+            <select id="form.thumb-tenting-y" name="form.thumb-tenting-y">
+              <option value="12">pi/12</option>
+              {% for tty in thumb-tenting-y %}
+              <option value="-{{tty}}">-pi/{{tty}}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
         <label for="form.stagger">Stagger?</label>
         <select id="form.stagger" name="form.stagger">
           <option value="true">Yes</option>

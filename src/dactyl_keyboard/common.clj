@@ -232,7 +232,9 @@
         use-alps?           (case switch-type
                               :alps true
                               false) #_(get c :configuration-use-alps?)
-        use-choc?           (case switch-type :choc true false)
+        use-choc?           (case switch-type
+                              :choc true
+                              false)
         use-hotswap?        (get c :configuration-use-hotswap?)
         plate-projection?   (get c :configuration-plate-projection? false)
         fill-in             (translate [0 0 (/ plate-thickness 2)] (cube alps-width alps-height plate-thickness))
@@ -252,18 +254,18 @@
                                                (/ plate-thickness 2)])))
         left-wall           (case switch-type
                               :alps (union (->> (cube 2 (+ keyswitch-height 3) plate-thickness)
-                                          (translate [(+ (/ 2 2) (/ 15.6 2))
-                                                      0
-                                                      (/ plate-thickness 2)]))
-                                     (->> (cube 1.5 (+ keyswitch-height 3) 1.0)
-                                          (translate [(+ (/ 1.5 2) (/ alps-notch-width 2))
-                                                      0
-                                                      (- plate-thickness
-                                                         (/ alps-notch-height 2))])))
+                                                (translate [(+ (/ 2 2) (/ 15.6 2))
+                                                            0
+                                                            (/ plate-thickness 2)]))
+                                           (->> (cube 1.5 (+ keyswitch-height 3) 1.0)
+                                                (translate [(+ (/ 1.5 2) (/ alps-notch-width 2))
+                                                            0
+                                                            (- plate-thickness
+                                                               (/ alps-notch-height 2))])))
                               :choc (->> (cube holder-thickness (+ keyswitch-height 3.3) (* plate-thickness 0.65))
-                                   (translate [(+ (/ holder-thickness 2) (/ keyswitch-width 2))
-                                               0
-                                               (* plate-thickness 0.7)]))
+                                         (translate [(+ (/ holder-thickness 2) (/ keyswitch-width 2))
+                                                     0
+                                                     (* plate-thickness 0.7)]))
                               (->> (cube holder-thickness (+ keyswitch-height 3.3) plate-thickness)
                                    (translate [(+ (/ holder-thickness 2) (/ keyswitch-width 2))
                                                0
@@ -276,9 +278,15 @@
                                                         0
                                                         (/ plate-thickness 2)]))))
         ; the hole's wall.
-        plate-half          (union top-wall
-                                   left-wall
-                                   (if create-side-nub? (with-fn 100 side-nub) ()))
+        kailh-cutout (->> (cube (/ keyswitch-width 3) 1.6 (+ plate-thickness 1.8))
+                          (translate [0
+                                      (+ (/ 1.5 2) (+ (/ keyswitch-height 2)))
+                                      (/ plate-thickness)]))
+        plate-half          (case switch-type
+                              :kailh (union (difference top-wall kailh-cutout) left-wall)
+                              (union top-wall
+                                     left-wall
+                                     (if create-side-nub? (with-fn 100 side-nub))))
         ; the bottom of the hole.
         swap-holder-z-offset (if use-choc? 1.5 -1.5)
         swap-holder         (->> (cube (+ keyswitch-width 3) (/ (+ keyswitch-height 3) 2) 3)
@@ -496,4 +504,3 @@
                           (key-position c column row (map + (wall-locate2  1  0) [(/ mount-width 2) 0 0])))))]
     (->> (screw-insert-shape bottom-radius top-radius height)
          (translate [(first position) (second position) (/ height 2)]))))
-

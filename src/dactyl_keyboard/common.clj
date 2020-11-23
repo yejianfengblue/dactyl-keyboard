@@ -303,7 +303,7 @@
         friction-hole-right (translate [(if use-choc? 6 5) 0 0] friction-hole)
         friction-hole-left  (translate [(if use-choc? -6 -5) 0 0] friction-hole)
         hotswap-base-z-offset (if use-choc? 0.2 -2.6)
-        hotswap-base-shape  (->> (cube 19 6.2 3.5)
+        hotswap-base-shape  (->> (cube 19 (if use-choc? 11.5 8.2) 3.5)
                                  (translate [0 3 hotswap-base-z-offset]))
         hotswap-holder      (difference swap-holder
                                         main-axis-hole

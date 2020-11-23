@@ -1219,10 +1219,10 @@
 (defn trrs-usb-holder-holder [c]
   (translate (trrs-usb-holder-position c) (cube 19 12 4)))
 
-(defn trrs-usb-jack [c] (translate (map + (trrs-usb-holder-position c) [0 10 3]) (cube 8.1 20 3.1)))
+(defn trrs-usb-jack [c] (translate (map + (trrs-usb-holder-position c) [0 10 3]) (cube 8.1 40 3.1)))
 
 (def trrs-holder-size [6.2 10 2]) ; trrs jack PJ-320A
-(def trrs-holder-hole-size [6.2 10 6]) ; trrs jack PJ-320A
+(def trrs-holder-hole-size [6.2 11 6]) ; trrs jack PJ-320A
 (defn trrs-holder-position [c]
   (map + (trrs-usb-holder-position c) [-13.6 0 0]))
 (def trrs-holder-thickness 2)
@@ -1238,7 +1238,7 @@
 (defn trrs-holder-hole [c]
   (union
    (->>
-    (->> (binding [*fn* 30] (cylinder 2.55 20))) ; 5mm trrs jack
+    (->> (binding [*fn* 30] (cylinder 2.55 40))) ; 5mm trrs jack
     (rotate (deg2rad  90) [1 0 0])
     (translate [(first (trrs-holder-position c))
                 (+ (second (trrs-holder-position c))

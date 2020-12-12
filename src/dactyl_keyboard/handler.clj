@@ -68,6 +68,7 @@
                                       "mx" :mx
                                       "alps" :alps
                                       "choc" :choc
+                                      "kailh" :kailh
                                       :box)
         param-inner-column          (case (get p "keys.inner-column")
                                       "innie" :innie
@@ -194,6 +195,7 @@
                                     "mx" :mx
                                     "alps" :alps
                                     "choc" :choc
+                                    "kailh" :kailh
                                     :box)
         param-hide-last-pinky     (parse-bool (get p "keys.hide-last-pinky"))
         param-alpha               (parse-int (get p "curve.alpha"))

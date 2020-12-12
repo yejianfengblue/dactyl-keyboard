@@ -113,7 +113,8 @@
           {% endfor %}
         </select>
         <label for="curve.beta">Row's Curvature</label>
-        <select id="curve.beta" name="curve.beta" value="pi/15">
+        <select id="curve.beta" name="curve.beta" value="pi/36">
+          <option value="36">pi/36</option>
           {% for rc in row-curvature %}
           <option value="{{rc}}">pi/{{rc}}</option>
           {% endfor %}

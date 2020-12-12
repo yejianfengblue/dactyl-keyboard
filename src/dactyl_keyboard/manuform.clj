@@ -1450,17 +1450,17 @@
 (defn plate-left [c]
   (mirror [-1 0 0] (plate-right c)))
 
-(def c {:configuration-nrows                  4
-        :configuration-ncols                  5
-        :configuration-thumb-count            :two
-        :configuration-last-row-count         :zero
+(def c {:configuration-nrows                  5
+        :configuration-ncols                  6
+        :configuration-thumb-count            :six
+        :configuration-last-row-count         :two
         :configuration-switch-type            :box
         :configuration-inner-column           :normie
         :configuration-hide-last-pinky?       false
 
         :configuration-alpha                  (/ pi 10)
         :configuration-pinky-alpha            (/ pi 10)
-        :configuration-beta                   (/ pi 26)
+        :configuration-beta                   (/ pi 36)
         :configuration-centercol              4
         :configuration-tenting-angle          (/ pi 12)
         :configuration-rotate-x-angle         (/ pi 180)
@@ -1483,14 +1483,14 @@
         :configuration-stagger-ring           [0 0 0]
         :configuration-stagger-pinky          [0 -13 6]
         :configuration-use-wide-pinky?        false
-        :configuration-z-offset               4
+        :configuration-z-offset               8
         :configuration-use-wire-post?         false
         :configuration-use-screw-inserts?     false
 
         :configuration-show-caps?             false
         :configuration-plate-projection?      false})
 
-(spit "things/right.scad"
+#_(spit "things/right.scad"
       (write-scad (model-right c)))
 
 #_(spit "things/right-plate.scad"

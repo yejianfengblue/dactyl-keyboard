@@ -171,21 +171,42 @@
           <option value="true">Yes</option>
         </select>
         <label for="form.thumb-offsets">Thumb cluster offsets</label>
+        <label for="form.thumb-center-offsets">Center</label>
         <div class="row" id="form.thumb-offsets">
           <div class="column column-33">
-            <label for="form.thumb-offset-x">X (toward the pinky)</label>
-            <input type="number" name="form.thumb-offset-x" id="form.thumb-offset-x" value="6" step="0.1" />
+            <label for="form.thumb-cluster-offset-x">X (toward the pinky)</label>
+            <input type="number" name="form.thumb-cluster-offset-x" id="form.thumb-cluster-offset-x" value="6" step="0.1" />
           </div>
           <div class="column column-33">
-            <label for="form.thumb-offset-y">Y (toward the index)</label>
-            <input type="number" name="form.thumb-offset-y" id="form.thumb-offset-y" value="-3" step="0.1" />
+            <label for="form.thumb-cluster-offset-y">Y (toward the index)</label>
+            <input type="number" name="form.thumb-cluster-offset-y" id="form.thumb-cluster-offset-y" value="-3" step="0.1" />
           </div>
           <div class="column column-33">
-            <label for="form.thumb-offset-z">Z (altitude)</label>
-            <input type="number" name="form.thumb-offset-z" id="form.thumb-offset-z" value="7" step="0.1" />
+            <label for="form.thumb-cluster-offset-z">Z (altitude)</label>
+            <input type="number" name="form.thumb-cluster-offset-z" id="form.thumb-cluster-offset-z" value="7" step="0.1" />
           </div>
         </div>
-        <label for="form.custom-thumb-tenting">Custom thumb cluster tenting (don't use it)</label>
+        <label for="form.custom-thumb-offsets">Custom thumb single key offset (Experimental)</label>
+        <select name="form.custom-thumb-offsets" id="form.custom-thumb-offsets">
+          <option value="false">No</option>
+          <option value="true">Yes</option>
+        </select>
+        <label for="form.thumb-top-right-offsets">Top right</label>
+        <div class="row" id="form.thumb-offsets">
+          <div class="column column-33">
+            <label for="form.thumb-top-right-offset-x">X (toward the pinky)</label>
+            <input type="number" name="form.thumb-top-right-offset-x" id="form.thumb-top-right-offset-x" value="-12" step="0.1" />
+          </div>
+          <div class="column column-33">
+            <label for="form.thumb-top-right-offset-y">Y (toward the index)</label>
+            <input type="number" name="form.thumb-top-right-offset-y" id="form.thumb-top-right-offset-y" value="-16" step="0.1" />
+          </div>
+          <div class="column column-33">
+            <label for="form.thumb-top-right-offset-z">Z (altitude)</label>
+            <input type="number" name="form.thumb-top-right-offset-z" id="form.thumb-top-right-offset-z" value="3" step="0.1" />
+          </div>
+        </div>
+        <label for="form.custom-thumb-tenting">Custom thumb cluster tenting (Experimental)</label>
         <select name="form.custom-thumb-tenting" id="form.custom-thumb-tenting" onchange="toggle_custom_thumb_fields()">
           <option value="false">No</option>
           <option value="true">Yes</option>
@@ -196,7 +217,7 @@
             <select id="form.thumb-tenting-x" name="form.thumb-tenting-x">
               <option value="69">Default (without curvature)</option>
               {% for ttx in thumb-tenting-x %}
-              <option value="-{{ttx}}">-pi/{{ttx}}</option>
+              <option value="{{ttx}}">pi/{{ttx}}</option>
               {% endfor %}
             </select>
           </div>
@@ -214,7 +235,7 @@
             <select id="form.thumb-tenting-z" name="form.thumb-tenting-z">
               <option value="69">Default (without curvature)</option>
               {% for ttz in thumb-tenting-z %}
-              <option value="-{{ttz}}">-pi/{{ttz}}</option>
+              <option value="{{ttz}}">pi/{{ttz}}</option>
               {% endfor %}
             </select>
           </div>

@@ -97,9 +97,13 @@
         param-thumb-tenting-x       (parse-float (get p "form.thumb-tenting-x"))
         param-thumb-tenting-y       (parse-float (get p "form.thumb-tenting-y"))
         param-thumb-tenting-z       (parse-float (get p "form.thumb-tenting-z"))
-        param-thumb-offset-x        (parse-float (get p "form.thumb-offset-x"))
-        param-thumb-offset-y        (parse-float (get p "form.thumb-offset-y"))
-        param-thumb-offset-z        (parse-float (get p "form.thumb-offset-z"))
+        param-thumb-cluster-offset-x (parse-float (get p "form.thumb-cluster-offset-x"))
+        param-thumb-cluster-offset-y (parse-float (get p "form.thumb-cluster-offset-y"))
+        param-thumb-cluster-offset-z (parse-float (get p "form.thumb-cluster-offset-z"))
+        param-custom-thumb-offsets  (parse-bool (get p "form.custom-thumb-offsets"))
+        param-thumb-top-right-offset-x (parse-float (get p "form.thumb-top-right-offset-x"))
+        param-thumb-top-right-offset-y (parse-float (get p "form.thumb-top-right-offset-y"))
+        param-thumb-top-right-offset-z (parse-float (get p "form.thumb-top-right-offset-z"))
         param-index-y               (parse-float (get p "form.stagger-index-y"))
         param-index-z               (parse-float (get p "form.stagger-index-z"))
         param-middle-y              (parse-float (get p "form.stagger-middle-y"))
@@ -148,9 +152,13 @@
                                      :configuration-custom-thumb-tenting-x (if generate-json? param-thumb-tenting-x (/ pi param-thumb-tenting-x))
                                      :configuration-custom-thumb-tenting-y (if generate-json? param-thumb-tenting-y (/ pi param-thumb-tenting-y))
                                      :configuration-custom-thumb-tenting-z (if generate-json? param-thumb-tenting-z (/ pi param-thumb-tenting-z))
-                                     :configuration-thumb-offset-x         param-thumb-offset-x
-                                     :configuration-thumb-offset-y         param-thumb-offset-y
-                                     :configuration-thumb-offset-z         param-thumb-offset-z
+                                     :configuration-thumb-cluster-offset-x param-thumb-cluster-offset-x
+                                     :configuration-thumb-cluster-offset-y param-thumb-cluster-offset-y
+                                     :configuration-thumb-cluster-offset-z param-thumb-cluster-offset-z
+                                     :configuration-custom-thumb-offsets?  param-custom-thumb-offsets
+                                     :configuration-thumb-top-right-offset-x param-thumb-top-right-offset-x
+                                     :configuration-thumb-top-right-offset-y param-thumb-top-right-offset-y
+                                     :configuration-thumb-top-right-offset-z param-thumb-top-right-offset-z
                                      :configuration-stagger?               param-stagger
                                      :configuration-stagger-index          stagger-index
                                      :configuration-stagger-middle         stagger-middle
@@ -275,9 +283,6 @@
         curve          (get body :curve)
         connector      (get body :connector)
         form           (get body :form)
-        thumb-x        (get form :thumb-offset-x 6)
-        thumb-y        (get form :thumb-offset-y -3)
-        thumb-z        (get form :thumb-offset-z 7)
         index-y        (get form :stagger-index-y 0)
         index-z        (get form :stagger-index-z 0)
         middle-y       (get form :stagger-middle-y 2.8)
@@ -310,10 +315,17 @@
                         :configuration-use-trrs?              (get connector :trrs false)
                         :configuration-use-promicro-usb-hole? (get connector :micro-usb false)
 
-                        :configuration-thumb-tenting-y        (/ pi (get form :thumb-tenting-y 69))
-                        :configuration-thumb-offset-x         thumb-x
-                        :configuration-thumb-offset-y         thumb-y
-                        :configuration-thumb-offset-z         thumb-z
+                        :configuration-custom-thumb-tenting?  (get form :custom-thumb-tenting)
+                        :configuration-custom-thumb-tenting-x (/ pi (get form :thumb-tenting-x 10))
+                        :configuration-custom-thumb-tenting-y (/ pi (get form :thumb-tenting-y -4))
+                        :configuration-custom-thumb-tenting-z (/ pi (get form :thumb-tenting-z 10))
+                        :configuration-thumb-cluster-offset-x (get form :thumb-cluster-offset-x 6)
+                        :configuration-thumb-cluster-offset-y (get form :thumb-cluster-offset-y -3)
+                        :configuration-thumb-cluster-offset-z (get form :thumb-cluster-offset-z 7)
+                        :configuration-custom-thumb-offsets?  (get form :custom-thumb-offsets)
+                        :configuration-thumb-top-right-offset-x (get form :thumb-top-right-offset-x 6)
+                        :configuration-thumb-top-right-offset-y (get form :thumb-top-right-offset-y -3)
+                        :configuration-thumb-top-right-offset-z (get form :thumb-top-right-offset-z 7)
                         :configuration-use-hotswap?           (get form :hotswap false)
                         :configuration-stagger?               (get form :stagger true)
                         :configuration-stagger-index          stagger-index

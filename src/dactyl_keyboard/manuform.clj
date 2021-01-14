@@ -291,10 +291,10 @@
 ; the higher x axis value is, the closer it to the pinky.
 ; the higher y axis value is, the closer it to the alphas.
 ; the higher z axis value is, the higher it is.
-(defn thumb-offsets [c]
-  (let [x-offset (get c :configuration-thumb-offset-x)
-        y-offset (get c :configuration-thumb-offset-y)
-        z-offset (get c :configuration-thumb-offset-z)]
+(defn thumb-cluster-offsets [c]
+  (let [x-offset (get c :configuration-thumb-cluster-offset-x)
+        y-offset (get c :configuration-thumb-cluster-offset-y)
+        z-offset (get c :configuration-thumb-cluster-offset-z)]
     [x-offset y-offset z-offset]))
 
 ; this is where the original position of the thumb switches defined.
@@ -304,32 +304,23 @@
 (defn thumborigin [c]
   (let [cornerrow (fcornerrow (get c :configuration-nrows))]
     (map + (key-position c 1 cornerrow [(/ mount-width 2) (- (/ mount-height 2)) 0])
-         (thumb-offsets c))))
-
-; todo include tenting in x and z?
-(defn thumb-tenting-y [c]
-  (let [y-tenting (get c :configuration-thumb-tenting-y)]
-    y-tenting))
-
-(defn thumb-key-height
-  "it computes the height of the thumb key.
-   todo: mount-width is just an approximation, the correct value needs to be determined"
-  [angle mult]
-  (* mult (* mount-width (Math/sin angle))))
+         (thumb-cluster-offsets c))))
 
 (defn thumb-tenting [c default-val custom-rotation]
   (let [custom-tenting? (get c :configuration-custom-thumb-tenting?)
         custom-degree (get-in c [custom-rotation])]
     (if custom-tenting? custom-degree (deg2rad default-val))))
 
+(defn thumb-offset [c default]
+  (let [custom-offset? (get c :configuration-custom-thumb-offsets?)]
+    (if custom-offset? [get c :configuration-custom-] default)))
+
 (defn thumb-tl-place [c shape]
   (let [thumb-count     (get c :configuration-thumb-count)
         x-rotation      (thumb-tenting c 10 :configuration-custom-thumb-tenting-x)
         y-rotation      (thumb-tenting c -23 :configuration-custom-thumb-tenting-y)
         z-rotation      (thumb-tenting c (case thumb-count :three 20 :five 25 10) :configuration-custom-thumb-tenting-z)
-        custom-tenting? (get c :configuration-custom-thumb-tenting?)
-        z-movement      (if custom-tenting? 0 -2)
-        movement        (case thumb-count :five [-35 -16 z-movement] [-35 -15 z-movement])]
+        movement        (case thumb-count :five [-35 -16 -2] [-35 -15 -2])]
     (->> shape
       (rotate x-rotation [1 0 0])
       (rotate y-rotation [0 1 0])
@@ -342,23 +333,30 @@
         x-rotation (thumb-tenting c (if (= thumb-count :five) 14 10) :configuration-custom-thumb-tenting-x)
         y-rotation (thumb-tenting c (if (= thumb-count :five) -15 -23) :configuration-custom-thumb-tenting-y)
         z-rotation (thumb-tenting c 10 :configuration-custom-thumb-tenting-z)
-        ;; z-offset (thumb-key-height (thumb-tenting c) -1)
-        ;; movement    (if (= thumb-count :five) [-15 -10 z-offset] [-12 -16 z-offset])]
-        movement    (if (= thumb-count :five) [-15 -10 5] [-12 -16 3])]
+        custom-offsets? (get c :configuration-custom-thumb-offsets?)
+        default-x (if (= thumb-count :five) -15 -12)
+        default-y (if (= thumb-count :five) -10 -16)
+        default-z (if (= thumb-count :five) 5 3)
+        offset (if custom-offsets?
+                 [
+                  (get c :configuration-thumb-top-right-offset-x)
+                  (get c :configuration-thumb-top-right-offset-y)
+                  (get c :configuration-thumb-top-right-offset-z)
+                 ]
+                 [default-x default-y default-z])
+        ]
     (->> shape
          (rotate x-rotation [1 0 0])
          (rotate y-rotation [0 1 0])
          (rotate z-rotation [0 0 1])
          (translate (thumborigin c))
-         (translate movement))))
+         (translate offset))))
 
 (defn thumb-ml-place [c shape]
   (let [thumb-count (get c :configuration-thumb-count)
         x-rotation (thumb-tenting c 6 :configuration-custom-thumb-tenting-x)
         y-rotation (thumb-tenting c -34 :configuration-custom-thumb-tenting-y)
         z-rotation (thumb-tenting c 40 :configuration-custom-thumb-tenting-z)
-        ;; z-offset    (thumb-key-height (thumb-tenting c) 1)
-        ;; movement    (if (= thumb-count :three) [-53 -26 z-offset] [-52 -26 z-offset])]
         movement    (if (= thumb-count :three) [-53 -26 -12] [-52 -26 -12])]
     (->> shape
          (rotate x-rotation [1 0 0])
@@ -372,8 +370,6 @@
         x-rotation (thumb-tenting c (if (= thumb-count :five) 10 -6) :configuration-custom-thumb-tenting-x)
         y-rotation (thumb-tenting c (if (= thumb-count :five) -23 -34) :configuration-custom-thumb-tenting-y)
         z-rotation (thumb-tenting c (if (= thumb-count :five) 25 48) :configuration-custom-thumb-tenting-z)
-        ;; z-offset (thumb-key-height (thumb-tenting c) 1)
-        ;; movement    (if (= thumb-count :five) [-23 -34 z-offset] [-29 -41 z-offset])]
         movement    (if (= thumb-count :five) [-23 -34 -6] [-29 -41 -13])]
     (->> shape
          (rotate x-rotation [1 0 0])
@@ -387,11 +383,9 @@
         x-rotation (thumb-tenting c (if (= thumb-count :five) 6 -4) :configuration-custom-thumb-tenting-x)
         y-rotation (thumb-tenting c (if (= thumb-count :five) -32 -35) :configuration-custom-thumb-tenting-y)
         z-rotation (thumb-tenting c (if (= thumb-count :five) 35 52) :configuration-custom-thumb-tenting-z)
-        ;; z-offset (thumb-key-height (thumb-tenting c) 2)
         movement    (if (= thumb-count :five) [-51 -25 -11.5] [-56.3 -43.3 -23.5])]
     (->> shape
          (rotate x-rotation [1 0 0])
-        ;;  (rotate (thumb-tenting c) [0 1 0])
          (rotate y-rotation [0 1 0])
          (rotate z-rotation [0 0 1])
          (translate (thumborigin c))
@@ -402,12 +396,9 @@
         x-rotation (thumb-tenting c (if (= thumb-count :five) 6 -16) :configuration-custom-thumb-tenting-x)
         y-rotation (thumb-tenting c (if (= thumb-count :five) -34 -33) :configuration-custom-thumb-tenting-y)
         z-rotation (thumb-tenting c (if (= thumb-count :five) 35 54) :configuration-custom-thumb-tenting-z)
-        ;; z-offset (thumb-key-height (thumb-tenting c) 2)
         movement    (if (= thumb-count :five) [-39 -43 -16] [-37.8 -55.3 -25.3])]
-        ;; movement    (if (= thumb-count :five) [-39 -43 z-offset] [-37.8 -55.3 z-offset])]
     (->> shape
          (rotate x-rotation [1 0 0])
-        ;;  (rotate (thumb-tenting c) [0 1 0])
          (rotate y-rotation [0 1 0])
          (rotate z-rotation [0 0 1])
          (translate (thumborigin c))
@@ -1470,13 +1461,17 @@
         :configuration-use-external-holder?   false
 
         :configuration-use-hotswap?           false
-        :configuration-thumb-offset-x         6
-        :configuration-thumb-offset-y         -3
-        :configuration-thumb-offset-z         7
+        :configuration-thumb-cluster-offset-x 6
+        :configuration-thumb-cluster-offset-y -3
+        :configuration-thumb-cluster-offset-z 7
         :configuration-custom-thumb-tenting?  false
         :configuration-custom-thumb-tenting-x (/ pi 0.5)
         :configuration-custom-thumb-tenting-y (/ pi 0.5)
         :configuration-custom-thumb-tenting-z (/ pi 0.5)
+        :configuration-custom-thumb-offsets?  false
+        :configuration-thumb-top-right-offset-x -12
+        :configuration-thumb-top-right-offset-y -16
+        :configuration-thumb-top-right-offset-z 3
         :configuration-stagger?               true
         :configuration-stagger-index          [0 0 0]
         :configuration-stagger-middle         [0 2.8 -6.5]

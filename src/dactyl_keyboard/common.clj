@@ -410,7 +410,7 @@
 (def wall-thickness 3)
 
 (defn wall-locate1 [dx dy]
-  [(* dx wall-thickness) (* dy wall-thickness) -1])
+  [(* dx wall-thickness) (* dy wall-thickness) 0])
 (defn wall-locate2 [dx dy]
   [(* dx wall-xy-offset) (* dy wall-xy-offset) wall-z-offset])
 (defn wall-locate3 [dx dy]

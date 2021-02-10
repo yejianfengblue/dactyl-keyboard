@@ -614,59 +614,21 @@
             (thumb-tl-place c web-post-br)
             (thumb-tr-place c web-post-tl)
             (thumb-tr-place c web-post-bl))
-           #_(triangle-hulls    ; bottom two
-            (thumb-br-place c web-post-tr)
-            (thumb-br-place c web-post-br)
-            (thumb-mr-place c web-post-tl)
-            (thumb-mr-place c web-post-bl))
-           #_(triangle-hulls
-            (thumb-mr-place c web-post-tr)
-            (thumb-mr-place c web-post-br)
-            (thumb-tr-place c web-post-br))
-           #_(triangle-hulls    ; between top row and bottom row
-            (thumb-br-place c web-post-tl)
-            (thumb-bl-place c web-post-bl)
-            (thumb-br-place c web-post-tr)
-            (thumb-bl-place c web-post-br)
-            (thumb-mr-place c web-post-tl)
-            (thumb-tl-place c web-post-bl)
-            (thumb-mr-place c web-post-tr)
-            (thumb-tl-place c web-post-br)
-            (thumb-tr-place c web-post-bl)
-            (thumb-mr-place c web-post-tr)
-            (thumb-tr-place c web-post-br))
-           #_(triangle-hulls    ; top two to the middle two, starting on the left
-            (thumb-tl-place c web-post-tl)
-            (thumb-bl-place c web-post-tr)
-            (thumb-tl-place c web-post-bl)
-            (thumb-bl-place c web-post-br)
-            (thumb-mr-place c web-post-tr)
-            (thumb-tl-place c web-post-bl)
-            (thumb-tl-place c web-post-br)
-            (thumb-mr-place c web-post-tr))
-           (triangle-hulls    ; top two to the main keyboard, starting on the left
+           (triangle-hulls
             (key-place c 0 cornerrow web-post-bl)
             (thumb-tl-place c web-post-tl)
-            (key-place c 0 cornerrow web-post-bl)
+            (thumb-tl-place c web-post-tr))
+           (triangle-hulls
             (thumb-tl-place c web-post-tr)
-            (key-place c 0 cornerrow web-post-br)
+            (key-place c 0 cornerrow web-post-bl)
             (thumb-tr-place c web-post-tl)
-            (key-place c 1 cornerrow web-post-bl)
+            (key-place c 0 cornerrow web-post-br)
             (thumb-tr-place c web-post-tr)
-            (key-place c 1 cornerrow web-post-br)
-            (thumb-tr-place c web-post-br)
-            (key-place c 2 cornerrow web-post-bl)
-            (key-place c 2 cornerrow web-post-bl)
-            (key-place c 2 cornerrow web-post-br)
-            (thumb-tr-place c web-post-br)
-            (key-place c 3 cornerrow web-post-bl))
-           #_(triangle-hulls
-            (key-place c 1 cornerrow web-post-br)
-            (key-place c 2 lastrow web-post-tl)
-            (key-place c 2 cornerrow web-post-bl)
-            (key-place c 2 lastrow web-post-tr)
-            (key-place c 2 cornerrow web-post-br)
-            (key-place c 3 cornerrow web-post-bl)))))
+            (key-place c 1 cornerrow web-post-bl))
+            (triangle-hulls
+             (key-place c 1 cornerrow web-post-bl)
+             (thumb-tr-place c web-post-tr)
+             (key-place c 1 cornerrow web-post-br)))))
 
 (defn thumb-connector-six [c]
   (let [row-count (get c :configuration-last-row-count)
@@ -766,6 +728,24 @@
 (defn inner-key-place [c row direction shape]
   (translate (inner-key-position c row direction) shape))
 
+(defn hanging-wall-brace [place1 dx1 dy1 post1 place2 dx2 dy2 post2]
+  (hull
+   (place1 post1)
+   (place1 (translate (wall-locate1 dx1 dy1) post1))
+   (place1 (translate (wall-locate2 dx1 dy1) post1))
+   (place1 (translate (wall-locate3 dx1 dy1) post1))
+   (place2 post2)
+   (place2 (translate (wall-locate1 dx2 dy2) post2))
+   (place2 (translate (wall-locate2 dx2 dy2) post2))
+   (place2 (translate (wall-locate3 dx2 dy2) post2))))
+
+(defn raising-wall-brace [place1 dx1 dy1 post1 place2 dx2 dy2 post2]
+  (bottom-hull
+   (place1 (translate (wall-locate2 dx1 dy1) post1))
+   (place1 (translate (wall-locate3 dx1 dy1) post1))
+   (place2 (translate (wall-locate2 dx2 dy2) post2))
+   (place2 (translate (wall-locate3 dx2 dy2) post2))))
+
 (defn wall-brace
   "If you want to change the wall, use this.
    place1 means the location at the keyboard, marked by key-place or thumb-xx-place
@@ -802,20 +782,8 @@
                     f: the result of bottom-hull translation from wall-locate3"
   [place1 dx1 dy1 post1 place2 dx2 dy2 post2]
   (union
-   (hull
-    (place1 post1)
-    (place1 (translate (wall-locate1 dx1 dy1) post1))
-    (place1 (translate (wall-locate2 dx1 dy1) post1))
-    (place1 (translate (wall-locate3 dx1 dy1) post1))
-    (place2 post2)
-    (place2 (translate (wall-locate1 dx2 dy2) post2))
-    (place2 (translate (wall-locate2 dx2 dy2) post2))
-    (place2 (translate (wall-locate3 dx2 dy2) post2)))
-   (bottom-hull
-    (place1 (translate (wall-locate2 dx1 dy1) post1))
-    (place1 (translate (wall-locate3 dx1 dy1) post1))
-    (place2 (translate (wall-locate2 dx2 dy2) post2))
-    (place2 (translate (wall-locate3 dx2 dy2) post2)))))
+   (hanging-wall-brace place1 dx1 dy1 post1 place2 dx2 dy2 post2)
+   (raising-wall-brace place1 dx1 dy1 post1 place2 dx2 dy2 post2)))
 
 (defn key-wall-brace [c x1 y1 dx1 dy1 post1 x2 y2 dx2 dy2 post2]
   (wall-brace (partial key-place c x1 y1) dx1 dy1 post1
@@ -868,18 +836,18 @@
      (key-wall-brace c lastcol 0 0 1 web-post-tr lastcol 0 1 0 web-post-tr))))
 
 (defn left-wall [c]
-  (let [nrows             (get c :configuration-nrows)
-        inner             (get c :configuration-inner-column)
-        lastrow           (flastrow nrows)
-        cornerrow         (fcornerrow nrows)
-        end               (case inner
-                            :outie cornerrow
-                            lastrow)
-        partial-place     (case inner
-                            :outie (partial inner-key-place c)
-                            :normie (partial left-key-place c)
-                            :innie (partial index-key-place c))
-        init              (case inner :outie -1 :normie 0 :innie 1)]
+  (let [nrows         (get c :configuration-nrows)
+        inner         (get c :configuration-inner-column)
+        lastrow       (flastrow nrows)
+        cornerrow     (fcornerrow nrows)
+        end           (case inner
+                        :outie cornerrow
+                        lastrow)
+        partial-place (case inner
+                        :outie (partial inner-key-place c)
+                        :normie (partial left-key-place c)
+                        :innie (partial index-key-place c))
+        init          (case inner :outie -1 :normie 0 :innie 1)]
     (union
      (for [y (range 0 end)]
        (union
@@ -897,35 +865,48 @@
               (key-place c init (dec y) web-post-bl)
               (partial-place y        1 web-post)
               (partial-place (dec y) -1 web-post))))
-     (wall-brace (partial key-place c init 0) 0 1 web-post-tl
-                 (partial partial-place 0 1)  0 1.6 web-post)
-     (wall-brace (partial partial-place 0 1)  0 1.6 web-post
+     #_(wall-brace (partial key-place c init 0) 0 1 web-post-tl
+                   (partial partial-place 0 1)  0 1.6 web-post)
+     (hull
+      ((partial key-place c init 0) web-post-tl)
+      ((partial key-place c init 0) (translate (wall-locate1 0 1) web-post-tl))
+      ((partial key-place c init 0) (translate (wall-locate2 0 1) web-post-tl))
+      ((partial key-place c init 0) (translate (wall-locate3 0 1) web-post-tl))
+      ((partial partial-place 0 1) web-post)
+      ((partial partial-place 0 1) (translate (wall-locate1 0.03 1.6) web-post))
+      ((partial partial-place 0 1) (translate (wall-locate2 0.03 1.6) web-post))
+      ((partial partial-place 0 1) (translate (wall-locate3 0.03 1.6) web-post)))
+     (wall-brace (partial partial-place 0 1)  0.03 1.625 web-post
                  (partial partial-place 0 1) -1 0 web-post))))
 
 (defn front-wall [c]
-  (let [ncols         (get c :configuration-ncols)
-        nrows         (get c :configuration-nrows)
-        lastrow       (flastrow nrows)
-        cornerrow     (fcornerrow nrows)
-        row-count     (get c :configuration-last-row-count)
-        thumb-tr-post (if (= (get c :configuration-thumb-count) :five) web-post-br thumb-post-br)]
+  (let [ncols     (get c :configuration-ncols)
+        nrows     (get c :configuration-nrows)
+        cornerrow (fcornerrow nrows)]
     (union
-     (wall-brace (partial thumb-tr-place c)  0 -1 thumb-tr-post
-                 (partial (partial key-place c) 3 (case row-count :zero cornerrow lastrow))  0 -1 web-post-bl)
+     (hull
+      (key-place c 2 cornerrow web-post-bl)
+      (key-place c 2 cornerrow (translate (wall-locate1 0 -1) web-post-bl))
+      (key-place c 2 cornerrow (translate (wall-locate3 0 -1) web-post-bl))
+      (thumb-tr-place c (translate (wall-locate3 1 -1) web-post-tr))
+      (key-place c 1 cornerrow web-post-br))
+     (hull
+      (thumb-tr-place c web-post-tr)
+      (thumb-tr-place c (translate (wall-locate1 1 -1) web-post-tr))
+      (thumb-tr-place c (translate (wall-locate3 1 -1) web-post-tr))
+      (thumb-tr-place c (translate (wall-locate2 1 -1) web-post-tr))
+      (key-place c 1 cornerrow web-post-br))
      (key-wall-brace c
-                     3 (case row-count :zero cornerrow lastrow) 0   -1 web-post-bl
-                     3 (case row-count :zero cornerrow lastrow) 0.5 -1 web-post-br)
-     (key-wall-brace c
-                     3 (case row-count :zero cornerrow lastrow)   0.5 -1 web-post-br
-                     4 (case row-count :full lastrow   cornerrow) 0   -1 web-post-bl)
-     (for [x (range 4 ncols)]
+                     2 cornerrow 0 -1 web-post-bl
+                     2 cornerrow 0 -1 web-post-br)
+     (for [x (range 3 ncols)]
        (key-wall-brace c
-                       x (case row-count :full lastrow cornerrow) 0 -1 web-post-bl
-                       x (case row-count :full lastrow cornerrow) 0 -1 web-post-br))
-     (for [x (range 5 ncols)]
+                       x cornerrow 0 -1 web-post-bl
+                       x cornerrow 0 -1 web-post-br))
+     (for [x (range 3 ncols)]
        (key-wall-brace c
-                       x       (case row-count :full lastrow cornerrow) 0 -1 web-post-bl
-                       (dec x) (case row-count :full lastrow cornerrow) 0 -1 web-post-br)))))
+                       x       cornerrow 0 -1 web-post-bl
+                       (dec x) cornerrow 0 -1 web-post-br)))))
 
 (defn pinky-connectors [c]
   (let [row-count       (get c :configuration-last-row-count)
@@ -1015,36 +996,46 @@
                      (partial thumb-ml-place c)  0  1 web-post-tr)))
 
 (defn thumb-wall-five [c]
-  (union (wall-brace (partial thumb-tr-place c)  0    -1 web-post-br
-                     (partial thumb-tr-place c)  0    -1 web-post-bl)
-         (wall-brace (partial thumb-tr-place c)  0    -1 web-post-bl
-                     (partial thumb-tl-place c) -0.5  -1 web-post-br)
-         (wall-brace (partial thumb-tl-place c) -0.5  -1 web-post-br
-                     (partial thumb-tl-place c)  0    -1 web-post-bl)
-         (wall-brace (partial thumb-tl-place c)  0    -1 web-post-bl
-                     (partial thumb-tl-place c) -1.5   0 web-post-bl)
-         (wall-brace (partial thumb-tl-place c) -1.5   0 web-post-bl
-                     (partial thumb-tl-place c) -1.5   0 web-post-tl)
-         #_(wall-brace (partial thumb-tl-place c) -0.8   1 web-post-tl
-                     (partial thumb-tl-place c) -1.5   0 web-post-tl)
-         #_(wall-brace (partial thumb-mr-place c)  0  -1 web-post-br
-                     (partial thumb-mr-place c)  0  -1 web-post-bl)
-         #_(wall-brace (partial thumb-mr-place c)  0  -1 web-post-bl
-                     (partial thumb-br-place c)  0  -1 web-post-br)
-         #_(wall-brace (partial thumb-br-place c)  0  -1 web-post-br
-                     (partial thumb-br-place c)  0  -1 web-post-bl)
-         #_(wall-brace (partial thumb-br-place c)  0  -1 web-post-bl
-                     (partial thumb-br-place c) -1   0 web-post-bl)
-         #_(wall-brace (partial thumb-br-place c) -1   0 web-post-bl
-                     (partial thumb-br-place c) -1   0 web-post-tl)
-         #_(wall-brace (partial thumb-br-place c) -1   0 web-post-tl
-                     (partial thumb-bl-place c) -1   0 web-post-bl)
-         #_(wall-brace (partial thumb-bl-place c) -1   0 web-post-bl
-                     (partial thumb-bl-place c) -1   0 web-post-tl)
-         #_(wall-brace (partial thumb-bl-place c) -1   0 web-post-tl
-                     (partial thumb-bl-place c)  0   1 web-post-tl)
-         #_(wall-brace (partial thumb-bl-place c)  0   1 web-post-tl
-                     (partial thumb-bl-place c) -0.5 1 web-post-tr)))
+  (let [cornerrow (fcornerrow (get c :configuration-nrows))]
+    (union
+     (wall-brace (partial thumb-tr-place c)  1    0 web-post-br
+                         (partial thumb-tr-place c)  1   -1 web-post-tr)
+     #_(hanging-wall-brace (partial thumb-tr-place c)  1   -1 web-post-tr
+                         (partial (partial key-place c) 1 cornerrow)  1  -1 web-post-br)
+     #_(wall-brace (partial thumb-tr-place c) 1 0 web-post-br
+                   (partial thumb-tr-place c) 1 -1 web-post-tr)
+     (wall-brace (partial thumb-tr-place c)  1     0 web-post-br
+                 (partial thumb-tr-place c)  0    -1 web-post-br)
+     (wall-brace (partial thumb-tr-place c)  0    -1 web-post-br
+                 (partial thumb-tr-place c)  0    -1 web-post-bl)
+     (wall-brace (partial thumb-tr-place c)  0    -1 web-post-bl
+                 (partial thumb-tl-place c) -0.5  -1 web-post-br)
+     (wall-brace (partial thumb-tl-place c) -0.5  -1 web-post-br
+                 (partial thumb-tl-place c)  0    -1 web-post-bl)
+     (wall-brace (partial thumb-tl-place c)  0    -1 web-post-bl
+                 (partial thumb-tl-place c) -1.5   0 web-post-bl)
+     (wall-brace (partial thumb-tl-place c) -1.5   0 web-post-bl
+                 (partial thumb-tl-place c) -1.5   0 web-post-tl)
+     #_(wall-brace (partial thumb-tl-place c) -0.8   1 web-post-tl
+                   (partial thumb-tl-place c) -1.5   0 web-post-tl)
+     #_(wall-brace (partial thumb-mr-place c)  0  -1 web-post-br
+                   (partial thumb-mr-place c)  0  -1 web-post-bl)
+     #_(wall-brace (partial thumb-mr-place c)  0  -1 web-post-bl
+                   (partial thumb-br-place c)  0  -1 web-post-br)
+     #_(wall-brace (partial thumb-br-place c)  0  -1 web-post-br
+                   (partial thumb-br-place c)  0  -1 web-post-bl)
+     #_(wall-brace (partial thumb-br-place c)  0  -1 web-post-bl
+                   (partial thumb-br-place c) -1   0 web-post-bl)
+     #_(wall-brace (partial thumb-br-place c) -1   0 web-post-bl
+                   (partial thumb-br-place c) -1   0 web-post-tl)
+     #_(wall-brace (partial thumb-br-place c) -1   0 web-post-tl
+                   (partial thumb-bl-place c) -1   0 web-post-bl)
+     #_(wall-brace (partial thumb-bl-place c) -1   0 web-post-bl
+                   (partial thumb-bl-place c) -1   0 web-post-tl)
+     #_(wall-brace (partial thumb-bl-place c) -1   0 web-post-tl
+                   (partial thumb-bl-place c)  0   1 web-post-tl)
+     #_(wall-brace (partial thumb-bl-place c)  0   1 web-post-tl
+                   (partial thumb-bl-place c) -0.5 1 web-post-tr))))
 
 (defn thumb-wall-six [c]
   (union (wall-brace (partial thumb-tr-place c)  0 -1 thumb-post-br
@@ -1082,20 +1073,15 @@
       (thumb-wall-six c))))
 
 (defn second-thumb-to-body [c]
-  (let [thumb-count      (get c :configuration-thumb-count)
-        inner            (get c :configuration-inner-column)
-        nrows            (get c :configuration-nrows)
+  (let [nrows            (get c :configuration-nrows)
         cornerrow        (fcornerrow nrows)
         middlerow        (fmiddlerow nrows)
         inner-placement  (partial left-key-place)
-        innerrow         (case inner
-                           :outie middlerow
-                           cornerrow)
-        init             0 ]
+        ]
     (union
      (bottom-hull
-      (inner-placement c innerrow -1 (translate (wall-locate2 -1 0) web-post))
-      (inner-placement c innerrow -1 (translate (wall-locate3 -1 0) web-post))
+      (inner-placement c cornerrow -1 (translate (wall-locate2 -1 0) web-post))
+      (inner-placement c cornerrow -1 (translate (wall-locate3 -1 0) web-post))
       (thumb-tl-place c (translate (wall-locate2 -0.8 1) web-post-tl))
       (thumb-tl-place c (translate (wall-locate3 -0.8 1) web-post-tl)))
      (bottom-hull
@@ -1104,24 +1090,23 @@
       (thumb-tl-place c (translate (wall-locate2 -0.8 1) web-post-tl))
       (thumb-tl-place c (translate (wall-locate3 -0.8 1) web-post-tl)))
      (hull
-      (inner-placement c innerrow -1 (translate (wall-locate2 -1 0) web-post))
-      (inner-placement c innerrow -1 (translate (wall-locate3 -1 0) web-post))
+      (inner-placement c cornerrow -1 (translate (wall-locate2 -1 0) web-post))
+      (inner-placement c cornerrow -1 (translate (wall-locate3 -1 0) web-post))
       (thumb-tl-place c (translate (wall-locate1 -1.5 0) web-post-tl))
       (thumb-tl-place c (translate (wall-locate2 -1.5 0) web-post-tl))
       (thumb-tl-place c (translate (wall-locate3 -1.5 0) web-post-tl))
       (thumb-tl-place c (translate (wall-locate3 -0.8 1) web-post-tl))
       (thumb-tl-place c web-post-tl))
      (hull
-      (inner-placement c innerrow -1 web-post)
-      (inner-placement c innerrow -1 (translate (wall-locate1 -1 0) web-post))
-      (inner-placement c innerrow -1 (translate (wall-locate2 -1 0) web-post))
-      (inner-placement c innerrow -1 (translate (wall-locate3 -1 0) web-post))
+      (inner-placement c cornerrow -1 web-post)
+      (inner-placement c cornerrow -1 (translate (wall-locate1 -1 0) web-post))
+      (inner-placement c cornerrow -1 (translate (wall-locate2 -1 0) web-post))
+      (inner-placement c cornerrow -1 (translate (wall-locate3 -1 0) web-post))
       (thumb-tl-place c web-post-tl))
      (hull
-      (inner-placement c innerrow -1 web-post)
-      (inner-placement c innerrow -1 (translate (wall-locate1 -1 0) web-post))
-      (key-place c init innerrow web-post-bl)
-      (key-place c init innerrow (translate (wall-locate1 -1 0) web-post-bl))
+      (inner-placement c cornerrow -1 web-post)
+      (inner-placement c cornerrow -1 (translate (wall-locate1 -1 0) web-post))
+      (key-place c 0 cornerrow web-post-bl)
       (thumb-tl-place c web-post-tl)))))
 
 (defn case-walls [c]
@@ -1420,7 +1405,7 @@
         :configuration-use-external-holder?   false
 
         :configuration-use-hotswap?           false
-        :configuration-thumb-offset-x         6
+        :configuration-thumb-offset-x         1
         :configuration-thumb-offset-y         -3
         :configuration-thumb-offset-z         7
         :configuration-custom-thumb-tenting?  false

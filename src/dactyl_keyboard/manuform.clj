@@ -1372,14 +1372,18 @@
         screw-inners       (if use-screw-inserts?
                              (translate [0 0 -2] (screw-insert-screw-holes screw-placement c))
                              ())
-        bot                (cut (translate [0 0 -0.1] (union (case-walls c) screw-outers)))
+        bot                (cut (translate [0 0 -0.1] (union (case-walls c)
+                                                             screw-outers
+                                                             (rj9-space frj9-start c)
+                                                             (usb-holder fusb-holder-position c))))
         inner-thing        (difference (translate [0 0 -0.1] (project (union (extrude-linear {:height 5
                                                                                               :scale  0.1
                                                                                               :center true} bot)
                                                                              (cube 50 50 5))))
                                        screw-inners)]
-    (difference (extrude-linear {:height 3} inner-thing)
-                screw-inners)))
+    #_(difference (extrude-linear {:height 3} bot)
+                screw-inners)
+    bot))
 
 (defn plate-left [c]
   (mirror [-1 0 0] (plate-right c)))
@@ -1424,10 +1428,10 @@
         :configuration-show-caps?             false
         :configuration-plate-projection?      false})
 
-(spit "things/right.scad"
+#_(spit "things/right.scad"
       (write-scad (model-right c)))
 
-#_(spit "things/right-plate.scad"
+#_(spit "things/right.scad"
         (write-scad (plate-right c)))
 
 #_(spit "things/right-plate.scad"

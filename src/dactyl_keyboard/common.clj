@@ -6,9 +6,10 @@
 
 ; common parts between the two boards.
 
-(def extra-width
+(defn extra-width
   "extra width between two keys in a row."
-  2.5)
+  [nrow]
+ (if (> nrow 5) 3.5 2.5))
 (def extra-height
   "extra height between two keys in a column."
   1.0)
@@ -113,8 +114,8 @@
 (defn fcolumn-radius
   "It computes the radius of the column's curve. It takes the value of `pi` divided
    by `beta` to compute the said radius."
-  [beta switch-type]
-  (+ (/ (/ (+ mount-width extra-width) 2)
+  [nrow beta switch-type]
+  (+ (/ (/ (+ mount-width (extra-width nrow)) 2)
         (Math/sin (/ beta 2)))
      (cap-top-height switch-type)))
 
@@ -144,6 +145,7 @@
   [c translate-fn rotate-x-fn rotate-y-fn column row shape]
   (let [original-alpha    (get c :configuration-alpha)
         pinky-alpha       (get c :configuration-pinky-alpha original-alpha)
+        nrow              (get c :configuration-nrows)
         alpha             (if (>= column 4) pinky-alpha original-alpha)
         beta              (get c :configuration-beta)
         centercol         (get c :configuration-centercol 2)
@@ -161,9 +163,9 @@
                                               (- (frow-radius alpha switch-type))])
                                (rotate-x-fn  (* alpha (- centerrow row)))
                                (translate-fn [0 0 (frow-radius alpha switch-type)])
-                               (translate-fn [0 0 (- (fcolumn-radius beta switch-type))])
+                               (translate-fn [0 0 (- (fcolumn-radius nrow beta switch-type))])
                                (rotate-y-fn  column-angle)
-                               (translate-fn [0 0 (fcolumn-radius beta switch-type)])
+                               (translate-fn [0 0 (fcolumn-radius nrow beta switch-type)])
                                (translate-fn (dm-column-offset c column)))]
     (->> placed-shape
          (rotate-y-fn  tenting-angle)

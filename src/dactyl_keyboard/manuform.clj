@@ -1302,17 +1302,18 @@
                           :outie -1.5)
         lastcol         (flastcol (get c :configuration-ncols))
         lastrow         (flastrow (get c :configuration-nrows))
-        lastloc         (if-not use-wide-pinky? (+ lastcol 0.1) (+ lastcol 0.5))
+        lastloc         (if-not use-wide-pinky? (+ lastcol 0.05) (+ lastcol 0.5))
         thumb-count     (get c :configuration-thumb-count)
         is-five?        (= thumb-count :five)
         var-middle-last (if is-five? -0 0.2)
         y-middle-last   (+ lastrow var-middle-last)
         x-middle-last   (if is-five? 1.6 2)]
-    (union (screw-insert c first-screw-x  0               bottom-radius top-radius height)
-           (screw-insert c second-screw-x (- lastrow 0.8) bottom-radius top-radius height)
-           (screw-insert c x-middle-last  y-middle-last   bottom-radius top-radius height)
-           (screw-insert c 3              0               bottom-radius top-radius height)
-           (screw-insert c lastloc        1               bottom-radius top-radius height))))
+    (union (screw-insert c -1.2  -0.1   bottom-radius top-radius height)
+           (screw-insert c -1.3   2.5   bottom-radius top-radius height)
+           (screw-insert c  2.05  2.40  bottom-radius top-radius height)
+           (screw-insert c  2    -0.35  bottom-radius top-radius height)
+           (screw-insert c  4.01 -0.15  bottom-radius top-radius height)
+           (screw-insert c  3.65  2.85  bottom-radius top-radius height))))
 
 (def wire-post-height 7)
 (def wire-post-overhang 3.5)
@@ -1390,7 +1391,7 @@
                              (screw-insert-outers screw-placement c)
                              ())
         screw-inners       (if use-screw-inserts?
-                             (translate [0 0 -2] (screw-insert-screw-holes screw-placement c))
+                             (cut (translate [0 0 -0.1] (screw-insert-screw-holes screw-placement c)))
                              ())
         bot                (cut (translate [0 0 -0.1] (union (case-walls c) screw-outers)))
         inner-thing        (difference (translate [0 0 -0.1] (project (union (extrude-linear {:height 5
@@ -1398,7 +1399,7 @@
                                                                                               :center true} bot)
                                                                              (cube 50 50 5))))
                                        screw-inners)]
-    (difference (extrude-linear {:height 3} inner-thing)
+    (difference bot #_(extrude-linear {:height 3} inner-thing)
                 screw-inners)))
 
 (defn plate-left [c]
@@ -1439,15 +1440,15 @@
         :configuration-use-wide-pinky?        false
         :configuration-z-offset               2
         :configuration-use-wire-post?         false
-        :configuration-use-screw-inserts?     false
+        :configuration-use-screw-inserts?     true
 
         :configuration-show-caps?             false
         :configuration-plate-projection?      false})
 
-(spit "things/right.scad"
+#_(spit "things/right.scad"
       (write-scad (model-right c)))
 
-#_(spit "things/right-plate.scad"
+(spit "things/right-plate.scad"
         (write-scad (plate-right c)))
 
 #_(spit "things/right-plate.scad"
@@ -1455,7 +1456,7 @@
          (cut
           (translate [0 0 -0.1]
                      (difference (union case-walls
-                                        teensy-holder
+                                        ;; teensy-holder
                                           ; rj9-holder
                                         screw-insert-outers)
                                  (translate [0 0 -10] screw-insert-screw-holes))))))

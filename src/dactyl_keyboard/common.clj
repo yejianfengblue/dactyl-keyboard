@@ -315,10 +315,12 @@
                                  (translate [0 3 hotswap-base-z-offset]))
         hotswap-holder      (difference swap-holder
                                         main-axis-hole
-                                        plus-hole
-                                        minus-hole
-                                        plus-hole-mirrored
-                                        minus-hole-mirrored
+                                        (if :is-right?
+                                          plus-hole
+                                          plus-hole-mirrored)
+                                        (if :is-right?
+                                          minus-hole
+                                          minus-hole-mirrored)
                                         friction-hole-left
                                         friction-hole-right
                                         hotswap-base-shape)]

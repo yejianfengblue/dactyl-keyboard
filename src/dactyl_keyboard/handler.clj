@@ -263,7 +263,9 @@
 
                                    :configuration-show-caps?           param-show-keycaps
 
-                                   :configuration-use-screw-inserts?   param-screw-inserts}
+                                   :configuration-use-screw-inserts?   param-screw-inserts
+
+                                   :is-right?                            is-right?}
         generated-file            (cond
                                     generate-plate? {:file      (g/generate-plate-dl c is-right?)
                                                      :extension "scad"}

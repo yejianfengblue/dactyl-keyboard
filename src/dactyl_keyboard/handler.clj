@@ -168,7 +168,9 @@
                                      :configuration-show-caps?             param-show-keycaps
                                      :configuration-use-wide-pinky?        param-wide-pinky
                                      :configuration-use-wire-post?         param-wire-post
-                                     :configuration-use-screw-inserts?     param-screw-inserts}
+                                     :configuration-use-screw-inserts?     param-screw-inserts
+
+                                     :is-right?                            is-right?}
         generated-file              (cond
                                       generate-plate? {:file      (g/generate-plate-dm c is-right?)
                                                        :part      "plate"
@@ -261,7 +263,9 @@
 
                                    :configuration-show-caps?           param-show-keycaps
 
-                                   :configuration-use-screw-inserts?   param-screw-inserts}
+                                   :configuration-use-screw-inserts?   param-screw-inserts
+
+                                   :is-right?                            is-right?}
         generated-file            (cond
                                     generate-plate? {:file      (g/generate-plate-dl c is-right?)
                                                      :extension "scad"}

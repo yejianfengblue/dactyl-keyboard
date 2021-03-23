@@ -66,6 +66,7 @@
                                       :two)
         param-switch-type           (case (get p "keys.switch-type")
                                       "mx" :mx
+                                      "mx-snap-in" :mx-snap-in
                                       "alps" :alps
                                       "choc" :choc
                                       "kailh" :kailh
@@ -201,6 +202,7 @@
                                     :five)
         param-switch-type         (case (get p "keys.switch-type")
                                     "mx" :mx
+                                    "mx-snap-in" :mx-snap-in
                                     "alps" :alps
                                     "choc" :choc
                                     "kailh" :kailh

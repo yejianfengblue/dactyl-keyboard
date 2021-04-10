@@ -316,7 +316,7 @@
                         :configuration-rotate-x-angle         (/ pi (get curve :rotate-x 15))
 
                         :configuration-use-external-holder?   (get connector :external false)
-                        :configuration-use-trrs?              (get connector :trrs false)
+                        :configuration-connector-type         (get connector :type :none)
                         :configuration-use-promicro-usb-hole? (get connector :micro-usb false)
 
                         :configuration-custom-thumb-tenting?  (get form :custom-thumb-tenting)

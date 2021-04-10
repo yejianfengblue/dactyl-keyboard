@@ -1267,7 +1267,8 @@
                     (+ (/ (last trrs-holder-hole-size) 2) trrs-holder-thickness)]))))
 
 (defn pro-micro-position [c]
-  (map + (key-position c 0 0.15 (wall-locate3 -1 0)) [-2 2 -30]))
+  (map + (key-position c 0 0.15 (wall-locate3 -1 0)) [-2 2 -30])
+)
 (def pro-micro-space-size [4 10 12]) ; z has no wall;
 (def pro-micro-wall-thickness 2)
 (def pro-micro-holder-size
@@ -1379,6 +1380,7 @@
 (def wire-post-height 7)
 (def wire-post-overhang 3.5)
 (def wire-post-diameter 2.6)
+(def usb-holder-offset [-22 5 0])
 (defn wire-post [c direction offset]
   (->> (union (translate [0 (* wire-post-diameter -0.5 direction) 0]
                          (cube wire-post-diameter wire-post-diameter wire-post-height))
@@ -1405,7 +1407,7 @@
         use-external-holder?       (get c :configuration-use-external-holder?)
         use-promicro-usb-hole?     (get c :configuration-use-promicro-usb-hole?)
         use-screw-inserts?         (get c :configuration-use-screw-inserts?)
-        use-trrs?                  (get c :configuration-use-trrs?)
+        connector-type             (get c :configuration-connector-type)
         use-wire-post?             (get c :configuration-use-wire-post?)]
     (difference
      (union
@@ -1414,7 +1416,9 @@
       (if-not use-external-holder?
         (union
          (if use-wire-post? (wire-posts c) ())
-         (if-not use-trrs? (rj9-holder frj9-start c) ()))
+         (case connector-type
+          :rj9 (rj9-holder frj9-start c)
+          ()))
         ())
       (key-holes c)
       (thumb c)
@@ -1426,22 +1430,34 @@
               (if-not use-external-holder?
                 (union
                  (if use-promicro-usb-hole?
-                   (union (pro-micro-holder c)
-                          (trrs-usb-holder-holder c))
+                   (union (case connector-type 
+                            :none ()
+                            _ (pro-micro-holder c)
+                          )
+                          (translate usb-holder-offset (trrs-usb-holder-holder c)))
                    (union (usb-holder fusb-holder-position c)
                           #_(pro-micro-holder c)))
-                 (if use-trrs? (trrs-holder c) ()))
+                 (case connector-type
+                  :trrs (trrs-holder c)
+                  ()))
                 ()))
        (if use-screw-inserts? (screw-insert-holes screw-placement c) ())
        (if-not use-external-holder?
-         (union
-          (if use-trrs? (trrs-holder-hole c) (rj9-space frj9-start c))
+         (translate usb-holder-offset (union
+          (case connector-type
+            :trrs (trrs-holder-hole c)
+            :rj9 (rj9-space frj9-start c)
+            ())
           (if use-promicro-usb-hole?
             (union (trrs-usb-holder-space c)
                    (trrs-usb-jack c))
-            (usb-holder-hole fusb-holder-position c)))
+            (usb-holder-hole fusb-holder-position c))))
          (external-holder-space c))))
-     (translate [0 0 -60] (cube 350 350 120)))))
+     ;; used to flatten the bottom of the plate
+     ;; removes extra angles
+     ;; makes the rendering surprisingly slow
+     (translate [0 0 -60] (cube 350 350 120))
+     )))
 
 (defn model-left [c]
   (mirror [-1 0 0] (model-right c)))
@@ -1482,7 +1498,7 @@
         :configuration-rotate-x-angle         (/ pi 180)
 
         :configuration-use-promicro-usb-hole? false
-        :configuration-use-trrs?              false
+        :configuration-connector-type         :none
         :configuration-use-external-holder?   false
 
         :configuration-use-hotswap?           false

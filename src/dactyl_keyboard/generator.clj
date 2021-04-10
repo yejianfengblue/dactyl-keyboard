@@ -68,8 +68,7 @@
                  :wire-post        (get confs :configuration-use-wire-post?)
                  :screw-inserts    (get confs :configuration-use-screw-inserts?)}
      :misc      {:keycaps    (get confs :configuration-show-caps?)
-                 :right-side is-right?
-                 :case       true}}))
+                 :right-side is-right? }}))
 
 (defn generate-json-dl [confs is-right?]
   {:keys      {:columns         (get confs :configuration-ncols)

@@ -44,7 +44,12 @@
       If you have downloaded JSON config from this site in the past, you might
       want to try to open it here again:
     </p>
-    <input type="file" name="jsonloader" id="jsonloader" onchange="shove_json()" />
+    <input
+      type="file"
+      name="jsonloader"
+      id="jsonloader"
+      onchange="shove_json()"
+    />
     <br />
     <br />
     <br />
@@ -58,9 +63,23 @@
       </label>
       <fieldset name="keys" id="keys">
         <label for="keys.columns">Number of columns (4 - 7)</label>
-        <input type="number" name="keys.columns" id="keys.columns" value="5" min="4" max="9" />
+        <input
+          type="number"
+          name="keys.columns"
+          id="keys.columns"
+          value="5"
+          min="4"
+          max="9"
+        />
         <label for="keys.rows">Number of rows (3 - 6)</label>
-        <input type="number" name="keys.rows" id="keys.rows" value="4" min="3" max="7" />
+        <input
+          type="number"
+          name="keys.rows"
+          id="keys.rows"
+          value="4"
+          min="3"
+          max="7"
+        />
         <label for="keys.thumb-count">Thumb Key Count</label>
         <select id="keys.thumb-count" name="keys.thumb-count">
           <option value="six">6 (Default)</option>
@@ -89,7 +108,9 @@
           <option value="ergodox">Use inner column (like ergodox)</option>
           <option value="innie">Without</option>
         </select>
-        <label for="keys.hide-last-pinky">Hide Bottom Pinky? (see Kinesis Advantage's Layout)</label>
+        <label for="keys.hide-last-pinky">
+          Hide Bottom Pinky? (see Kinesis Advantage's Layout)
+        </label>
         <select id="keys.hide-last-pinky" name="keys.hide-last-pinky">
           <option value="false">No</option>
           <option value="true">Yes</option>
@@ -119,7 +140,9 @@
           <option value="{{rc}}">pi/{{rc}}</option>
           {% endfor %}
         </select>
-        <label for="curve.centecol">Center of the curvature for the column</label>
+        <label for="curve.centecol">
+          Center of the curvature for the column
+        </label>
         <select id="curve.centercol" name="curve.centercol">
           <option value="4">Pinky finger's column</option>
           <option value="3">Ring finger's column</option>
@@ -134,7 +157,7 @@
         </select>
         <label for="curve.rotate-x">Rotation around row axis</label>
         <select id="curve.rotate-x" name="curve.rotate-x">
-          <option value=180>pi/180</option>
+          <option value="180">pi/180</option>
           {% for ta in rotate-x %}
           <option value="-{{ta}}">-pi/{{ta}}</option>
           {% endfor %}
@@ -144,8 +167,14 @@
         <h3>Connectors</h3>
       </label>
       <fieldset name="connector" id="connector">
-        <label for="connector.external">Use loligagger's external holder ?</label>
-        <select id="connector.external" name="connector.external" onchange="toggle_connectors_fields()">
+        <label for="connector.external">
+          Use loligagger's external holder ?
+        </label>
+        <select
+          id="connector.external"
+          name="connector.external"
+          onchange="toggle_connectors_fields()"
+        >
           <option value="false">No</option>
           <option value="true">Yes</option>
         </select>
@@ -164,8 +193,9 @@
         <h3>Form of the Case</h3>
       </label>
       <fieldset name="form" id="form">
-        <label for="form.hotswap">Dongguan Kaihua Electronics Co., Ltd (originally named Longhua
-          Electronics)'s Hotswap Socket?</label>
+        <label for="form.hotswap">
+          Dongguan Kaihua Electronics Co., Ltd (originally named Longhua Electronics)'s Hotswap Socket?
+        </label>
         <select id="form.hotswap" name="form.hotswap">
           <option value="false">No</option>
           <option value="true">Yes</option>
@@ -174,20 +204,49 @@
         <label for="form.thumb-center-offsets">Center</label>
         <div class="row" id="form.thumb-offsets">
           <div class="column column-33">
-            <label for="form.thumb-cluster-offset-x">X (toward the pinky)</label>
-            <input type="number" name="form.thumb-cluster-offset-x" id="form.thumb-cluster-offset-x" value="6" step="0.1" />
+            <label for="form.thumb-cluster-offset-x">
+              X (toward the pinky)
+            </label>
+            <input
+              type="number"
+              name="form.thumb-cluster-offset-x"
+              id="form.thumb-cluster-offset-x"
+              value="6"
+              step="0.1"
+            />
           </div>
           <div class="column column-33">
-            <label for="form.thumb-cluster-offset-y">Y (toward the index)</label>
-            <input type="number" name="form.thumb-cluster-offset-y" id="form.thumb-cluster-offset-y" value="-3" step="0.1" />
+            <label for="form.thumb-cluster-offset-y">
+              Y (toward the index)
+            </label>
+            <input
+              type="number"
+              name="form.thumb-cluster-offset-y"
+              id="form.thumb-cluster-offset-y"
+              value="-3"
+              step="0.1"
+            />
           </div>
           <div class="column column-33">
-            <label for="form.thumb-cluster-offset-z">Z (altitude)</label>
-            <input type="number" name="form.thumb-cluster-offset-z" id="form.thumb-cluster-offset-z" value="7" step="0.1" />
+            <label for="form.thumb-cluster-offset-z">
+              Z (altitude)
+            </label>
+            <input
+              type="number"
+              name="form.thumb-cluster-offset-z"
+              id="form.thumb-cluster-offset-z"
+              value="7"
+              step="0.1"
+            />
           </div>
         </div>
-        <label for="form.custom-thumb-offsets">Custom thumb single key offset (Experimental)</label>
-        <select name="form.custom-thumb-offsets" id="form.custom-thumb-offsets">
+        <label for="form.custom-thumb-cluster">
+          Custom thumb cluster (Experimental)
+        </label>
+        <select
+          name="form.custom-thumb-cluster"
+          id="form.custom-thumb-cluster"
+        >
           <option value="false">No</option>
           <option value="true">Yes</option>
         </select>
@@ -278,48 +337,110 @@
           <option value="true">Yes</option>
           <option value="false">No</option>
         </select>
-        <label for="form.index-measurement">Index Finger Measurement (Only used if Stagger? set yes)</label>
+        <label for="form.index-measurement">
+          Index Finger Measurement (Only used if Stagger? set yes)
+        </label>
         <div class="row" id="form.index-measurement">
           <div class="column column-50">
             <label for="form.stagger-index-y">Y</label>
-            <input type="number" name="form.stagger-index-y" id="form.stagger-index-y" value="0" step="0.1" />
+            <input
+              type="number"
+              name="form.stagger-index-y"
+              id="form.stagger-index-y"
+              value="0"
+              step="0.1"
+            />
           </div>
           <div class="column column-50">
             <label for="form.index-z">Z</label>
-            <input type="number" name="form.stagger-index-z" id="form.stagger-index-z" value="0" step="0.1" />
+            <input
+              type="number"
+              name="form.stagger-index-z"
+              id="form.stagger-index-z"
+              value="0"
+              step="0.1"
+            />
           </div>
         </div>
-        <label for="form.middle-measurement">Middle Finger Measurement (Only used if Stagger? set yes)</label>
+        <label for="form.middle-measurement">
+          Middle Finger Measurement (Only used if Stagger? set yes)
+        </label>
         <div class="row" id="form.middle-measurement">
           <div class="column column-50">
             <label for="form.stagger-middle-y">Y</label>
-            <input type="number" name="form.stagger-middle-y" id="form.stagger-middle-y" value="2.8" step="0.1" />
+            <input
+              type="number"
+              name="form.stagger-middle-y"
+              id="form.stagger-middle-y"
+              value="2.8"
+              step="0.1"
+            />
           </div>
           <div class="column column-50">
-            <label for="form.stagger-middle-z">Z</label>
-            <input type="number" name="form.stagger-middle-z" id="form.stagger-middle-z" value="-6.5" step="0.1" />
+            <label for="form.stagger-middle-z">
+              Z
+            </label>
+            <input
+              type="number"
+              name="form.stagger-middle-z"
+              id="form.stagger-middle-z"
+              value="-6.5"
+              step="0.1"
+            />
           </div>
         </div>
-        <label for="form.ring-measurement">Ring Finger Measurement (Only used if Stagger? set yes)</label>
+        <label for="form.ring-measurement">
+          Ring Finger Measurement (Only used if Stagger? set yes)
+        </label>
         <div class="row" id="form.ring-measurement">
           <div class="column column-50">
             <label for="form.stagger-ring-y">Y</label>
-            <input type="number" name="form.stagger-ring-y" id="form.stagger-ring-y" value="0" step="0.1" />
+            <input
+              type="number"
+              name="form.stagger-ring-y"
+              id="form.stagger-ring-y"
+              value="0"
+              step="0.1"
+            />
           </div>
           <div class="column column-50">
-            <label for="form.stagger-ring-z">Z</label>
-            <input type="number" name="form.stagger-ring-z" id="form.stagger-ring-z" value="0" step="0.1" />
+            <label for="form.stagger-ring-z">
+              Z
+            </label>
+            <input
+              type="number"
+              name="form.stagger-ring-z"
+              id="form.stagger-ring-z"
+              value="0"
+              step="0.1"
+            />
           </div>
         </div>
-        <label for="form.pinky-measurement">Pinky Finger Measurement (Only used if Stagger? set yes)</label>
+        <label for="form.pinky-measurement">
+          Pinky Finger Measurement (Only used if Stagger? set yes)
+        </label>
         <div class="row" id="form.pinky-measurement">
           <div class="column column-50">
             <label for="form.stagger-pinky-y">Y</label>
-            <input type="number" name="form.stagger-pinky-y" id="form.stagger-pinky-y" value="-13" step="0.1" />
+            <input
+              type="number"
+              name="form.stagger-pinky-y"
+              id="form.stagger-pinky-y"
+              value="-13"
+              step="0.1"
+            />
           </div>
           <div class="column column-50">
-            <label for="form.stagger-pinky-z">Z</label>
-            <input type="number" name="form.stagger-pinky-z" id="form.stagger-pinky-z" value="6" step="0.1" />
+            <label for="form.stagger-pinky-z">
+              Z
+            </label>
+            <input
+              type="number"
+              name="form.stagger-pinky-z"
+              id="form.stagger-pinky-z"
+              value="6"
+              step="0.1"
+            />
           </div>
         </div>
         <label for="form.wide-pinky">Wide Pinky?</label>
@@ -359,9 +480,24 @@
           <option value="false">Left</option>
         </select>
       </fieldset>
-      <input class="button-primary" type="submit" name="generate-case" value="Generate Case" />
-      <input class="button-primary" type="submit" name="generate-plate" value="Generate Plate" />
-      <input class="button-primary" type="submit" name="generate-json" value="Generate JSON" />
+      <input
+        class="button-primary"
+        type="submit"
+        name="generate-case"
+        value="Generate Case"
+      />
+      <input
+        class="button-primary"
+        type="submit"
+        name="generate-plate"
+        value="Generate Plate"
+      />
+      <input
+        class="button-primary"
+        type="submit"
+        name="generate-json"
+        value="Generate JSON"
+      />
     </form>
     <p>Loligagger's external holder files:</p>
     <ul>
@@ -378,7 +514,11 @@
     <p>BrownElvis' external holder files:</p>
     <ul>
       <li>
-        <a href="loligagger-external-holder-promicro-v3-extended.stl">Promicro V3</a>
+        <a
+          href="loligagger-external-holder-promicro-v3-extended.stl"
+        >
+          Promicro V3
+        </a>
       </li>
     </ul>
   </div>

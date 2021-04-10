@@ -178,10 +178,11 @@
           <option value="false">No</option>
           <option value="true">Yes</option>
         </select>
-        <label for="connector.trrs">Connector</label>
-        <select id="connector.trrs" name="connector.trrs">
-          <option value="false">RJ9</option>
-          <option value="true">TRRS</option>
+        <label for="connector.type">Connector</label>
+        <select id="connector.type" name="connector.type">
+          <option value="rj9">RJ9</option>
+          <option value="trrs">TRRS</option>
+          <option value="none">None</option>
         </select>
         <label for="connector.micro-usb">USB Hole</label>
         <select id="connector.micro-usb" name="connector.micro-usb">
@@ -250,88 +251,254 @@
           <option value="false">No</option>
           <option value="true">Yes</option>
         </select>
-        <label for="form.thumb-top-right-offsets">Top right</label>
-        <div class="row" id="form.thumb-offsets">
+        <label for="form.thumb-top-right">
+          Top right
+        </label>
+        <div class="row" id="form.thumb-top-right">
           <div class="column column-33">
-            <label for="form.thumb-top-right-offset-x">X (toward the pinky)</label>
-            <input type="number" name="form.thumb-top-right-offset-x" id="form.thumb-top-right-offset-x" value="-12" step="0.1" />
+            <label for="form.thumb-top-right-offset-x">
+              X (toward the pinky)
+            </label>
+            <input
+              type="number"
+              name="form.thumb-top-right-offset-x"
+              id="form.thumb-top-right-offset-x"
+              value="-15"
+              step="0.1"
+            />
           </div>
           <div class="column column-33">
-            <label for="form.thumb-top-right-offset-y">Y (toward the index)</label>
-            <input type="number" name="form.thumb-top-right-offset-y" id="form.thumb-top-right-offset-y" value="-16" step="0.1" />
+            <label for="form.thumb-top-right-offset-y">
+              Y (toward the index)
+            </label>
+            <input
+              type="number"
+              name="form.thumb-top-right-offset-y"
+              id="form.thumb-top-right-offset-y"
+              value="-10"
+              step="0.1"
+            />
           </div>
           <div class="column column-33">
             <label for="form.thumb-top-right-offset-z">Z (altitude)</label>
-            <input type="number" name="form.thumb-top-right-offset-z" id="form.thumb-top-right-offset-z" value="3" step="0.1" />
+            <input
+              type="number"
+              name="form.thumb-top-right-offset-z"
+              id="form.thumb-top-right-offset-z"
+              value="-5"
+              step="0.1"
+            />
           </div>
         </div>
-        <label for="form.custom-thumb-tenting">Custom thumb cluster tenting (Experimental)</label>
-        <select name="form.custom-thumb-tenting" id="form.custom-thumb-tenting" onchange="toggle_custom_thumb_fields()">
-          <option value="false">No</option>
-          <option value="true">Yes</option>
-        </select>
         <div class="row">
           <div class="column column-33">
-            <label for="form.thumb-tenting-x">X (index-pinky axis)</label>
-            <select id="form.thumb-tenting-x" name="form.thumb-tenting-x">
+            <label for="form.thumb-top-right-tenting-x">
+              X (index-pinky axis) (deg)
+            </label>
+            <select
+              id="form.thumb-top-right-tenting-x"
+              name="form.thumb-top-right-tenting-x"
+            >
               <option value="69">Default (without curvature)</option>
-              {% for ttx in thumb-tenting-x %}
-              <option value="{{ttx}}">pi/{{ttx}}</option>
+              {% for ttx in thumb-tenting %}
+              <option value="{{ttx}}">{{ttx}}</option>
               {% endfor %}
             </select>
           </div>
           <div class="column column-33">
-            <label for="form.thumb-tenting-y">Y (index axis)</label>
-            <select id="form.thumb-tenting-y" name="form.thumb-tenting-y">
+            <label for="form.thumb-top-right-tenting-y">
+              Y (index axis) (deg)
+            </label>
+            <select
+              id="form.thumb-top-right-tenting-y"
+              name="form.thumb-top-right-tenting-y"
+            >
               <option value="69">Default (without curvature)</option>
-              {% for tty in thumb-tenting-y %}
-              <option value="-{{tty}}">-pi/{{tty}}</option>
+              {% for tty in thumb-tenting %}
+              <option value="{{tty}}">{{tty}}</option>
               {% endfor %}
             </select>
           </div>
           <div class="column column-33">
-            <label for="form.thumb-tenting-z">Z (altitude)</label>
-            <select id="form.thumb-tenting-z" name="form.thumb-tenting-z">
+            <label for="form.thumb-top-right-tenting-z">
+              Z (altitude) (deg)
+            </label>
+            <select
+              id="form.thumb-top-right-tenting-z"
+              name="form.thumb-top-right-tenting-z"
+            >
               <option value="69">Default (without curvature)</option>
-              {% for ttz in thumb-tenting-z %}
-              <option value="{{ttz}}">pi/{{ttz}}</option>
+              {% for ttz in thumb-tenting %}
+              <option value="{{ttz}}">{{ttz}}</option>
               {% endfor %}
             </select>
           </div>
         </div>
-        <!--div class="row" id="custom-thumb-tenting" style="display: none">
-          {% for tloc in thumb-locations %}
-          <div class="row">
-            <div class="column column-33">
-              <label for="form.thumb-tenting-x">{{tloc}} X (index-pinky axis)</label>
-              <select id="form.thumb-tenting-x" name="form.thumb-tenting-{{tloc}}-x">
-                <option value="69">Default (without curvature)</option>
-                {% for ttx in thumb-tenting-x %}
-                <option value="-{{ttx}}">-pi/{{ttx}}</option>
-                {% endfor %}
-              </select>
-            </div>
-            <div class="column column-33">
-              <label for="form.thumb-tenting-y">{{tloc}} Y (index-pinky axis)</label>
-              <select id="form.thumb-tenting-y" name="form.thumb-tenting-{{tloc}}-y">
-                <option value="69">Default (without curvature)</option>
-                {% for tty in thumb-tenting-y %}
-                <option value="-{{tty}}">-pi/{{tty}}</option>
-                {% endfor %}
-              </select>
-            </div>
-            <div class="column column-33">
-              <label for="form.thumb-tenting-z">{{tloc}} Z (index-pinky axis)</label>
-              <select id="form.thumb-tenting-z" name="form.thumb-tenting-{{tloc}}-z">
-                <option value="69">Default (without curvature)</option>
-                {% for ttz in thumb-tenting-z %}
-                <option value="-{{ttz}}">-pi/{{ttz}}</option>
-                {% endfor %}
-              </select>
-            </div>
+
+        <label for="form.thumb-top-left">Top left</label>
+        <div class="row" id="form.thumb-top-left">
+          <div class="column column-33">
+            <label for="form.thumb-top-left-offset-x">
+              X (toward the pinky) (deg)
+            </label>
+            <input
+              type="number"
+              name="form.thumb-top-left-offset-x"
+              id="form.thumb-top-left-offset-x"
+              value="-35"
+              step="0.1"
+            />
           </div>
-          {% endfor %}
-        </div-->
+          <div class="column column-33">
+            <label for="form.thumb-top-left-offset-y">
+              Y (toward the index) (deg)
+            </label>
+            <input
+              type="number"
+              name="form.thumb-top-left-offset-y"
+              id="form.thumb-top-left-offset-y"
+              value="-16"
+              step="0.1"
+            />
+          </div>
+          <div class="column column-33">
+            <label for="form.thumb-top-left-offset-z">Z (altitude)</label>
+            <input
+              type="number"
+              name="form.thumb-top-left-offset-z"
+              id="form.thumb-top-left-offset-z"
+              value="-2"
+              step="0.1"
+            />
+          </div>
+        </div>
+        <div class="row">
+          <div class="column column-33">
+            <label for="form.thumb-top-left-tenting-x">
+              X (index-pinky axis) (deg)
+            </label>
+            <select
+              id="form.thumb-top-left-tenting-x"
+              name="form.thumb-top-left-tenting-x"
+            >
+              <option value="69">Default (without curvature)</option>
+              {% for ttx in thumb-tenting %}
+              <option value="{{ttx}}">{{ttx}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="column column-33">
+            <label for="form.thumb-top-left-tenting-y">
+              Y (index axis) (deg)
+            </label>
+            <select
+              id="form.thumb-top-left-tenting-y"
+              name="form.thumb-top-left-tenting-y"
+            >
+              <option value="69">Default (without curvature)</option>
+              {% for tty in thumb-tenting %}
+              <option value="{{tty}}">{{tty}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="column column-33">
+            <label for="form.thumb-top-left-tenting-z">
+              Z (altitude) (deg)
+            </label>
+            <select
+              id="form.thumb-top-left-tenting-z"
+              name="form.thumb-top-left-tenting-z"
+            >
+              <option value="69">Default (without curvature)</option>
+              {% for ttz in thumb-tenting %}
+              <option value="{{ttz}}">{{ttz}}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <label for="form.thumb-middle-left">Middle left</label>
+        <div class="row" id="form.thumb-middle-left">
+          <div class="column column-33">
+            <label for="form.thumb-middle-left-offset-x">
+              X (toward the pinky)
+            </label>
+            <input
+              type="number"
+              name="form.thumb-middle-left-offset-x"
+              id="form.thumb-middle-left-offset-x"
+              value="-53"
+              step="0.1"
+            />
+          </div>
+          <div class="column column-33">
+            <label for="form.thumb-middle-left-offset-y">
+              Y (toward the index)
+            </label>
+            <input
+              type="number"
+              name="form.thumb-middle-left-offset-y"
+              id="form.thumb-middle-left-offset-y"
+              value="-26"
+              step="0.1"
+            />
+          </div>
+          <div class="column column-33">
+            <label for="form.thumb-middle-left-offset-z">
+              Z (altitude)
+            </label>
+            <input
+              type="number"
+              name="form.thumb-middle-left-offset-z"
+              id="form.thumb-middle-left-offset-z"
+              value="-12"
+              step="0.1"
+            />
+          </div>
+        </div>
+        <div class="row">
+          <div class="column column-33">
+            <label for="form.thumb-middle-left-tenting-x">
+              X (index-pinky axis)
+            </label>
+            <select
+              id="form.thumb-middle-left-tenting-x"
+              name="form.thumb-middle-left-tenting-x"
+            >
+              <option value="69">Default (without curvature)</option>
+              {% for ttx in thumb-tenting %}
+              <option value="{{ttx}}">{{ttx}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="column column-33">
+            <label for="form.thumb-middle-left-tenting-y">
+              Y (index axis)
+            </label>
+            <select
+              id="form.thumb-middle-left-tenting-y"
+              name="form.thumb-middle-left-tenting-y"
+            >
+              <option value="69">Default (without curvature)</option>
+              {% for tty in thumb-tenting %}
+              <option value="{{tty}}">{{tty}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="column column-33">
+            <label for="form.thumb-middle-left-tenting-z">Z (altitude)</label>
+            <select
+              id="form.thumb-middle-left-tenting-z"
+              name="form.thumb-middle-left-tenting-z"
+            >
+              <option value="69">Default (without curvature)</option>
+              {% for ttz in thumb-tenting %}
+              <option value="{{ttz}}">{{ttz}}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
         <label for="form.stagger">Stagger?</label>
         <select id="form.stagger" name="form.stagger">
           <option value="true">Yes</option>

@@ -325,7 +325,7 @@
         z-rotation      (thumb-tenting c (case thumb-count :three 20 :five 25 10) :configuration-custom-thumb-tenting-z)
         custom-tenting? (get c :configuration-custom-thumb-tenting?)
         z-movement      (if custom-tenting? 0 -2)
-        movement        (case thumb-count :five [-35 -16 z-movement] [-35 -15 z-movement])]
+        movement        (case thumb-count :five [-26 -16 z-movement] [-35 -15 z-movement])]
     (->> shape
       (rotate x-rotation [1 0 0])
       (rotate y-rotation [0 1 0])
@@ -340,7 +340,7 @@
         z-rotation (thumb-tenting c 10 :configuration-custom-thumb-tenting-z)
         ;; z-offset (thumb-key-height (thumb-tenting c) -1)
         ;; movement    (if (= thumb-count :five) [-15 -10 z-offset] [-12 -16 z-offset])]
-        movement    (if (= thumb-count :five) [-15 -10 5] [-12 -16 3])]
+        movement    (if (= thumb-count :five) [-6 -10 5] [-12 -16 3])]
     (->> shape
          (rotate x-rotation [1 0 0])
          (rotate y-rotation [0 1 0])
@@ -384,7 +384,7 @@
         y-rotation (thumb-tenting c (if (= thumb-count :five) -32 -35) :configuration-custom-thumb-tenting-y)
         z-rotation (thumb-tenting c (if (= thumb-count :five) 35 52) :configuration-custom-thumb-tenting-z)
         ;; z-offset (thumb-key-height (thumb-tenting c) 2)
-        movement    (if (= thumb-count :five) [-51 -25 -11.5] [-56.3 -43.3 -23.5])]
+        movement    (if (= thumb-count :five) [-42 -25 -11.5] [-56.3 -43.3 -23.5])]
     (->> shape
          (rotate x-rotation [1 0 0])
         ;;  (rotate (thumb-tenting c) [0 1 0])
@@ -899,26 +899,26 @@
         nrows     (get c :configuration-nrows)
         cornerrow (fcornerrow nrows)]
     (union
-     (hull
-      (thumb-tr-place c web-post-tr)
-      (thumb-tr-place c (translate (wall-locate1 0.5 -1) web-post-tr))
-      (thumb-tr-place c (translate (wall-locate2 0.5 -1) web-post-tr))
-      (thumb-tr-place c (translate (wall-locate3 0.5 -1) web-post-tr))
-      (key-place c 1 cornerrow web-post-br))
-     (hull
-      (key-place c 2 cornerrow web-post-bl)
-      (key-place c 2 cornerrow (translate (wall-locate1 1 -1) web-post-bl))
-      (key-place c 2 cornerrow (translate (wall-locate3 1 -1) web-post-bl))
-      (thumb-tr-place c (translate (wall-locate3 0.5 -1) web-post-tr))
-      (key-place c 1 cornerrow web-post-br))
-     (key-wall-brace c
+     #_(hull
+        (thumb-tr-place c web-post-tr)
+        (thumb-tr-place c (translate (wall-locate1 0.5 -1) web-post-tr))
+        (thumb-tr-place c (translate (wall-locate2 0.5 -1) web-post-tr))
+        (thumb-tr-place c (translate (wall-locate3 0.5 -1) web-post-tr))
+        (key-place c 1 cornerrow web-post-br))
+     #_(hull
+        (key-place c 2 cornerrow web-post-bl)
+        (key-place c 2 cornerrow (translate (wall-locate1 1 -1) web-post-bl))
+        (key-place c 2 cornerrow (translate (wall-locate3 1 -1) web-post-bl))
+        (thumb-tr-place c (translate (wall-locate3 0.5 -1) web-post-tr))
+        (key-place c 1 cornerrow web-post-br))
+     #_(key-wall-brace c
                      2 cornerrow 1 -1 web-post-bl
                      2 cornerrow 0 -1 web-post-br)
      (for [x (range 3 ncols)]
        (key-wall-brace c
                        x cornerrow 0 -1 web-post-bl
                        x cornerrow 0 -1 web-post-br))
-     (for [x (range 3 ncols)]
+     (for [x (range 4 ncols)]
        (key-wall-brace c
                        x       cornerrow 0 -1 web-post-bl
                        (dec x) cornerrow 0 -1 web-post-br)))))
@@ -1014,14 +1014,52 @@
   (let [cornerrow (fcornerrow (get c :configuration-nrows))]
     (union
      (hull
-      (key-place c 2 cornerrow (translate (wall-locate3 1 -1) web-post-bl))
+      (thumb-tr-place c web-post-tr)
+      (key-place c 1 cornerrow web-post-br)
+      (thumb-tr-place c (translate (wall-locate2 0.5 -1) web-post-tr))
+      (thumb-tr-place c (translate (wall-locate3 0.5 -1) web-post-tr)))
+     (hull
+      (key-place c 1 cornerrow web-post-br)
+      (thumb-tr-place c (translate (wall-locate2 0.5 -1) web-post-tr))
       (thumb-tr-place c (translate (wall-locate3 0.5 -1) web-post-tr))
-      (thumb-tr-place c (translate (wall-locate3 0.5 0) web-post-br)))
+      (key-place c 2 cornerrow web-post-bl))
+     (hull
+      (thumb-tr-place c (translate (wall-locate2 0.5 -1) web-post-tr))
+      (thumb-tr-place c (translate (wall-locate3 0.5 -1) web-post-tr))
+      (key-place c 2 cornerrow web-post-bl)
+      (key-place c 2 cornerrow web-post-br))
+     (hull
+      (thumb-tr-place c (translate (wall-locate2 0.5 -1) web-post-tr))
+      (thumb-tr-place c (translate (wall-locate3 0.5 -1) web-post-tr))
+      (key-place c 2 cornerrow web-post-br)
+      (key-place c 3 cornerrow web-post-bl))
      (bottom-hull
-      (key-place c 2 cornerrow (translate (wall-locate2 1 -1) web-post-bl))
-      (key-place c 2 cornerrow (translate (wall-locate3 1 -1) web-post-bl))
+      (key-place c 3 cornerrow (translate (wall-locate2 0 -1) web-post-bl))
+      (key-place c 3 cornerrow (translate (wall-locate3 0 -1) web-post-bl))
       (thumb-tr-place c (translate (wall-locate2 0.5 0) web-post-br))
-      (thumb-tr-place c (translate (wall-locate3 0.5 0) web-post-br)))
+      (thumb-tr-place c (translate (wall-locate3 0.5 0) web-post-br))
+      ;; (thumb-tr-place c (translate (wall-locate2 0.5 -1) web-post-tr))
+      (thumb-tr-place c (translate (wall-locate3 0.5 -1) web-post-tr)))
+     (hull
+      (key-place c 3 cornerrow web-post-bl)
+      (key-place c 3 cornerrow (translate (wall-locate1 0 -1) web-post-bl))
+      (key-place c 3 cornerrow (translate (wall-locate2 0 -1) web-post-bl))
+      (key-place c 3 cornerrow (translate (wall-locate3 0 -1) web-post-bl))
+      ;; (thumb-tr-place c (translate (wall-locate2 0.5 -1) web-post-tr))
+      (thumb-tr-place c (translate (wall-locate3 0.5 -1) web-post-tr)))
+     #_(hull
+        (key-place c 2 cornerrow web-post-bl)
+        (thumb-tr-place c (translate (wall-locate2 0.5 -1) web-post-tr))
+        (key-place c 2 cornerrow web-post-br))
+     #_(hull
+        (key-place c 3 cornerrow (translate (wall-locate1 0 -1) web-post-bl))
+        (thumb-tr-place c (translate (wall-locate3 0.5 -1) web-post-tr))
+        (thumb-tr-place c (translate (wall-locate3 0.5 0) web-post-br)))
+     #_(bottom-hull
+        (key-place c 3 cornerrow (translate (wall-locate2 0 -1) web-post-bl))
+        (key-place c 3 cornerrow (translate (wall-locate3 0 -1) web-post-bl))
+        (thumb-tr-place c (translate (wall-locate2 0.5 0) web-post-br))
+        (thumb-tr-place c (translate (wall-locate3 0.5 0) web-post-br)))
      (hanging-wall-brace (partial thumb-tr-place c)  0.5    0 web-post-br
                          (partial thumb-tr-place c)  0.5   -1 web-post-tr)
      (wall-brace (partial thumb-tr-place c)  0.5     0 web-post-br
@@ -1033,9 +1071,9 @@
      (wall-brace (partial thumb-tl-place c) -0.5  -1 web-post-br
                  (partial thumb-tl-place c)  0    -1 web-post-bl)
      #_(wall-brace (partial thumb-tl-place c)  0    -1 web-post-bl
-                 (partial thumb-tl-place c) -1.5   0 web-post-bl)
+                   (partial thumb-tl-place c) -1.5   0 web-post-bl)
      #_(wall-brace (partial thumb-tl-place c) -1.5   0 web-post-bl
-                 (partial thumb-tl-place c) -1.5   0 web-post-tl)
+                   (partial thumb-tl-place c) -1.5   0 web-post-tl)
      (wall-brace (partial thumb-tl-place c) 0 -1 web-post-bl
                  (partial thumb-bl-place c) 0 -1 web-post-br)
      (wall-brace (partial thumb-bl-place c) 0 -1 web-post-br
@@ -1044,11 +1082,10 @@
                  (partial thumb-bl-place c) -1 0 web-post-bl)
      (wall-brace (partial thumb-bl-place c) -1 0 web-post-bl
                  (partial thumb-bl-place c) -1 0 web-post-tl)
-     (wall-brace (partial thumb-bl-place c) -1 0 web-post-tl
-                 (partial thumb-bl-place c) 0 1 web-post-tl)
-     (wall-brace (partial thumb-bl-place c) 0 1 web-post-tl
-                 (partial thumb-bl-place c) -0.5 1 web-post-tr)
-     )))
+     #_(wall-brace (partial thumb-bl-place c) -1 0 web-post-tl
+                   (partial thumb-bl-place c) 0 1 web-post-tl)
+     #_(wall-brace (partial thumb-bl-place c) 0 1 web-post-tl
+                   (partial thumb-bl-place c) -0.5 1 web-post-tr))))
 
 (defn thumb-wall-six [c]
   (union (wall-brace (partial thumb-tr-place c)  0 -1 thumb-post-br
@@ -1094,21 +1131,33 @@
       (inner-placement c cornerrow -1 (translate (wall-locate2 -1 0) web-post))
       (inner-placement c cornerrow -1 (translate (wall-locate3 -1 0) web-post))
       (thumb-tl-place c web-post-tl)
-      (thumb-bl-place c web-post-tr)
-      )
+      (thumb-bl-place c web-post-tr))
      (hull
       (inner-placement c cornerrow -1 (translate (wall-locate2 -1 0) web-post))
       (inner-placement c cornerrow -1 (translate (wall-locate3 -1 0) web-post))
       (thumb-bl-place c web-post-tr)
-      (thumb-bl-place c (translate (wall-locate1 -0.5 1) web-post-tr))
-      (thumb-bl-place c (translate (wall-locate2 -0.5 1) web-post-tr))
-      (thumb-bl-place c (translate (wall-locate3 -0.5 1) web-post-tr))
+      ;; (thumb-bl-place c (translate (wall-locate1 -0.5 1) web-post-tr))
+      ;; (thumb-bl-place c (translate (wall-locate2 -0.5 1) web-post-tr))
+      ;; (thumb-bl-place c (translate (wall-locate3 -0.5 1) web-post-tr))
+      (thumb-bl-place c web-post-tl)
       )
+     #_(bottom-hull
+        (inner-placement c cornerrow -1 (translate (wall-locate2 -1 0) web-post))
+        (inner-placement c cornerrow -1 (translate (wall-locate3 -1 0) web-post))
+        (thumb-bl-place c (translate (wall-locate2 -0.5 1) web-post-tr))
+        (thumb-bl-place c (translate (wall-locate3 -0.5 1) web-post-tr)))
      (bottom-hull
       (inner-placement c cornerrow -1 (translate (wall-locate2 -1 0) web-post))
       (inner-placement c cornerrow -1 (translate (wall-locate3 -1 0) web-post))
-      (thumb-bl-place c (translate (wall-locate2 -0.5 1) web-post-tr))
-      (thumb-bl-place c (translate (wall-locate3 -0.5 1) web-post-tr)))
+      (thumb-bl-place c (translate (wall-locate2 -1 0) web-post-tl))
+      (thumb-bl-place c (translate (wall-locate3 -1 0) web-post-tl)))
+     (hull
+      (inner-placement c cornerrow -1 (translate (wall-locate2 -1 0) web-post))
+      (inner-placement c cornerrow -1 (translate (wall-locate3 -1 0) web-post))
+      (thumb-bl-place c web-post-tl)
+      (thumb-bl-place c (translate (wall-locate1 -1 0) web-post-tl))
+      (thumb-bl-place c (translate (wall-locate2 -1 0) web-post-tl))
+      (thumb-bl-place c (translate (wall-locate3 -1 0) web-post-tl)))
      (hull
       (inner-placement c cornerrow -1 web-post)
       (inner-placement c cornerrow -1 (translate (wall-locate1 -1 0) web-post))
@@ -1309,7 +1358,7 @@
         y-middle-last   (+ lastrow var-middle-last)
         x-middle-last   (if is-five? 1.6 2)]
     (union (screw-insert c -1.2  -0.1   bottom-radius top-radius height)
-           (screw-insert c -1.3   2.5   bottom-radius top-radius height)
+           (screw-insert c -1.0   3   bottom-radius top-radius height)
            (screw-insert c  2.05  2.40  bottom-radius top-radius height)
            (screw-insert c  2    -0.35  bottom-radius top-radius height)
            (screw-insert c  4.01 -0.15  bottom-radius top-radius height)
@@ -1445,10 +1494,10 @@
         :configuration-show-caps?             false
         :configuration-plate-projection?      false})
 
-#_(spit "things/right.scad"
+(spit "things/right.scad"
       (write-scad (model-right c)))
 
-(spit "things/right-plate.scad"
+#_(spit "things/right-plate.scad"
         (write-scad (plate-right c)))
 
 #_(spit "things/right-plate.scad"

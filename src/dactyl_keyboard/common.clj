@@ -440,7 +440,7 @@
                (union (translate [0 2 0] (cube 10.78  9 18.38))
                       (translate [0 0 5] (cube 10.78 13  5))))))
 
-(def usb-holder-size [6.5 13.0 13.6])
+(def usb-holder-size [10 13.0 13.6])
 (def usb-holder-thickness 4)
 (defn usb-holder
   "TODO: doc"

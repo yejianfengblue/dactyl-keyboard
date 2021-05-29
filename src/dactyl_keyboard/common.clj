@@ -300,31 +300,39 @@
                                  (translate (if use-choc? [-5 4 0] [-3.81 2.54 0])))
         minus-hole          (->> (cylinder (/ 3.3 2) 10)
                                  (with-fn 8)
-                                 (translate (if use-choc? [0 6 0] [2.54 5.08 0])))
+                                 (translate (if use-choc? [0 6 5] [2.54 5.08 0])))
         plus-hole-mirrored  (->> (cylinder (/ 3.3 2) 10)
                                  (with-fn 8)
-                                 (translate (if use-choc? [5 4 0] [3.81 2.54 0])))
+                                 (translate (if use-choc? [5 4 5] [3.81 2.54 0])))
         minus-hole-mirrored (->> (cylinder (/ 3.3 2) 10)
                                  (with-fn 8)
-                                 (translate (if use-choc? [0 6 0] [-2.54 5.08 0])))
+                                 (translate (if use-choc? [0 6 5] [-2.54 5.08 0])))
         friction-hole       (->> (cylinder (if use-choc? 1 (/ 1.7 2)) 10)
                                  (with-fn 8))
         friction-hole-right (translate [(if use-choc? 5.5 5) 0 0] friction-hole)
         friction-hole-left  (translate [(if use-choc? -5.5 -5) 0 0] friction-hole)
         hotswap-base-z-offset (if use-choc? 0.2 -2.6)
         hotswap-base-shape  (->> (cube 19 (if use-choc? 11.5 8.2) 3.5)
-                                 (translate [0 3 hotswap-base-z-offset]))
-        hotswap-holder      (difference swap-holder
+                                 (translate [0 5 hotswap-base-z-offset]))
+        choc-socket-holder-height 5.5
+        choc-socket-holder-thickness 1
+        choc-hotswap-socket-holder (difference
+                                (->> (cube 10 7 choc-socket-holder-height)
+                                     (translate [2 5 hotswap-base-z-offset]))
+                                (->> (cube 5 7 choc-socket-holder-height)
+                                     (translate [-0.6 6 (+ hotswap-base-z-offset choc-socket-holder-thickness)]))
+                                (->> (cube 7 7 choc-socket-holder-height)
+                                     (translate [5 4 (+ hotswap-base-z-offset choc-socket-holder-thickness)]))
+                                )
+        hotswap-holder      (union (if use-choc? choc-hotswap-socket-holder ())
+                                (difference swap-holder 
                                         main-axis-hole
-                                        (if is-right?
-                                          plus-hole
-                                          plus-hole-mirrored)
-                                        (if is-right?
-                                          minus-hole
-                                          minus-hole-mirrored)
+                                        (union plus-hole plus-hole-mirrored)
+                                        (union minus-hole minus-hole-mirrored)
                                         friction-hole-left
                                         friction-hole-right
-                                        hotswap-base-shape)]
+                                        hotswap-base-shape)
+                            )]
     (difference (union plate-half
                        (->> plate-half
                             (mirror [1 0 0])

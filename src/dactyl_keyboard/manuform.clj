@@ -306,34 +306,44 @@
     (map + (key-position c 1 cornerrow [(/ mount-width 2) (- (/ mount-height 2)) 0])
          (thumb-cluster-offsets c))))
 
-(defn thumb-tenting [c default-val custom-rotation]
-  (let [custom-tenting? (get c :configuration-custom-thumb-tenting?)
-        custom-degree (get-in c [custom-rotation])]
-    (if custom-tenting? custom-degree (deg2rad default-val))))
-
-(defn thumb-offset [c default]
-  (let [custom-offset? (get c :configuration-custom-thumb-offsets?)]
-    (if custom-offset? [get c :configuration-custom-] default)))
+(defn thumb-tenting [c default-rotation custom-rotation-key]
+  (let [custom-tenting? (get c :configuration-custom-thumb-cluster?)
+        rotation (if custom-tenting? (get c custom-rotation-key default-rotation) default-rotation)
+        ]
+        (deg2rad rotation)))
 
 (defn thumb-tl-place [c shape]
   (let [thumb-count     (get c :configuration-thumb-count)
-        x-rotation      (thumb-tenting c 10 :configuration-custom-thumb-tenting-x)
-        y-rotation      (thumb-tenting c -23 :configuration-custom-thumb-tenting-y)
-        z-rotation      (thumb-tenting c (case thumb-count :three 20 :five 25 10) :configuration-custom-thumb-tenting-z)
-        movement        (case thumb-count :five [-35 -16 -2] [-35 -15 -2])]
+        x-rotation      (thumb-tenting c 10 :configuration-thumb-top-left-tenting-x)
+        y-rotation      (thumb-tenting c -23 :configuration-thumb-top-left-tenting-y)
+        z-rotation      (thumb-tenting c (case thumb-count :three 20 :five 25 10) :configuration-thumb-top-left-tenting-z)
+        default-x -35
+        default-y (if (= thumb-count :five) -16 -15)
+        default-z -2
+        custom-offsets? (get c :configuration-custom-thumb-cluster?)
+        offset (if custom-offsets?
+                 [
+                  (get c :configuration-thumb-top-left-offset-x)
+                  (get c :configuration-thumb-top-left-offset-y)
+                  (get c :configuration-thumb-top-left-offset-z)
+                 ]
+                 [default-x default-y default-z])
+        ]
     (->> shape
+      ;; do the z-rotation first
+      ;; otherwise some design become impossible or complicated
+      (rotate z-rotation [0 0 1])
       (rotate x-rotation [1 0 0])
       (rotate y-rotation [0 1 0])
-      (rotate z-rotation [0 0 1])
       (translate (thumborigin c))
-      (translate movement))))
+      (translate offset))))
 
 (defn thumb-tr-place [c shape]
   (let [thumb-count (get c :configuration-thumb-count)
-        x-rotation (thumb-tenting c (if (= thumb-count :five) 14 10) :configuration-custom-thumb-tenting-x)
-        y-rotation (thumb-tenting c (if (= thumb-count :five) -15 -23) :configuration-custom-thumb-tenting-y)
-        z-rotation (thumb-tenting c 10 :configuration-custom-thumb-tenting-z)
-        custom-offsets? (get c :configuration-custom-thumb-offsets?)
+        x-rotation (thumb-tenting c (if (= thumb-count :five) 14 10) :configuration-thumb-top-right-tenting-x)
+        y-rotation (thumb-tenting c (if (= thumb-count :five) -15 -23) :configuration-thumb-top-right-tenting-y)
+        z-rotation (thumb-tenting c 10 :configuration-thumb-top-right-tenting-z)
+        custom-offsets? (get c :configuration-custom-thumb-cluster?)
         default-x (if (= thumb-count :five) -15 -12)
         default-y (if (= thumb-count :five) -10 -16)
         default-z (if (= thumb-count :five) 5 3)
@@ -346,24 +356,39 @@
                  [default-x default-y default-z])
         ]
     (->> shape
+         ;; do the z-rotation first
+         ;; otherwise some design become impossible or complicated
+         (rotate z-rotation [0 0 1])
          (rotate x-rotation [1 0 0])
          (rotate y-rotation [0 1 0])
-         (rotate z-rotation [0 0 1])
          (translate (thumborigin c))
          (translate offset))))
 
 (defn thumb-ml-place [c shape]
   (let [thumb-count (get c :configuration-thumb-count)
-        x-rotation (thumb-tenting c 6 :configuration-custom-thumb-tenting-x)
-        y-rotation (thumb-tenting c -34 :configuration-custom-thumb-tenting-y)
-        z-rotation (thumb-tenting c 40 :configuration-custom-thumb-tenting-z)
-        movement    (if (= thumb-count :three) [-53 -26 -12] [-52 -26 -12])]
+        x-rotation (thumb-tenting c 6 :configuration-thumb-middle-left-tenting-x)
+        y-rotation (thumb-tenting c -34 :configuration-thumb-middle-left-tenting-y)
+        z-rotation (thumb-tenting c 40 :configuration-thumb-middle-left-tenting-z)
+        custom-offsets? (get c :configuration-custom-thumb-cluster?)
+        default-x (if (= thumb-count :three) -53 -52)
+        default-y -26
+        default-z -12
+        offset (if custom-offsets?
+                 [
+                  (get c :configuration-thumb-middle-left-offset-x)
+                  (get c :configuration-thumb-middle-left-offset-y)
+                  (get c :configuration-thumb-middle-left-offset-z)
+                 ]
+                 [default-x default-y default-z])
+        ]
     (->> shape
+         ;; do the z-rotation first
+         ;; otherwise some design become impossible or complicated
+         (rotate z-rotation [0 0 1])
          (rotate x-rotation [1 0 0])
          (rotate y-rotation [0 1 0])
-         (rotate z-rotation [0 0 1])
          (translate (thumborigin c))
-         (translate movement))))
+         (translate offset))))
 
 (defn thumb-mr-place [c shape]
   (let [thumb-count (get c :configuration-thumb-count)
@@ -1242,7 +1267,8 @@
                     (+ (/ (last trrs-holder-hole-size) 2) trrs-holder-thickness)]))))
 
 (defn pro-micro-position [c]
-  (map + (key-position c 0 0.15 (wall-locate3 -1 0)) [-2 2 -30]))
+  (map + (key-position c 0 0.15 (wall-locate3 -1 0)) [-2 2 -30])
+)
 (def pro-micro-space-size [4 10 12]) ; z has no wall;
 (def pro-micro-wall-thickness 2)
 (def pro-micro-holder-size
@@ -1354,6 +1380,7 @@
 (def wire-post-height 7)
 (def wire-post-overhang 3.5)
 (def wire-post-diameter 2.6)
+(def usb-holder-offset [-22 5 0])
 (defn wire-post [c direction offset]
   (->> (union (translate [0 (* wire-post-diameter -0.5 direction) 0]
                          (cube wire-post-diameter wire-post-diameter wire-post-height))
@@ -1380,7 +1407,7 @@
         use-external-holder?       (get c :configuration-use-external-holder?)
         use-promicro-usb-hole?     (get c :configuration-use-promicro-usb-hole?)
         use-screw-inserts?         (get c :configuration-use-screw-inserts?)
-        use-trrs?                  (get c :configuration-use-trrs?)
+        connector-type             (get c :configuration-connector-type)
         use-wire-post?             (get c :configuration-use-wire-post?)]
     (difference
      (union
@@ -1389,7 +1416,9 @@
       (if-not use-external-holder?
         (union
          (if use-wire-post? (wire-posts c) ())
-         (if-not use-trrs? (rj9-holder frj9-start c) ()))
+         (case connector-type
+          :rj9 (rj9-holder frj9-start c)
+          ()))
         ())
       (key-holes c)
       (thumb c)
@@ -1401,22 +1430,34 @@
               (if-not use-external-holder?
                 (union
                  (if use-promicro-usb-hole?
-                   (union (pro-micro-holder c)
-                          (trrs-usb-holder-holder c))
+                   (union (case connector-type 
+                            :none ()
+                            _ (pro-micro-holder c)
+                          )
+                          (translate usb-holder-offset (trrs-usb-holder-holder c)))
                    (union (usb-holder fusb-holder-position c)
                           #_(pro-micro-holder c)))
-                 (if use-trrs? (trrs-holder c) ()))
+                 (case connector-type
+                  :trrs (trrs-holder c)
+                  ()))
                 ()))
        (if use-screw-inserts? (screw-insert-holes screw-placement c) ())
        (if-not use-external-holder?
-         (union
-          (if use-trrs? (trrs-holder-hole c) (rj9-space frj9-start c))
+         (translate usb-holder-offset (union
+          (case connector-type
+            :trrs (trrs-holder-hole c)
+            :rj9 (rj9-space frj9-start c)
+            ())
           (if use-promicro-usb-hole?
             (union (trrs-usb-holder-space c)
                    (trrs-usb-jack c))
-            (usb-holder-hole fusb-holder-position c)))
+            (usb-holder-hole fusb-holder-position c))))
          (external-holder-space c))))
-     (translate [0 0 -60] (cube 350 350 120)))))
+     ;; used to flatten the bottom of the plate
+     ;; removes extra angles
+     ;; makes the rendering surprisingly slow
+     (translate [0 0 -60] (cube 350 350 120))
+     )))
 
 (defn model-left [c]
   (mirror [-1 0 0] (model-right c)))
@@ -1457,7 +1498,7 @@
         :configuration-rotate-x-angle         (/ pi 180)
 
         :configuration-use-promicro-usb-hole? false
-        :configuration-use-trrs?              false
+        :configuration-connector-type         :none
         :configuration-use-external-holder?   false
 
         :configuration-use-hotswap?           false

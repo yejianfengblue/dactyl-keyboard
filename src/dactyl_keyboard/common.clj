@@ -6,9 +6,11 @@
 
 ; common parts between the two boards.
 
-(def extra-width
+(defn extra-width
   "extra width between two keys in a row."
-  2.5)
+  [c]
+  (let [nrows (get c :configuration-nrows)]
+    (if (> nrows 5) 3.5 2.5)))
 (def extra-height
   "extra height between two keys in a column."
   1.0)
@@ -113,8 +115,8 @@
 (defn fcolumn-radius
   "It computes the radius of the column's curve. It takes the value of `pi` divided
    by `beta` to compute the said radius."
-  [beta switch-type]
-  (+ (/ (/ (+ mount-width extra-width) 2)
+  [c beta switch-type]
+  (+ (/ (/ (+ mount-width (extra-width c)) 2)
         (Math/sin (/ beta 2)))
      (cap-top-height switch-type)))
 
@@ -161,9 +163,9 @@
                                               (- (frow-radius alpha switch-type))])
                                (rotate-x-fn  (* alpha (- centerrow row)))
                                (translate-fn [0 0 (frow-radius alpha switch-type)])
-                               (translate-fn [0 0 (- (fcolumn-radius beta switch-type))])
+                               (translate-fn [0 0 (- (fcolumn-radius c beta switch-type))])
                                (rotate-y-fn  column-angle)
-                               (translate-fn [0 0 (fcolumn-radius beta switch-type)])
+                               (translate-fn [0 0 (fcolumn-radius c beta switch-type)])
                                (translate-fn (dm-column-offset c column)))]
     (->> placed-shape
          (rotate-y-fn  tenting-angle)
@@ -240,7 +242,7 @@
                               :choc true
                               false)
         use-hotswap?        (get c :configuration-use-hotswap?)
-        is-right?        (get c :is-right?)
+        is-right?           (get c :is-right?)
         plate-projection?   (get c :configuration-plate-projection? false)
         fill-in             (translate [0 0 (/ plate-thickness 2)] (cube alps-width alps-height plate-thickness))
         holder-thickness    1.65

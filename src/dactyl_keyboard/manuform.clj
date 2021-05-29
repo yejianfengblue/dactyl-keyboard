@@ -1206,7 +1206,7 @@
                      :outie 0
                      :normie 0.1
                      :innie 1)]
-    (map + [0 -3  0] (key-position c x-position 0 (map + (wall-locate3 0 1) [0 (/ mount-height  2) 0])))))
+    (key-position c x-position 0 (map + (wall-locate2 0 1) [0 (/ mount-height  2) 0]))))
 
 (defn fusb-holder-position [c]
   (let [x-position (case (get c :configuration-inner-column)
@@ -1224,7 +1224,7 @@
                      5 -1
                      6 -2
                      -3)]
-    (key-position c 1 0 (map - (wall-locate2  0 y-addition) [0 (/ mount-height 2) 0]))))
+    (key-position c 0.5 0 (map - (wall-locate2  0 y-addition) [0 (/ mount-height 2) 0]))))
 
 (defn trrs-usb-holder-position [c]
   (map + [17 19.3 0] [(first (trrs-usb-holder-ref c)) (second (trrs-usb-holder-ref c)) 2]))
@@ -1267,8 +1267,7 @@
                     (+ (/ (last trrs-holder-hole-size) 2) trrs-holder-thickness)]))))
 
 (defn pro-micro-position [c]
-  (map + (key-position c 0 0.15 (wall-locate3 -1 0)) [-2 2 -30])
-)
+  (map + (key-position c 0 0.15 (wall-locate3 -1 0)) [-2 2 -30]))
 (def pro-micro-space-size [4 10 12]) ; z has no wall;
 (def pro-micro-wall-thickness 2)
 (def pro-micro-holder-size
@@ -1403,61 +1402,47 @@
       (key-place c column row (translate [5 0 0]  (wire-post c  1 0)))))))
 
 (defn model-right [c]
-  (let [show-caps?                 (get c :configuration-show-caps?)
-        use-external-holder?       (get c :configuration-use-external-holder?)
-        use-promicro-usb-hole?     (get c :configuration-use-promicro-usb-hole?)
-        use-screw-inserts?         (get c :configuration-use-screw-inserts?)
-        connector-type             (get c :configuration-connector-type)
-        use-wire-post?             (get c :configuration-use-wire-post?)]
+  (let [show-caps?             (get c :configuration-show-caps?)
+        use-external-holder?   (get c :configuration-use-external-holder?)
+        use-promicro-usb-hole? (get c :configuration-use-promicro-usb-hole?)
+        use-screw-inserts?     (get c :configuration-use-screw-inserts?)
+        connector-type         (get c :configuration-connector-type)
+        use-wire-post?         (get c :configuration-use-wire-post?)]
     (difference
      (union
       (if show-caps? (caps c) ())
       (if show-caps? (thumbcaps c) ())
-      (if-not use-external-holder?
-        (union
-         (if use-wire-post? (wire-posts c) ())
-         (case connector-type
-          :rj9 (rj9-holder frj9-start c)
-          ()))
-        ())
+      (if use-wire-post? (wire-posts c) ())
       (key-holes c)
       (thumb c)
       (connectors c)
       (thumb-connectors c)
       (difference
-       (union (case-walls c)
+       (union (case connector-type
+                :rj9 (difference (case-walls c)
+                                 (rj9-space frj9-start c))
+                (case-walls c))
               (if use-screw-inserts? (screw-insert-outers screw-placement c) ())
-              (if-not use-external-holder?
-                (union
-                 (if use-promicro-usb-hole?
-                   (union (case connector-type 
-                            :none ()
-                            _ (pro-micro-holder c)
-                          )
-                          (translate usb-holder-offset (trrs-usb-holder-holder c)))
-                   (union (usb-holder fusb-holder-position c)
-                          #_(pro-micro-holder c)))
-                 (case connector-type
-                  :trrs (trrs-holder c)
-                  ()))
+              (case connector-type
+                :trrs (union (pro-micro-holder c)
+                             (trrs-usb-holder-holder c)
+                             (trrs-holder c))
+                :rj9 (union (usb-holder fusb-holder-position c)
+                            (rj9-holder frj9-start c))
                 ()))
        (if use-screw-inserts? (screw-insert-holes screw-placement c) ())
        (if-not use-external-holder?
-         (translate usb-holder-offset (union
-          (case connector-type
-            :trrs (trrs-holder-hole c)
-            :rj9 (rj9-space frj9-start c)
-            ())
-          (if use-promicro-usb-hole?
-            (union (trrs-usb-holder-space c)
-                   (trrs-usb-jack c))
-            (usb-holder-hole fusb-holder-position c))))
+         (case connector-type
+           :trrs (union (trrs-holder-hole c)
+                        (trrs-usb-holder-space c)
+                        (trrs-usb-jack c))
+           :rj9 (usb-holder-hole fusb-holder-position c)
+           ())
          (external-holder-space c))))
      ;; used to flatten the bottom of the plate
      ;; removes extra angles
      ;; makes the rendering surprisingly slow
-     (translate [0 0 -60] (cube 350 350 120))
-     )))
+     (translate [0 0 -60] (cube 350 350 120)))))
 
 (defn model-left [c]
   (mirror [-1 0 0] (model-right c)))
@@ -1482,49 +1467,49 @@
 (defn plate-left [c]
   (mirror [-1 0 0] (plate-right c)))
 
-(def c {:configuration-nrows                  5
-        :configuration-ncols                  6
-        :configuration-thumb-count            :six
-        :configuration-last-row-count         :two
-        :configuration-switch-type            :box
-        :configuration-inner-column           :normie
-        :configuration-hide-last-pinky?       false
+(def c {:configuration-nrows                    5
+        :configuration-ncols                    6
+        :configuration-thumb-count              :six
+        :configuration-last-row-count           :two
+        :configuration-switch-type              :box
+        :configuration-inner-column             :normie
+        :configuration-hide-last-pinky?         false
 
-        :configuration-alpha                  (/ pi 10)
-        :configuration-pinky-alpha            (/ pi 10)
-        :configuration-beta                   (/ pi 36)
-        :configuration-centercol              4
-        :configuration-tenting-angle          (/ pi 12)
-        :configuration-rotate-x-angle         (/ pi 180)
+        :configuration-alpha                    (/ pi 10)
+        :configuration-pinky-alpha              (/ pi 10)
+        :configuration-beta                     (/ pi 36)
+        :configuration-centercol                4
+        :configuration-tenting-angle            (/ pi 12)
+        :configuration-rotate-x-angle           (/ pi 180)
 
-        :configuration-use-promicro-usb-hole? false
-        :configuration-connector-type         :none
-        :configuration-use-external-holder?   false
+        :configuration-use-promicro-usb-hole?   false
+        :configuration-connector-type           :rj9
+        :configuration-use-external-holder?     false
 
-        :configuration-use-hotswap?           false
-        :configuration-thumb-cluster-offset-x 6
-        :configuration-thumb-cluster-offset-y -3
-        :configuration-thumb-cluster-offset-z 7
-        :configuration-custom-thumb-tenting?  false
-        :configuration-custom-thumb-tenting-x (/ pi 0.5)
-        :configuration-custom-thumb-tenting-y (/ pi 0.5)
-        :configuration-custom-thumb-tenting-z (/ pi 0.5)
-        :configuration-custom-thumb-offsets?  false
+        :configuration-use-hotswap?             false
+        :configuration-thumb-cluster-offset-x   6
+        :configuration-thumb-cluster-offset-y   -3
+        :configuration-thumb-cluster-offset-z   7
+        :configuration-custom-thumb-tenting?    false
+        :configuration-custom-thumb-tenting-x   (/ pi 0.5)
+        :configuration-custom-thumb-tenting-y   (/ pi 0.5)
+        :configuration-custom-thumb-tenting-z   (/ pi 0.5)
+        :configuration-custom-thumb-offsets?    false
         :configuration-thumb-top-right-offset-x -12
         :configuration-thumb-top-right-offset-y -16
         :configuration-thumb-top-right-offset-z 3
-        :configuration-stagger?               true
-        :configuration-stagger-index          [0 0 0]
-        :configuration-stagger-middle         [0 2.8 -6.5]
-        :configuration-stagger-ring           [0 0 0]
-        :configuration-stagger-pinky          [0 -13 6]
-        :configuration-use-wide-pinky?        false
-        :configuration-z-offset               8
-        :configuration-use-wire-post?         false
-        :configuration-use-screw-inserts?     false
+        :configuration-stagger?                 true
+        :configuration-stagger-index            [0 0 0]
+        :configuration-stagger-middle           [0 2.8 -6.5]
+        :configuration-stagger-ring             [0 0 0]
+        :configuration-stagger-pinky            [0 -13 6]
+        :configuration-use-wide-pinky?          false
+        :configuration-z-offset                 6
+        :configuration-use-wire-post?           false
+        :configuration-use-screw-inserts?       false
 
-        :configuration-show-caps?             false
-        :configuration-plate-projection?      false})
+        :configuration-show-caps?               false
+        :configuration-plate-projection?        false})
 
 #_(spit "things/right.scad"
       (write-scad (model-right c)))

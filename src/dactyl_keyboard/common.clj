@@ -228,7 +228,11 @@
   (let [switch-type         (get c :configuration-switch-type)
         create-side-nub?    (case switch-type
                               :mx true
+                              :mx-snap-in true
                               false) #_(get c :configuration-create-side-nub?)
+      nub-height           (case switch-type
+                              :mx-snap-in 0.75
+                              0) 
         use-alps?           (case switch-type
                               :alps true
                               false) #_(get c :configuration-use-alps?)
@@ -273,11 +277,11 @@
                                                (/ plate-thickness 2)])))
         side-nub            (->> (binding [*fn* 30] (cylinder 1 2.75))
                                  (rotate (/ pi 2) [1 0 0])
-                                 (translate [(+ (/ keyswitch-width 2)) 0 1])
-                                 (hull (->> (cube 1.5 2.75 plate-thickness)
+                                 (translate [(+ (/ keyswitch-width 2)) 0 (+ 1 nub-height)])
+                                 (hull (->> (cube 1.5 2.75 (- plate-thickness nub-height))
                                             (translate [(+ (/ 1.5 2) (/ keyswitch-width 2))
                                                         0
-                                                        (/ plate-thickness 2)]))))
+                                                        (/ (+ plate-thickness nub-height) 2)]))))
         ; the hole's wall.
         kailh-cutout (->> (cube (/ keyswitch-width 3) 1.6 (+ plate-thickness 1.8))
                           (translate [0

@@ -70,9 +70,9 @@
                               (translate [(wide-pinky c column row) 0 (- (frow-radius alpha switch-type))])
                               (rotate (* alpha (- 2 row)) [1 0 0])
                               (translate [0 0 (frow-radius alpha switch-type)])
-                              (translate [0 0 (- (fcolumn-radius beta switch-type))])
+                              (translate [0 0 (- (fcolumn-radius c beta switch-type))])
                               (rotate column-angle [0 1 0])
-                              (translate [0 0 (fcolumn-radius beta switch-type)])
+                              (translate [0 0 (fcolumn-radius c beta switch-type)])
                               (translate offset))]
     (->> placed-shape
          (rotate tenting-angle [0 1 0])
@@ -95,9 +95,9 @@
                               (translate [0 0 (- (frow-radius alpha switch-type))])
                               (rotate (* alpha (- 2 row)) [1 0 0])
                               (translate [0 0 (frow-radius alpha switch-type)])
-                              (translate [0 0 (- (fcolumn-radius beta switch-type))])
+                              (translate [0 0 (- (fcolumn-radius c beta switch-type))])
                               (rotate column-angle [0 1 0])
-                              (translate [0 0 (fcolumn-radius beta switch-type)])
+                              (translate [0 0 (fcolumn-radius c beta switch-type)])
                               (translate column-offset))]
     (->> placed-shape
          (rotate tenting-angle [0 1 0])

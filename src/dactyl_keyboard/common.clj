@@ -9,7 +9,7 @@
 (defn extra-width
   "extra width between two keys in a row."
   [c]
-  (let [nrows (get c :configuration-nrows)]
+  (let [nrows (get c :configuration-nrows 5)]
     (if (> nrows 5) 3.5 2.5)))
 (def extra-height
   "extra height between two keys in a column."

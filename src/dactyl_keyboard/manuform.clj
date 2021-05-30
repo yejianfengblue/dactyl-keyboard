@@ -1171,9 +1171,9 @@
                    (thumb-bl-place c (translate (wall-locate3 -0.5 1) web-post-tr))
                    (thumb-tl-place c thumb-post-tl))
        (hull (thumb-ml-place c (if (= thumb-count :three) thumb-post-tr web-post-tr))
-             (thumb-ml-place c (translate (wall-locate1 -0.4 1) (if (= thumb-count :three) thumb-post-tr web-post-tr)))
-             (thumb-ml-place c (translate (wall-locate2 -0.4 1) (if (= thumb-count :three) thumb-post-tr web-post-tr)))
-             (thumb-ml-place c (translate (wall-locate3 -0.4 1) (if (= thumb-count :three) thumb-post-tr web-post-tr)))
+             (thumb-ml-place c (translate (wall-locate1 0 1) (if (= thumb-count :three) thumb-post-tr web-post-tr)))
+             (thumb-ml-place c (translate (wall-locate2 0 1) (if (= thumb-count :three) thumb-post-tr web-post-tr)))
+             (thumb-ml-place c (translate (wall-locate3 0 1) (if (= thumb-count :three) thumb-post-tr web-post-tr)))
              (thumb-tl-place c thumb-post-tl))))))
 
 (defn case-walls [c]

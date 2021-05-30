@@ -38,6 +38,11 @@ uncomment `(spit "things/right.scad" (write-scad (model-right c)))` in
 
 If you want to use single key PCB, please use [single pcb](https://github.com/ibnuda/single).
 
+## Notes
+
+- If you want to create some pull requests, never ever change the existing thumb placement settings.
+- If you want to create some pull requests, make sure you changes won't mess with the existing settings and its permutation.
+
 ## License
 
 Copyright © 2015-2020 Matthew Adereth, Tom Short, Ibnu D. Aji, et. al.

@@ -317,84 +317,70 @@
         x-rotation      (thumb-tenting c 10 :configuration-thumb-top-left-tenting-x)
         y-rotation      (thumb-tenting c -23 :configuration-thumb-top-left-tenting-y)
         z-rotation      (thumb-tenting c (case thumb-count :three 20 :five 25 10) :configuration-thumb-top-left-tenting-z)
-        default-x -35
-        default-y (if (= thumb-count :five) -16 -15)
-        default-z -2
+        default-x       -35
+        default-y       (if (= thumb-count :five) -16 -15)
+        default-z       -2
         custom-offsets? (get c :configuration-custom-thumb-cluster?)
-        offset (if custom-offsets?
-                 [
-                  (get c :configuration-thumb-top-left-offset-x)
-                  (get c :configuration-thumb-top-left-offset-y)
-                  (get c :configuration-thumb-top-left-offset-z)
-                 ]
-                 [default-x default-y default-z])
-        ]
+        offset          (if custom-offsets?
+                          [(get c :configuration-thumb-top-left-offset-x)
+                           (get c :configuration-thumb-top-left-offset-y)
+                           (get c :configuration-thumb-top-left-offset-z)]
+                          [default-x default-y default-z])]
     (->> shape
-      ;; do the z-rotation first
-      ;; otherwise some design become impossible or complicated
-      (rotate z-rotation [0 0 1])
-      (rotate x-rotation [1 0 0])
-      (rotate y-rotation [0 1 0])
-      (translate (thumborigin c))
-      (translate offset))))
-
-(defn thumb-tr-place [c shape]
-  (let [thumb-count (get c :configuration-thumb-count)
-        x-rotation (thumb-tenting c (if (= thumb-count :five) 14 10) :configuration-thumb-top-right-tenting-x)
-        y-rotation (thumb-tenting c (if (= thumb-count :five) -15 -23) :configuration-thumb-top-right-tenting-y)
-        z-rotation (thumb-tenting c 10 :configuration-thumb-top-right-tenting-z)
-        custom-offsets? (get c :configuration-custom-thumb-cluster?)
-        default-x (if (= thumb-count :five) -15 -12)
-        default-y (if (= thumb-count :five) -10 -16)
-        default-z (if (= thumb-count :five) 5 3)
-        offset (if custom-offsets?
-                 [
-                  (get c :configuration-thumb-top-right-offset-x)
-                  (get c :configuration-thumb-top-right-offset-y)
-                  (get c :configuration-thumb-top-right-offset-z)
-                 ]
-                 [default-x default-y default-z])
-        ]
-    (->> shape
-         ;; do the z-rotation first
-         ;; otherwise some design become impossible or complicated
-         (rotate z-rotation [0 0 1])
          (rotate x-rotation [1 0 0])
          (rotate y-rotation [0 1 0])
+         (rotate z-rotation [0 0 1])
+         (translate (thumborigin c))
+         (translate offset))))
+
+(defn thumb-tr-place [c shape]
+  (let [thumb-count     (get c :configuration-thumb-count)
+        x-rotation      (thumb-tenting c (if (= thumb-count :five) 14 10) :configuration-thumb-top-right-tenting-x)
+        y-rotation      (thumb-tenting c (if (= thumb-count :five) -15 -23) :configuration-thumb-top-right-tenting-y)
+        z-rotation      (thumb-tenting c 10 :configuration-thumb-top-right-tenting-z)
+        custom-offsets? (get c :configuration-custom-thumb-cluster?)
+        default-x       (if (= thumb-count :five) -15 -12)
+        default-y       (if (= thumb-count :five) -10 -16)
+        default-z       (if (= thumb-count :five) 5 3)
+        offset          (if custom-offsets?
+                          [(get c :configuration-thumb-top-right-offset-x)
+                           (get c :configuration-thumb-top-right-offset-y)
+                           (get c :configuration-thumb-top-right-offset-z)]
+                          [default-x default-y default-z])]
+    (->> shape
+         (rotate x-rotation [1 0 0])
+         (rotate y-rotation [0 1 0])
+         (rotate z-rotation [0 0 1])
          (translate (thumborigin c))
          (translate offset))))
 
 (defn thumb-ml-place [c shape]
-  (let [thumb-count (get c :configuration-thumb-count)
-        x-rotation (thumb-tenting c 6 :configuration-thumb-middle-left-tenting-x)
-        y-rotation (thumb-tenting c -34 :configuration-thumb-middle-left-tenting-y)
-        z-rotation (thumb-tenting c 40 :configuration-thumb-middle-left-tenting-z)
+  (let [thumb-count     (get c :configuration-thumb-count)
+        x-rotation      (thumb-tenting c 6 :configuration-thumb-middle-left-tenting-x)
+        y-rotation      (thumb-tenting c -34 :configuration-thumb-middle-left-tenting-y)
+        z-rotation      (thumb-tenting c 40 :configuration-thumb-middle-left-tenting-z)
         custom-offsets? (get c :configuration-custom-thumb-cluster?)
-        default-x (if (= thumb-count :three) -53 -52)
-        default-y -26
-        default-z -12
-        offset (if custom-offsets?
-                 [
-                  (get c :configuration-thumb-middle-left-offset-x)
-                  (get c :configuration-thumb-middle-left-offset-y)
-                  (get c :configuration-thumb-middle-left-offset-z)
-                 ]
-                 [default-x default-y default-z])
+        default-x       (if (= thumb-count :three) -53 -52)
+        default-y       -26
+        default-z       -12
+        offset          (if custom-offsets?
+                          [(get c :configuration-thumb-middle-left-offset-x)
+                           (get c :configuration-thumb-middle-left-offset-y)
+                           (get c :configuration-thumb-middle-left-offset-z)]
+                          [default-x default-y default-z])
         ]
     (->> shape
-         ;; do the z-rotation first
-         ;; otherwise some design become impossible or complicated
-         (rotate z-rotation [0 0 1])
          (rotate x-rotation [1 0 0])
          (rotate y-rotation [0 1 0])
+         (rotate z-rotation [0 0 1])
          (translate (thumborigin c))
          (translate offset))))
 
 (defn thumb-mr-place [c shape]
   (let [thumb-count (get c :configuration-thumb-count)
-        x-rotation (thumb-tenting c (if (= thumb-count :five) 10 -6) :configuration-custom-thumb-tenting-x)
-        y-rotation (thumb-tenting c (if (= thumb-count :five) -23 -34) :configuration-custom-thumb-tenting-y)
-        z-rotation (thumb-tenting c (if (= thumb-count :five) 25 48) :configuration-custom-thumb-tenting-z)
+        x-rotation  (thumb-tenting c (if (= thumb-count :five) 10 -6) :configuration-custom-thumb-tenting-x)
+        y-rotation  (thumb-tenting c (if (= thumb-count :five) -23 -34) :configuration-custom-thumb-tenting-y)
+        z-rotation  (thumb-tenting c (if (= thumb-count :five) 25 48) :configuration-custom-thumb-tenting-z)
         movement    (if (= thumb-count :five) [-23 -34 -6] [-29 -41 -13])]
     (->> shape
          (rotate x-rotation [1 0 0])
@@ -405,9 +391,9 @@
 
 (defn thumb-bl-place [c shape]
   (let [thumb-count (get c :configuration-thumb-count)
-        x-rotation (thumb-tenting c (if (= thumb-count :five) 6 -4) :configuration-custom-thumb-tenting-x)
-        y-rotation (thumb-tenting c (if (= thumb-count :five) -32 -35) :configuration-custom-thumb-tenting-y)
-        z-rotation (thumb-tenting c (if (= thumb-count :five) 35 52) :configuration-custom-thumb-tenting-z)
+        x-rotation  (thumb-tenting c (if (= thumb-count :five) 6 -4) :configuration-custom-thumb-tenting-x)
+        y-rotation  (thumb-tenting c (if (= thumb-count :five) -32 -35) :configuration-custom-thumb-tenting-y)
+        z-rotation  (thumb-tenting c (if (= thumb-count :five) 35 52) :configuration-custom-thumb-tenting-z)
         movement    (if (= thumb-count :five) [-51 -25 -11.5] [-56.3 -43.3 -23.5])]
     (->> shape
          (rotate x-rotation [1 0 0])
@@ -418,9 +404,9 @@
 
 (defn thumb-br-place [c shape]
   (let [thumb-count (get c :configuration-thumb-count)
-        x-rotation (thumb-tenting c (if (= thumb-count :five) 6 -16) :configuration-custom-thumb-tenting-x)
-        y-rotation (thumb-tenting c (if (= thumb-count :five) -34 -33) :configuration-custom-thumb-tenting-y)
-        z-rotation (thumb-tenting c (if (= thumb-count :five) 35 54) :configuration-custom-thumb-tenting-z)
+        x-rotation  (thumb-tenting c (if (= thumb-count :five) 6 -16) :configuration-custom-thumb-tenting-x)
+        y-rotation  (thumb-tenting c (if (= thumb-count :five) -34 -33) :configuration-custom-thumb-tenting-y)
+        z-rotation  (thumb-tenting c (if (= thumb-count :five) 35 54) :configuration-custom-thumb-tenting-z)
         movement    (if (= thumb-count :five) [-39 -43 -16] [-37.8 -55.3 -25.3])]
     (->> shape
          (rotate x-rotation [1 0 0])
@@ -722,8 +708,8 @@
            (triangle-hulls
             (thumb-ml-place c web-post-tl)
             (thumb-bl-place c web-post-tr)
-            (thumb-bl-place c web-post-br)
-            (thumb-ml-place c web-post-bl))
+            (thumb-ml-place c web-post-bl)
+            (thumb-bl-place c web-post-br))
            (triangle-hulls
             (thumb-br-place c web-post-tr)
             (thumb-mr-place c web-post-tl)

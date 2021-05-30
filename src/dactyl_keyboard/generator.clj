@@ -65,6 +65,7 @@
                  :stagger-pinky-z  (last stagger-pinky)
                  :wide-pinky       (get confs :configuration-use-wide-pinky?)
                  :height-offset    (get confs :configuration-z-offset)
+                 :web-thickness    (get confs :configuration-web-thickness)
                  :wire-post        (get confs :configuration-use-wire-post?)
                  :screw-inserts    (get confs :configuration-use-screw-inserts?)}
      :misc      {:keycaps    (get confs :configuration-show-caps?)
@@ -90,6 +91,7 @@
                :thumb-offset-z  (get confs :configuration-thumb-offset-z)
                :wide-pinky      (get confs :configuration-use-wide-pinky?)
                :z-offset        (get confs :configuration-z-offset)
+               :web-thickness   (get confs :configuration-web-thickness)
                :manuform-offset (get confs :configuration-manuform-offset?)
                :border          (get confs :configuration-use-border?)
                :thick-wall      (get confs :configuration-thick-wall?)}

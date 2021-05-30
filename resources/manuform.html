@@ -622,6 +622,16 @@
           <option value="{{ho}}">{{ho}}mm</option>
           {% endfor %}
         </select>
+        <label for="form.web-thickness">Web thickness (top part of the keyboard around the keyholes)</label>
+        <input
+          type="number"
+          name="form.web-thickness"
+          id="form.web-thickness"
+          value="7"
+          step="0.1"
+          min="1"
+          max="10"
+        />
         <label for="form.wire-post">Wire Posts?</label>
         <select id="form.wire-post" name="form.wire-post">
           <option value="false">No</option>

@@ -153,6 +153,7 @@
         tenting-angle     (get c :configuration-tenting-angle)
         switch-type       (get c :configuration-switch-type)
         keyboard-z-offset (get c :configuration-z-offset)
+        web-thickness     (get c :configuration-web-thickness)
         rotate-x-angle    (get c :configuration-rotate-x-angle)
         column-angle      (* beta (- centercol column))
         placed-shape      (->> shape
@@ -408,16 +409,27 @@
 
 (def web-thickness 7)
 (def post-size 0.1)
+;; TODO remove the constants once lightcycle has been converted
 (def web-post
+  (->> (cube post-size post-size web-thickness)
+       (translate [0 0 (+ (/ web-thickness -2)
+                          plate-thickness)])))
+(defn web-post [web-thickness]
   (->> (cube post-size post-size web-thickness)
        (translate [0 0 (+ (/ web-thickness -2)
                           plate-thickness)])))
 
 (def post-adj (/ post-size 2))
+
+;; TODO remove the constants once lightcycle has been converted
 (def web-post-tr (translate [(- (/ mount-width 2) post-adj) (- (/ mount-height 2) post-adj) 0] web-post))
 (def web-post-tl (translate [(+ (/ mount-width -2) post-adj) (- (/ mount-height 2) post-adj) 0] web-post))
 (def web-post-bl (translate [(+ (/ mount-width -2) post-adj) (+ (/ mount-height -2) post-adj) 0] web-post))
 (def web-post-br (translate [(- (/ mount-width 2) post-adj) (+ (/ mount-height -2) post-adj) 0] web-post))
+(defn web-post-tr [web-thickness] (translate [(- (/ mount-width 2) post-adj) (- (/ mount-height 2) post-adj) 0] (web-post web-thickness)))
+(defn web-post-tl [web-thickness] (translate [(+ (/ mount-width -2) post-adj) (- (/ mount-height 2) post-adj) 0] (web-post web-thickness)))
+(defn web-post-bl [web-thickness] (translate [(+ (/ mount-width -2) post-adj) (+ (/ mount-height -2) post-adj) 0] (web-post web-thickness)))
+(defn web-post-br [web-thickness] (translate [(- (/ mount-width 2) post-adj) (+ (/ mount-height -2) post-adj) 0] (web-post web-thickness)))
 
 ; length of the first downward-sloping part of the wall (negative)
 (def wall-z-offset -15)

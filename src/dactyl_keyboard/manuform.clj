@@ -1358,11 +1358,11 @@
         y-middle-last   (+ lastrow var-middle-last)
         x-middle-last   (if is-five? 1.6 2)]
     (union (screw-insert c -1.2  -0.1   bottom-radius top-radius height)
-           (screw-insert c -1.0   3   bottom-radius top-radius height)
-           (screw-insert c  2.05  2.40  bottom-radius top-radius height)
+           (screw-insert c -0.5   2.45   bottom-radius top-radius height)
+           (screw-insert c  2.05  1.40  bottom-radius top-radius height)
            (screw-insert c  2    -0.35  bottom-radius top-radius height)
-           (screw-insert c  4.01 -0.15  bottom-radius top-radius height)
-           (screw-insert c  3.65  2.85  bottom-radius top-radius height))))
+           (screw-insert c  4.65 -0.33  bottom-radius top-radius height)
+           (screw-insert c  4.65  1.3  bottom-radius top-radius height))))
 
 (def wire-post-height 7)
 (def wire-post-overhang 3.5)
@@ -1454,8 +1454,8 @@
 (defn plate-left [c]
   (mirror [-1 0 0] (plate-right c)))
 
-(def c {:configuration-nrows                  4
-        :configuration-ncols                  5
+(def c {:configuration-nrows                  3
+        :configuration-ncols                  6
         :configuration-thumb-count            :five
         :configuration-last-row-count         :zero
         :configuration-switch-type            :box
@@ -1466,7 +1466,7 @@
         :configuration-pinky-alpha            (/ pi 10)
         :configuration-beta                   (/ pi 36)
         :configuration-centercol              4
-        :configuration-tenting-angle          (/ pi 10)
+        :configuration-tenting-angle          (/ pi 12)
         :configuration-rotate-x-angle         (/ pi 180)
 
         :configuration-use-promicro-usb-hole? false
@@ -1475,7 +1475,7 @@
 
         :configuration-use-hotswap?           false
         :configuration-thumb-offset-x         6
-        :configuration-thumb-offset-y         -3
+        :configuration-thumb-offset-y         -12
         :configuration-thumb-offset-z         7
         :configuration-custom-thumb-tenting?  false
         :configuration-custom-thumb-tenting-x (/ pi 0.5)
@@ -1487,7 +1487,7 @@
         :configuration-stagger-ring           [0 0 -3]
         :configuration-stagger-pinky          [0 -13 6]
         :configuration-use-wide-pinky?        false
-        :configuration-z-offset               2
+        :configuration-z-offset               8
         :configuration-use-wire-post?         false
         :configuration-use-screw-inserts?     true
 
@@ -1497,7 +1497,7 @@
 (spit "things/right.scad"
       (write-scad (model-right c)))
 
-#_(spit "things/right-plate.scad"
+(spit "things/right-plate.scad"
         (write-scad (plate-right c)))
 
 #_(spit "things/right-plate.scad"

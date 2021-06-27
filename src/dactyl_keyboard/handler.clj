@@ -347,7 +347,7 @@
                         :configuration-thumb-cluster-offset-x (get form :thumb-cluster-offset-x 6)
                         :configuration-thumb-cluster-offset-y (get form :thumb-cluster-offset-y -3)
                         :configuration-thumb-cluster-offset-z (get form :thumb-cluster-offset-z 7)
-                        :configuration-custom-thumb-cluster?  (get form :custom-thumb-cluster)
+                        :configuration-custom-thumb-cluster?  (get form :custom-thumb-cluster false)
                         :configuration-thumb-top-right-tenting-x (/ pi (get form :thumb-tenting-x 10))
                         :configuration-thumb-top-right-tenting-y (/ pi (get form :thumb-tenting-y -4))
                         :configuration-thumb-top-right-tenting-z (/ pi (get form :thumb-tenting-z 10))

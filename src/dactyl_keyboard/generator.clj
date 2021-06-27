@@ -20,7 +20,7 @@
                  :thumb-count     (get confs :configuration-thumb-count)
                  :last-row        (get confs :configuration-last-row-count)
                  :switch-type     (get confs :configuration-switch-type)
-                 :inner-column    (get confs :configuration-use-inner-column?)
+                 :inner-column    (get confs :configuration-inner-column)
                  :hide-last-pinky (get confs :configuration-hide-last-pinky?)}
      :curve     {:alpha       (get confs :configuration-alpha)
                  :pinky-alpha (get confs :configuration-pinky-alpha)

@@ -239,6 +239,7 @@
         param-thumb-alpha         (parse-int (get p "curve.thumb-alpha"))
         param-thumb-beta          (parse-int (get p "curve.thumb-beta"))
         param-thumb-tenting-angle (parse-int (get p "curve.thumb-tenting"))
+        param-rotate-x-angle      (parse-int (get p "curve.rotate-x"))
 
         param-hotswap             (parse-bool (get p "form.hotswap"))
         param-thumb-offset-x      (parse-int (get p "form.thumb-offset-x"))
@@ -272,6 +273,7 @@
                                    :configuration-alpha                (if generate-json? param-alpha (/ pi param-alpha))
                                    :configuration-beta                 (if generate-json? param-beta (/ pi param-beta))
                                    :configuration-tenting-angle        (if generate-json? param-tenting-angle (/ pi param-tenting-angle))
+                                   :configuration-rotate-x-angle       (if generate-json? param-rotate-x-angle (/ pi param-rotate-x-angle))
                                    :configuration-thumb-alpha          (if generate-json? param-thumb-alpha (/ pi param-thumb-alpha))
                                    :configuration-thumb-beta           (if generate-json? param-thumb-beta (/ pi param-thumb-beta))
                                    :configuration-thumb-tenting-angle  (if generate-json? param-thumb-tenting-angle (/ pi param-thumb-tenting-angle))
@@ -290,7 +292,7 @@
 
                                    :configuration-use-screw-inserts?   param-screw-inserts
 
-                                   :is-right?                            is-right?}
+                                   :is-right?                          is-right?}
         generated-file            (cond
                                     generate-plate? {:file      (g/generate-plate-dl c is-right?)
                                                      :extension "scad"}

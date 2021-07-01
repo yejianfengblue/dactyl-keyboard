@@ -71,7 +71,7 @@
                                             :box)
         param-inner-column                (case (get p "keys.inner-column")
                                             "innie" :innie
-                                            "ergodox" :outie
+                                            "outie" :outie
                                             :normie)
         param-hide-last-pinky             (parse-bool (get p "keys.hide-last-pinky"))
 

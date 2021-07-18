@@ -343,7 +343,7 @@
                         :configuration-rotate-x-angle              (/ pi (get curve :rotate-x 15))
 
                         :configuration-use-external-holder?        (get connector :external false)
-                        :configuration-connector-type              (get connector :type :none)
+                        :configuration-connector-type              (keyword (get connector :type "none"))
                         :configuration-use-promicro-usb-hole?      (get connector :micro-usb false)
 
                         :configuration-thumb-cluster-offset-x      (get form :thumb-cluster-offset-x 6)

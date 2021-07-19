@@ -385,6 +385,8 @@
                         :configuration-z-offset                    (get form :height-offset 4)
                         :configuration-use-wire-post?              (get form :wire-post false)
                         :configuration-use-screw-inserts?          (get form :screw-inserts false)
+                        :configuration-web-thickness               (get form :web-thickness 7.0)
+                        :configuration-wall-thickness               (get form :wall-thickness 3.0)
 
                         :configuration-show-caps?                  (get misc :keycaps false)
                         :configuration-plate-projection?           (not (get misc :case true))}

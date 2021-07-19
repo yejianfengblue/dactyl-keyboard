@@ -196,7 +196,8 @@
       </label>
       <fieldset name="form" id="form">
         <label for="form.hotswap">
-          Dongguan Kaihua Electronics Co., Ltd (originally named Longhua Electronics)'s Hotswap Socket?
+          Dongguan Kaihua Electronics Co., Ltd (originally named Longhua
+          Electronics)'s Hotswap Socket?
         </label>
         <select id="form.hotswap" name="form.hotswap">
           <option value="false">No</option>
@@ -230,9 +231,7 @@
             />
           </div>
           <div class="column column-33">
-            <label for="form.thumb-cluster-offset-z">
-              Z (altitude)
-            </label>
+            <label for="form.thumb-cluster-offset-z"> Z (altitude) </label>
             <input
               type="number"
               name="form.thumb-cluster-offset-z"
@@ -245,16 +244,11 @@
         <label for="form.custom-thumb-cluster">
           Custom thumb cluster (Experimental)
         </label>
-        <select
-          name="form.custom-thumb-cluster"
-          id="form.custom-thumb-cluster"
-        >
+        <select name="form.custom-thumb-cluster" id="form.custom-thumb-cluster">
           <option value="false">No</option>
           <option value="true">Yes</option>
         </select>
-        <label for="form.thumb-top-right">
-          Top right
-        </label>
+        <label for="form.thumb-top-right"> Top right </label>
         <div class="row" id="form.thumb-top-right">
           <div class="column column-33">
             <label for="form.thumb-top-right-offset-x">
@@ -445,9 +439,7 @@
             />
           </div>
           <div class="column column-33">
-            <label for="form.thumb-middle-left-offset-z">
-              Z (altitude)
-            </label>
+            <label for="form.thumb-middle-left-offset-z"> Z (altitude) </label>
             <input
               type="number"
               name="form.thumb-middle-left-offset-z"
@@ -545,9 +537,7 @@
             />
           </div>
           <div class="column column-50">
-            <label for="form.stagger-middle-z">
-              Z
-            </label>
+            <label for="form.stagger-middle-z"> Z </label>
             <input
               type="number"
               name="form.stagger-middle-z"
@@ -572,9 +562,7 @@
             />
           </div>
           <div class="column column-50">
-            <label for="form.stagger-ring-z">
-              Z
-            </label>
+            <label for="form.stagger-ring-z"> Z </label>
             <input
               type="number"
               name="form.stagger-ring-z"
@@ -599,9 +587,7 @@
             />
           </div>
           <div class="column column-50">
-            <label for="form.stagger-pinky-z">
-              Z
-            </label>
+            <label for="form.stagger-pinky-z"> Z </label>
             <input
               type="number"
               name="form.stagger-pinky-z"
@@ -622,7 +608,9 @@
           <option value="{{ho}}">{{ho}}mm</option>
           {% endfor %}
         </select>
-        <label for="form.web-thickness">Web thickness (top part of the keyboard around the keyholes)</label>
+        <label for="form.web-thickness"
+          >Web thickness (top part of the keyboard around the keyholes)</label
+        >
         <input
           type="number"
           name="form.web-thickness"
@@ -632,6 +620,20 @@
           min="1"
           max="10"
         />
+
+        <label for="form.wall-thickness"
+          >wall thickness (around the keyboard)</label
+        >
+        <input
+          type="number"
+          name="form.wall-thickness"
+          id="form.wall-thickness"
+          value="3"
+          step="0.1"
+          min="1"
+          max="7"
+        />
+
         <label for="form.wire-post">Wire Posts?</label>
         <select id="form.wire-post" name="form.wire-post">
           <option value="false">No</option>
@@ -692,9 +694,7 @@
     <p>BrownElvis' external holder files:</p>
     <ul>
       <li>
-        <a
-          href="loligagger-external-holder-promicro-v3-extended.stl"
-        >
+        <a href="loligagger-external-holder-promicro-v3-extended.stl">
           Promicro V3
         </a>
       </li>

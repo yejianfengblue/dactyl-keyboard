@@ -438,11 +438,21 @@
 ; wall thickness parameter; originally 5
 (def wall-thickness 3)
 
+;; TODO remove those functions once lightcycle has been integrated
 (defn wall-locate1 [dx dy]
   [(* dx wall-thickness) (* dy wall-thickness) -1])
 (defn wall-locate2 [dx dy]
   [(* dx wall-xy-offset) (* dy wall-xy-offset) wall-z-offset])
 (defn wall-locate3 [dx dy]
+  [(* dx (+ wall-xy-offset wall-thickness))
+   (* dy (+ wall-xy-offset wall-thickness))
+   wall-z-offset])
+
+(defn wall-locate1 [wall-thickness dx dy]
+  [(* dx wall-thickness) (* dy wall-thickness) -1])
+(defn wall-locate2 [wall-thickness dx dy]
+  [(* dx wall-xy-offset) (* dy wall-xy-offset) wall-z-offset])
+(defn wall-locate3 [wall-thickness dx dy]
   [(* dx (+ wall-xy-offset wall-thickness))
    (* dy (+ wall-xy-offset wall-thickness))
    wall-z-offset])

@@ -1072,7 +1072,7 @@
          (wall-brace (partial thumb-mr-place c)  0 -1 (web-post-br web-thickness)
                      (partial thumb-mr-place c)  0 -1 (web-post-bl web-thickness))
          (wall-brace (partial thumb-mr-place c)  0 -1 (web-post-bl web-thickness)
-                     (partial thumb-br-place c)  0 -1 (web-post-br) web-thickness)
+                     (partial thumb-br-place c)  0 -1 (web-post-br web-thickness))
          (wall-brace (partial thumb-br-place c)  0 -1 (web-post-br web-thickness)
                      (partial thumb-br-place c)  0 -1 (web-post-bl web-thickness))
          (wall-brace (partial thumb-br-place c)  0 -1 (web-post-bl web-thickness)

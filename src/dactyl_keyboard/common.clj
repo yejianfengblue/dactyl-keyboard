@@ -422,10 +422,10 @@
 (def post-adj (/ post-size 2))
 
 ;; TODO remove the constants once lightcycle has been converted
-(def web-post-tr (translate [(- (/ mount-width 2) post-adj) (- (/ mount-height 2) post-adj) 0] web-post))
-(def web-post-tl (translate [(+ (/ mount-width -2) post-adj) (- (/ mount-height 2) post-adj) 0] web-post))
-(def web-post-bl (translate [(+ (/ mount-width -2) post-adj) (+ (/ mount-height -2) post-adj) 0] web-post))
-(def web-post-br (translate [(- (/ mount-width 2) post-adj) (+ (/ mount-height -2) post-adj) 0] web-post))
+;; (def web-post-tr (translate [(- (/ mount-width 2) post-adj) (- (/ mount-height 2) post-adj) 0] web-post))
+;; (def web-post-tl (translate [(+ (/ mount-width -2) post-adj) (- (/ mount-height 2) post-adj) 0] web-post))
+;; (def web-post-bl (translate [(+ (/ mount-width -2) post-adj) (+ (/ mount-height -2) post-adj) 0] web-post))
+;; (def web-post-br (translate [(- (/ mount-width 2) post-adj) (+ (/ mount-height -2) post-adj) 0] web-post))
 (defn web-post-tr [web-thickness] (translate [(- (/ mount-width 2) post-adj) (- (/ mount-height 2) post-adj) 0] (web-post web-thickness)))
 (defn web-post-tl [web-thickness] (translate [(+ (/ mount-width -2) post-adj) (- (/ mount-height 2) post-adj) 0] (web-post web-thickness)))
 (defn web-post-bl [web-thickness] (translate [(+ (/ mount-width -2) post-adj) (+ (/ mount-height -2) post-adj) 0] (web-post web-thickness)))

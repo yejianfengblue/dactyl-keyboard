@@ -1238,7 +1238,7 @@
                    (thumb-bl-place c (translate (wall-locate1 wall-thickness -0.5 1) (web-post-tr web-thickness)))
                    (thumb-bl-place c (translate (wall-locate2 wall-thickness -0.5 1) (web-post-tr web-thickness)))
                    (thumb-bl-place c (translate (wall-locate3 wall-thickness -0.5 1) (web-post-tr web-thickness)))
-                   (thumb-tl-place c thumb-post-tl))
+                   (thumb-tl-place c (thumb-post-tl web-thickness)))
        (hull (thumb-ml-place c (if (= thumb-count :three) (thumb-post-tr web-thickness) (web-post-tr web-thickness)))
              (thumb-ml-place c (translate (wall-locate1 wall-thickness 0 1) (if (= thumb-count :three) (thumb-post-tr web-thickness) (web-post-tr web-thickness))))
              (thumb-ml-place c (translate (wall-locate2 wall-thickness 0 1) (if (= thumb-count :three) (thumb-post-tr web-thickness) (web-post-tr web-thickness))))

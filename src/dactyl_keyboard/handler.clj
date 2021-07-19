@@ -71,7 +71,7 @@
                                             :box)
         param-inner-column                (case (get p "keys.inner-column")
                                             "innie" :innie
-                                            "ergodox" :outie
+                                            "outie" :outie
                                             :normie)
         param-hide-last-pinky             (parse-bool (get p "keys.hide-last-pinky"))
 
@@ -241,6 +241,7 @@
         param-thumb-alpha         (parse-int (get p "curve.thumb-alpha"))
         param-thumb-beta          (parse-int (get p "curve.thumb-beta"))
         param-thumb-tenting-angle (parse-int (get p "curve.thumb-tenting"))
+        param-rotate-x-angle      (parse-int (get p "curve.rotate-x"))
 
         param-hotswap             (parse-bool (get p "form.hotswap"))
         param-thumb-offset-x      (parse-int (get p "form.thumb-offset-x"))
@@ -275,6 +276,7 @@
                                    :configuration-alpha                (if generate-json? param-alpha (/ pi param-alpha))
                                    :configuration-beta                 (if generate-json? param-beta (/ pi param-beta))
                                    :configuration-tenting-angle        (if generate-json? param-tenting-angle (/ pi param-tenting-angle))
+                                   :configuration-rotate-x-angle       (if generate-json? param-rotate-x-angle (/ pi param-rotate-x-angle))
                                    :configuration-thumb-alpha          (if generate-json? param-thumb-alpha (/ pi param-thumb-alpha))
                                    :configuration-thumb-beta           (if generate-json? param-thumb-beta (/ pi param-thumb-beta))
                                    :configuration-thumb-tenting-angle  (if generate-json? param-thumb-tenting-angle (/ pi param-thumb-tenting-angle))
@@ -294,7 +296,7 @@
 
                                    :configuration-use-screw-inserts?   param-screw-inserts
 
-                                   :is-right?                            is-right?}
+                                   :is-right?                          is-right?}
         generated-file            (cond
                                     generate-plate? {:file      (g/generate-plate-dl c is-right?)
                                                      :extension "scad"}
@@ -329,65 +331,66 @@
         stagger-ring   [0 ring-y ring-z]
         stagger-pinky  [0 pinky-y pinky-z]
         misc           (get body :misc)
-        c              {:configuration-ncols                  (get keys :columns 5)
-                        :configuration-nrows                  (get keys :rows 4)
-                        :configuration-thumb-count            (keyword (get keys :thumb-count "six"))
-                        :configuration-last-row-count         (keyword (get keys :last-row "two"))
-                        :configuration-switch-type            (keyword (get keys :switch-type "box"))
-                        :configuration-use-inner-column?      (get keys :inner-column false)
-                        :configuration-hide-last-pinky?       (get keys :hide-last-pinky false)
+        c              {:configuration-ncols                       (get keys :columns 5)
+                        :configuration-nrows                       (get keys :rows 4)
+                        :configuration-thumb-count                 (keyword (get keys :thumb-count "six"))
+                        :configuration-last-row-count              (keyword (get keys :last-row "two"))
+                        :configuration-switch-type                 (keyword (get keys :switch-type "box"))
+                        :configuration-inner-column                (keyword (get keys :inner-column "normie"))
+                        :configuration-hide-last-pinky?            (get keys :hide-last-pinky false)
 
-                        :configuration-alpha                  (/ pi (get curve :alpha 12))
-                        :configuration-pinky-alpha            (/ pi (get curve :pinky-alpha 12))
-                        :configuration-beta                   (/ pi (get curve :beta 36))
-                        :configuration-centercol              (get curve :centercol 4)
-                        :configuration-tenting-angle          (/ pi (get curve :tenting 15))
-                        :configuration-rotate-x-angle         (/ pi (get curve :rotate-x 15))
+                        :configuration-alpha                       (/ pi (get curve :alpha 12))
+                        :configuration-pinky-alpha                 (/ pi (get curve :pinky-alpha 12))
+                        :configuration-beta                        (/ pi (get curve :beta 36))
+                        :configuration-centercol                   (get curve :centercol 4)
+                        :configuration-tenting-angle               (/ pi (get curve :tenting 15))
+                        :configuration-rotate-x-angle              (/ pi (get curve :rotate-x 15))
 
-                        :configuration-use-external-holder?   (get connector :external false)
-                        :configuration-connector-type         (get connector :type :none)
-                        :configuration-use-promicro-usb-hole? (get connector :micro-usb false)
+                        :configuration-use-external-holder?        (get connector :external false)
+                        :configuration-connector-type              (keyword (get connector :type "none"))
+                        :configuration-use-promicro-usb-hole?      (get connector :micro-usb false)
 
-                        :configuration-thumb-cluster-offset-x (get form :thumb-cluster-offset-x 6)
-                        :configuration-thumb-cluster-offset-y (get form :thumb-cluster-offset-y -3)
-                        :configuration-thumb-cluster-offset-z (get form :thumb-cluster-offset-z 7)
-                        :configuration-custom-thumb-cluster?  (get form :custom-thumb-cluster)
-                        :configuration-thumb-top-right-tenting-x (/ pi (get form :thumb-tenting-x 10))
-                        :configuration-thumb-top-right-tenting-y (/ pi (get form :thumb-tenting-y -4))
-                        :configuration-thumb-top-right-tenting-z (/ pi (get form :thumb-tenting-z 10))
-                        :configuration-thumb-top-right-offset-x (get form :thumb-top-right-offset-x -15)
-                        :configuration-thumb-top-right-offset-y (get form :thumb-top-right-offset-y -10)
-                        :configuration-thumb-top-right-offset-z (get form :thumb-top-right-offset-z 5)
-                        :configuration-thumb-top-left-tenting-x (/ pi (get form :thumb-top-left-tenting-x 10))
-                        :configuration-thumb-top-left-tenting-y (/ pi (get form :thumb-top-left-tenting-y -4))
-                        :configuration-thumb-top-left-tenting-z (/ pi (get form :thumb-top-left-tenting-z 10))
-                        :configuration-thumb-top-left-offset-x (get form :thumb-top-left-offset-x -35)
-                        :configuration-thumb-top-left-offset-y (get form :thumb-top-left-offset-y -16)
-                        :configuration-thumb-top-left-offset-z (get form :thumb-top-left-offset-z 2)
+                        :configuration-thumb-cluster-offset-x      (get form :thumb-cluster-offset-x 6)
+                        :configuration-thumb-cluster-offset-y      (get form :thumb-cluster-offset-y -3)
+                        :configuration-thumb-cluster-offset-z      (get form :thumb-cluster-offset-z 7)
+                        :configuration-custom-thumb-cluster?       (get form :custom-thumb-cluster false)
+                        :configuration-thumb-top-right-tenting-x   (/ pi (get form :thumb-tenting-x 10))
+                        :configuration-thumb-top-right-tenting-y   (/ pi (get form :thumb-tenting-y -4))
+                        :configuration-thumb-top-right-tenting-z   (/ pi (get form :thumb-tenting-z 10))
+                        :configuration-thumb-top-right-offset-x    (get form :thumb-top-right-offset-x -15)
+                        :configuration-thumb-top-right-offset-y    (get form :thumb-top-right-offset-y -10)
+                        :configuration-thumb-top-right-offset-z    (get form :thumb-top-right-offset-z 5)
+                        :configuration-thumb-top-left-tenting-x    (/ pi (get form :thumb-top-left-tenting-x 10))
+                        :configuration-thumb-top-left-tenting-y    (/ pi (get form :thumb-top-left-tenting-y -4))
+                        :configuration-thumb-top-left-tenting-z    (/ pi (get form :thumb-top-left-tenting-z 10))
+                        :configuration-thumb-top-left-offset-x     (get form :thumb-top-left-offset-x -35)
+                        :configuration-thumb-top-left-offset-y     (get form :thumb-top-left-offset-y -16)
+                        :configuration-thumb-top-left-offset-z     (get form :thumb-top-left-offset-z 2)
                         :configuration-thumb-middle-left-tenting-x (/ pi (get form :thumb-middle-left-tenting-x 10))
                         :configuration-thumb-middle-left-tenting-y (/ pi (get form :thumb-middle-left-tenting-y -4))
                         :configuration-thumb-middle-left-tenting-z (/ pi (get form :thumb-middle-left-tenting-z 10))
-                        :configuration-thumb-middle-left-offset-x (get form :thumb-middle-left-offset-x -35)
-                        :configuration-thumb-middle-left-offset-y (get form :thumb-middle-left-offset-y -16)
-                        :configuration-thumb-middle-left-offset-z (get form :thumb-middle-left-offset-z 2)
-                        :configuration-use-hotswap?           (get form :hotswap false)
-                        :configuration-stagger?               (get form :stagger true)
-                        :configuration-stagger-index          stagger-index
-                        :configuration-stagger-middle         stagger-middle
-                        :configuration-stagger-ring           stagger-ring
-                        :configuration-stagger-pinky          stagger-pinky
-                        :configuration-use-wide-pinky?        (get form :wide-pinky false)
-                        :configuration-z-offset               (get form :height-offset 4)
-                        :configuration-web-thickness          (get form :web-thickness 7)
-                        :configuration-use-wire-post?         (get form :wire-post false)
-                        :configuration-use-screw-inserts?     (get form :screw-inserts false)
 
-                        :configuration-show-caps?             (get misc :keycaps false)
-                        :configuration-plate-projection?      (not (get misc :case true))}
+                        :configuration-thumb-middle-left-offset-x  (get form :thumb-middle-left-offset-x -35)
+                        :configuration-thumb-middle-left-offset-y  (get form :thumb-middle-left-offset-y -16)
+                        :configuration-thumb-middle-left-offset-z  (get form :thumb-middle-left-offset-z 2)
+                        :configuration-use-hotswap?                (get form :hotswap false)
+                        :configuration-stagger?                    (get form :stagger true)
+                        :configuration-stagger-index               stagger-index
+                        :configuration-stagger-middle              stagger-middle
+                        :configuration-stagger-ring                stagger-ring
+                        :configuration-stagger-pinky               stagger-pinky
+                        :configuration-use-wide-pinky?             (get form :wide-pinky false)
+                        :configuration-z-offset                    (get form :height-offset 4)
+                        :configuration-use-wire-post?              (get form :wire-post false)
+                        :configuration-use-screw-inserts?          (get form :screw-inserts false)
+
+                        :configuration-show-caps?                  (get misc :keycaps false)
+                        :configuration-plate-projection?           (not (get misc :case true))}
         generated-scad (g/generate-case-dm c (get misc :right-side true))]
     {:status  200
      :headers {"Content-Type"        "application/octet-stream"
-               "Content-Disposition" "inline; filename=\"manuform-" (current-time) ".scad\""}
+               "Content-Disposition" "inline; filename=\"manuform-"
+               (current-time)      ".scad\""}
      :body    generated-scad}))
 
 (defn api-generate-lightcycle [{body :body}]

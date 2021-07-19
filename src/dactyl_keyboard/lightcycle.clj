@@ -366,7 +366,7 @@
                                (thumb-place c 0  0 (thumb-bl 1))
                                (thumb-place c 1  0 (thumb-br 1))))
        (triangle-hulls #_(thumb-place c 1 -1/2 (thumb-tl 2))
-        (thumb-place c 0 -1/2 (thumb-bl 2))
+                       (thumb-place c 0 -1/2 (thumb-bl 2))
                        (thumb-place c 1 -1/2 (thumb-br 2))
                        (thumb-place c 0 -1/2 (thumb-tl 2))
                        (thumb-place c 1 -1/2 (thumb-tr 2))
@@ -1059,8 +1059,8 @@
     (union (screw-insert c -1.5      4.9       bottom-radius top-radius height)
            (screw-insert c 2         toprow    bottom-radius top-radius height)
            (screw-insert c -0.75     2         bottom-radius top-radius height)
-           #_(screw-insert c middlerow lastrow   bottom-radius top-radius height)
-           (screw-insert c lastcol   lastrow bottom-radius top-radius height))))
+           (screw-insert c middlerow lastrow   bottom-radius top-radius height)
+           (screw-insert c lastcol   lastrow   bottom-radius top-radius height))))
 
 (defn new-case [c]
   (union (front-wall c)

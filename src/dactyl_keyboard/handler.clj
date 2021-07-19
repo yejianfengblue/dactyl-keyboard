@@ -93,6 +93,7 @@
         param-stagger                     (parse-bool (get p "form.stagger"))
         param-keyboard-z-offset           (parse-int (get p "form.height-offset"))
         param-web-thickness               (parse-float (get p "form.web-thickness"))
+        param-wall-thickness              (parse-float (get p "form.wall-thickness"))
         param-wide-pinky                  (parse-bool (get p "form.wide-pinky"))
         param-wire-post                   (parse-bool (get p "form.wire-post"))
         param-screw-inserts               (parse-bool (get p "form.screw-inserts"))
@@ -191,6 +192,7 @@
                                            :configuration-stagger-pinky               stagger-pinky
                                            :configuration-z-offset                    param-keyboard-z-offset
                                            :configuration-web-thickness               param-web-thickness
+                                           :configuration-wall-thickness              param-wall-thickness
                                            :configuration-show-caps?                  param-show-keycaps
                                            :configuration-use-wide-pinky?             param-wide-pinky
                                            :configuration-use-wire-post?              param-wire-post

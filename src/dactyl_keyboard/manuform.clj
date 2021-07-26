@@ -772,9 +772,9 @@
             (thumb-tr-place c (thumb-post-br web-thickness)))
            (triangle-hulls
             (thumb-ml-place c (web-post-tl web-thickness))
+            (thumb-ml-place c (web-post-bl web-thickness))
             (thumb-bl-place c (web-post-tr web-thickness))
-            (thumb-ml-place c (web-post-br web-thickness))
-            (thumb-bl-place c (web-post-bl web-thickness)))
+            (thumb-bl-place c (web-post-br web-thickness)))
            (triangle-hulls
             (thumb-br-place c (web-post-tr web-thickness))
             (thumb-mr-place c (web-post-tl web-thickness))
@@ -1633,7 +1633,7 @@
 
 (def c {:configuration-nrows                    4
         :configuration-ncols                    5
-        :configuration-thumb-count              :three-mini
+        :configuration-thumb-count              :six
         :configuration-last-row-count           :zero
         :configuration-switch-type              :box
         :configuration-inner-column             :normie

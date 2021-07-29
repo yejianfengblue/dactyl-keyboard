@@ -55,6 +55,7 @@
         param-thumb-count                 (case (get p "keys.thumb-count")
                                             "two" :two
                                             "three" :three
+                                            "three-mini" :three-mini
                                             "four" :four
                                             "five" :five
                                             :six)

@@ -337,6 +337,8 @@
                                  (translate [5 0 -5.6]))
         hotswap-base-shape7  (->> (cube 19 6 5.5)
                                  (translate [0 -4.8 -5.6]))
+        hotswap-base-shape8  (->> (cube 17 3.4 3.5)
+                                  (translate [0, 10.35, -1.75]))
         hotswap-holder      (difference swap-holder
                                         main-axis-hole1
                                         main-axis-hole
@@ -354,7 +356,8 @@
                                         hotswap-base-shape4
                                         hotswap-base-shape5
                                         hotswap-base-shape6
-                                        hotswap-base-shape7)]
+                                        hotswap-base-shape7
+                                        hotswap-base-shape8)]
     (difference (union plate-half
                        (->> plate-half
                             (mirror [1 0 0])

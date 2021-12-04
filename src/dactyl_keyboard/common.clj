@@ -6,9 +6,11 @@
 
 ; common parts between the two boards.
 
-(def extra-width
+(defn extra-width
   "extra width between two keys in a row."
-  2.5)
+  [c]
+  (let [nrows (get c :configuration-nrows 5)]
+    (if (> nrows 5) 3.5 2.5)))
 (def extra-height
   "extra height between two keys in a column."
   1.0)
@@ -113,8 +115,8 @@
 (defn fcolumn-radius
   "It computes the radius of the column's curve. It takes the value of `pi` divided
    by `beta` to compute the said radius."
-  [beta switch-type]
-  (+ (/ (/ (+ mount-width extra-width) 2)
+  [c beta switch-type]
+  (+ (/ (/ (+ mount-width (extra-width c)) 2)
         (Math/sin (/ beta 2)))
      (cap-top-height switch-type)))
 
@@ -151,6 +153,7 @@
         tenting-angle     (get c :configuration-tenting-angle)
         switch-type       (get c :configuration-switch-type)
         keyboard-z-offset (get c :configuration-z-offset)
+        web-thickness     (get c :configuration-web-thickness)
         rotate-x-angle    (get c :configuration-rotate-x-angle)
         column-angle      (* beta (- centercol column))
         placed-shape      (->> shape
@@ -161,9 +164,9 @@
                                               (- (frow-radius alpha switch-type))])
                                (rotate-x-fn  (* alpha (- centerrow row)))
                                (translate-fn [0 0 (frow-radius alpha switch-type)])
-                               (translate-fn [0 0 (- (fcolumn-radius beta switch-type))])
+                               (translate-fn [0 0 (- (fcolumn-radius c beta switch-type))])
                                (rotate-y-fn  column-angle)
-                               (translate-fn [0 0 (fcolumn-radius beta switch-type)])
+                               (translate-fn [0 0 (fcolumn-radius c beta switch-type)])
                                (translate-fn (dm-column-offset c column)))]
     (->> placed-shape
          (rotate-y-fn  tenting-angle)
@@ -228,7 +231,11 @@
   (let [switch-type         (get c :configuration-switch-type)
         create-side-nub?    (case switch-type
                               :mx true
+                              :mx-snap-in true
                               false) #_(get c :configuration-create-side-nub?)
+      nub-height           (case switch-type
+                              :mx-snap-in 0.75
+                              0) 
         use-alps?           (case switch-type
                               :alps true
                               false) #_(get c :configuration-use-alps?)
@@ -236,7 +243,7 @@
                               :choc true
                               false)
         use-hotswap?        (get c :configuration-use-hotswap?)
-        is-right?        (get c :is-right?)
+        is-right?           (get c :is-right?)
         plate-projection?   (get c :configuration-plate-projection? false)
         fill-in             (translate [0 0 (/ plate-thickness 2)] (cube alps-width alps-height plate-thickness))
         holder-thickness    1.65
@@ -273,11 +280,11 @@
                                                (/ plate-thickness 2)])))
         side-nub            (->> (binding [*fn* 30] (cylinder 1 2.75))
                                  (rotate (/ pi 2) [1 0 0])
-                                 (translate [(+ (/ keyswitch-width 2)) 0 1])
-                                 (hull (->> (cube 1.5 2.75 plate-thickness)
+                                 (translate [(+ (/ keyswitch-width 2)) 0 (+ 1 nub-height)])
+                                 (hull (->> (cube 1.5 2.75 (- plate-thickness nub-height))
                                             (translate [(+ (/ 1.5 2) (/ keyswitch-width 2))
                                                         0
-                                                        (/ plate-thickness 2)]))))
+                                                        (/ (+ plate-thickness nub-height) 2)]))))
         ; the hole's wall.
         kailh-cutout (->> (cube (/ keyswitch-width 3) 1.6 (+ plate-thickness 1.8))
                           (translate [0
@@ -310,7 +317,7 @@
                                  (translate (if use-choc? [5 4 0] [3.81 2.54 0])))
         minus-hole-mirrored (->> (cylinder (/ 3.3 2) 5)
                                  (with-fn 8)
-                                 (translate (if use-choc? [0 6 0] [-2.54 5.08 0])))
+                                 (translate (if use-choc? [0 6 5] [-2.54 5.08 0])))
         friction-hole       (->> (cylinder (if use-choc? 1 (/ 1.7 2)) 10)
                                  (with-fn 8))
         friction-hole-right (translate [(if use-choc? 5.5 5) 0 0] friction-hole)
@@ -417,16 +424,27 @@
 
 (def web-thickness 7)
 (def post-size 0.1)
+;; TODO remove the constants once lightcycle has been converted
 (def web-post
+  (->> (cube post-size post-size web-thickness)
+       (translate [0 0 (+ (/ web-thickness -2)
+                          plate-thickness)])))
+(defn web-post [web-thickness]
   (->> (cube post-size post-size web-thickness)
        (translate [0 0 (+ (/ web-thickness -2)
                           plate-thickness)])))
 
 (def post-adj (/ post-size 2))
-(def web-post-tr (translate [(- (/ mount-width 2) post-adj) (- (/ mount-height 2) post-adj) 0] web-post))
-(def web-post-tl (translate [(+ (/ mount-width -2) post-adj) (- (/ mount-height 2) post-adj) 0] web-post))
-(def web-post-bl (translate [(+ (/ mount-width -2) post-adj) (+ (/ mount-height -2) post-adj) 0] web-post))
-(def web-post-br (translate [(- (/ mount-width 2) post-adj) (+ (/ mount-height -2) post-adj) 0] web-post))
+
+;; TODO remove the constants once lightcycle has been converted
+;; (def web-post-tr (translate [(- (/ mount-width 2) post-adj) (- (/ mount-height 2) post-adj) 0] web-post))
+;; (def web-post-tl (translate [(+ (/ mount-width -2) post-adj) (- (/ mount-height 2) post-adj) 0] web-post))
+;; (def web-post-bl (translate [(+ (/ mount-width -2) post-adj) (+ (/ mount-height -2) post-adj) 0] web-post))
+;; (def web-post-br (translate [(- (/ mount-width 2) post-adj) (+ (/ mount-height -2) post-adj) 0] web-post))
+(defn web-post-tr [web-thickness] (translate [(- (/ mount-width 2) post-adj) (- (/ mount-height 2) post-adj) 0] (web-post web-thickness)))
+(defn web-post-tl [web-thickness] (translate [(+ (/ mount-width -2) post-adj) (- (/ mount-height 2) post-adj) 0] (web-post web-thickness)))
+(defn web-post-bl [web-thickness] (translate [(+ (/ mount-width -2) post-adj) (+ (/ mount-height -2) post-adj) 0] (web-post web-thickness)))
+(defn web-post-br [web-thickness] (translate [(- (/ mount-width 2) post-adj) (+ (/ mount-height -2) post-adj) 0] (web-post web-thickness)))
 
 ; length of the first downward-sloping part of the wall (negative)
 (def wall-z-offset -15)
@@ -435,11 +453,21 @@
 ; wall thickness parameter; originally 5
 (def wall-thickness 3)
 
+;; TODO remove those functions once lightcycle has been integrated
 (defn wall-locate1 [dx dy]
   [(* dx wall-thickness) (* dy wall-thickness) -1])
 (defn wall-locate2 [dx dy]
   [(* dx wall-xy-offset) (* dy wall-xy-offset) wall-z-offset])
 (defn wall-locate3 [dx dy]
+  [(* dx (+ wall-xy-offset wall-thickness))
+   (* dy (+ wall-xy-offset wall-thickness))
+   wall-z-offset])
+
+(defn wall-locate1 [wall-thickness dx dy]
+  [(* dx wall-thickness) (* dy wall-thickness) -1])
+(defn wall-locate2 [wall-thickness dx dy]
+  [(* dx wall-xy-offset) (* dy wall-xy-offset) wall-z-offset])
+(defn wall-locate3 [wall-thickness dx dy]
   [(* dx (+ wall-xy-offset wall-thickness))
    (* dy (+ wall-xy-offset wall-thickness))
    wall-z-offset])
@@ -521,12 +549,13 @@
         shift-left  (= column 0)
         shift-up    (and (not (or shift-right shift-left)) (= row 0))
         shift-down  (and (not (or shift-right shift-left)) (>= row lastrow))
+        wall-thickness (get c :configuration-wall-thickness 5)
         position    (if shift-up
-                      (key-position c column row (map + (wall-locate2  0  1) [0 (/ mount-height 2) 0]))
+                      (key-position c column row (map + (wall-locate2 wall-thickness 0  1) [0 (/ mount-height 2) 0]))
                       (if shift-down
-                        (key-position c column row (map - (wall-locate2  0 -1) [0 (/ mount-height 2) 0]))
+                        (key-position c column row (map - (wall-locate2 wall-thickness 0 -1) [0 (/ mount-height 2) 0]))
                         (if shift-left
-                          (map + (left-key-position c row 0) (wall-locate3 -1 0))
-                          (key-position c column row (map + (wall-locate2  1  0) [(/ mount-width 2) 0 0])))))]
+                          (map + (left-key-position c row 0) (wall-locate3 wall-thickness -1 0))
+                          (key-position c column row (map + (wall-locate2 wall-thickness 1  0) [(/ mount-width 2) 0 0])))))]
     (->> (screw-insert-shape bottom-radius top-radius height)
          (translate [(first position) (second position) (/ height 2)]))))

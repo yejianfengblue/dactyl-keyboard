@@ -82,6 +82,7 @@ Temporary Items
 *.gcode
 *.scad
 *.calva/
+*.lsp/
 
 # Nix
 .direnv

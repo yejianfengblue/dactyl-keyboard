@@ -52,6 +52,7 @@
                 <select id="keys.switch-type" name="keys.switch-type">
                     <option value="box">Box and MX</option>
                     <option value="mx">MX</option>
+                    <option value="mx-snap-in">MX snap-in (one way)</option>
                     <option value="alps">Alps</option>
                     <option value="choc">Choc (Experimental)</option>
                 </select>
@@ -93,6 +94,13 @@
                 <select id="curve.thumb-tenting" name="curve.thumb-tenting">
                     {% for tta in thumb-tenting-angle %}
                     <option value={{tta}}>pi/{{tta}}</option>
+                    {% endfor %}
+                </select>
+                <label for="curve.rotate-x">Rotation around row axis</label>
+                <select id="curve.rotate-x" name="curve.rotate-x">
+                    <option value="180">pi/180</option>
+                    {% for ta in rotate-x %}
+                    <option value="-{{ta}}">-pi/{{ta}}</option>
                     {% endfor %}
                 </select>
             </fieldset>
@@ -166,6 +174,16 @@
                     <option value={{ho}}>{{ho}}mm</option>
                     {% endfor %}
                 </select>
+                <label for="form.web-thickness">Web thickness (top part of the keyboard around the keyholes)</label>
+                <input
+                    type="number"
+                    name="form.web-thickness"
+                    id="form.web-thickness"
+                    value="7"
+                    step="0.1"
+                    min="1"
+                    max="10"
+                />
                 <label for="form.border">Border</label>
                 <select name="form.border" id="form.border">
                     <option value="true">Yes</option>

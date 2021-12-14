@@ -297,9 +297,9 @@
                                      (if create-side-nub? (with-fn 100 side-nub))))
         ; the bottom of the hole.
         swap-holder-z-offset (if use-choc? 1.5 -1.75)
-        swap-holder         (->> (cube (+ keyswitch-width 3) (+ keyswitch-height 3) 3.5)
-                                 (translate [0 (/ (+ keyswitch-height 3) 5) swap-holder-z-offset]))
-                                 
+        swap-holder         (->> (cube (+ keyswitch-width 3.3) (+ keyswitch-height 3.3) 3.5)
+                                 (translate [0 0 swap-holder-z-offset]))
+
         ; for the main axis
         main-axis-hole      (->> (cylinder (/ 4.0 2) 12)
                                  (with-fn 12))
@@ -323,22 +323,22 @@
         friction-hole-right (translate [(if use-choc? 5.5 5) 0 0] friction-hole)
         friction-hole-left  (translate [(if use-choc? -5.5 -5) 0 0] friction-hole)
         hotswap-base-z-offset (if use-choc? 0.2 -1.78)
-        hotswap-base-shape1  (->> (cube 10.7 (if use-choc? 11.5 5.91) 1.86)
-                                 (translate [-4.26 3.85 hotswap-base-z-offset]))
-        hotswap-base-shape2  (->> (cube 9.5 (if use-choc? 11.5 4.02) 1.86)
-                                 (translate [4.75 4.795 hotswap-base-z-offset]))
-        hotswap-base-shape3  (->> (cube 10.7 (if use-choc? 11.5 4.91) 5.5)
-                                 (translate [-4.26 3.845 -3.6]))
-        hotswap-base-shape4  (->> (cube 9.5 (if use-choc? 11.5 3.52) 5.5)
-                                 (translate [4.75 4.54 -3.6]))
-        hotswap-base-shape5  (->> (cube 5.8 5 5.5)
-                                 (translate [0 1 -3.6]))
-        hotswap-base-shape6  (->> (cube 9 7 5.5)
-                                 (translate [5 0 -5.6]))
-        hotswap-base-shape7  (->> (cube 19 6 5.5)
-                                 (translate [0 -4.8 -5.6]))
-        hotswap-base-shape8  (->> (cube 17 3.4 3.5)
-                                  (translate [0, 10.35, -1.75]))
+        hotswap-base-shape (union (->> (cube 10.7 (if use-choc? 11.5 5.91) 1.86)
+                                       (translate [-4.26 3.85 hotswap-base-z-offset]))
+                                  (->> (cube 9.5 (if use-choc? 11.5 4.02) 1.86)
+                                       (translate [4.75 4.795 hotswap-base-z-offset]))
+                                  (->> (cube 10.7 (if use-choc? 11.5 5.41) 5.5)
+                                       (translate [-4.26 4.095 -3.6]))
+                                  (->> (cube 9.5 (if use-choc? 11.5 4.02) 5.5)
+                                       (translate [4.75 4.79 -3.6]))
+                                  (->> (cube 5.8 5 5.5)
+                                       (translate [0 1 -3.6]))
+                                  (->> (cube 9 7 5.5)
+                                       (translate [5 0 -5.6]))
+                                  (->> (cube 19 7 5.5)
+                                       (translate [0 -5.3 -5.6])))
+        hotswap-base-shape-mirrored (->> hotswap-base-shape
+                                         (mirror [-1, 0, 0]))
         hotswap-holder      (difference swap-holder
                                         main-axis-hole1
                                         main-axis-hole
@@ -350,14 +350,9 @@
                                           minus-hole-mirrored)
                                         friction-hole-left
                                         friction-hole-right
-                                        hotswap-base-shape1
-                                        hotswap-base-shape2
-                                        hotswap-base-shape3
-                                        hotswap-base-shape4
-                                        hotswap-base-shape5
-                                        hotswap-base-shape6
-                                        hotswap-base-shape7
-                                        hotswap-base-shape8)]
+                                        (if is-right?
+                                          hotswap-base-shape
+                                          hotswap-base-shape-mirrored))]
     (difference (union plate-half
                        (->> plate-half
                             (mirror [1 0 0])

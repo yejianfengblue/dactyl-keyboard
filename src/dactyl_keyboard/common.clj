@@ -286,7 +286,7 @@
                                                         0
                                                         (/ (+ plate-thickness nub-height) 2)]))))
         ; the hole's wall.
-        kailh-cutout (->> (cube (/ keyswitch-width 3) 1.6 (+ plate-thickness 1.8))
+        kailh-cutout (->> (cube (/ keyswitch-width 3) 1.81 (+ plate-thickness 1.8))
                           (translate [0
                                       (+ (/ 1.5 2) (+ (/ keyswitch-height 2)))
                                       (/ plate-thickness)]))

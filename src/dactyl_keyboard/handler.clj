@@ -389,6 +389,7 @@
                         :configuration-web-thickness               (get form :web-thickness 7.0)
                         :configuration-wall-thickness               (get form :wall-thickness 3.0)
 
+                        :is-right? (parse-bool (get misc :right-side true))
                         :configuration-show-caps?                  (get misc :keycaps false)
                         :configuration-plate-projection?           (not (get misc :case true))}
         generated-scad (g/generate-case-dm c (get misc :right-side true))]

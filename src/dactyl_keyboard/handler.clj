@@ -38,7 +38,7 @@
                                 ;; :thumb-locations        ["tl" "tr" "ml" "mr" "bl" "br"]
                                 :thumb-tenting          (range -90 100 5)
                                 :rotate-x               (range 36 -36 -1)
-                                :height-offset          (range 4 26 2)}))
+                                :height-offset          (range 4 52 2)}))
 
 (defn lightcycle [_]
   (render-file "lightcycle.html" {:column-curvature       (range 12 22)

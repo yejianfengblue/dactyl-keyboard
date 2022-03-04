@@ -1588,12 +1588,14 @@
                                  (rj9-space frj9-start c))
                 (case-walls c))
               (if use-screw-inserts? (screw-insert-outers screw-placement c) ())
-              (case connector-type
-                :trrs (union (pro-micro-holder c)
-                             (trrs-usb-holder-holder c)
-                             (trrs-holder c))
-                :rj9 (union (usb-holder fusb-holder-position c)
-                            (rj9-holder frj9-start c))
+              (if-not use-external-holder?
+                (case connector-type
+                  :trrs (union (pro-micro-holder c)
+                               (trrs-usb-holder-holder c)
+                               (trrs-holder c))
+                  :rj9 (union (usb-holder fusb-holder-position c)
+                              (rj9-holder frj9-start c))
+                  ())
                 ()))
        (if use-screw-inserts? (screw-insert-holes screw-placement c) ())
        (if-not use-external-holder?

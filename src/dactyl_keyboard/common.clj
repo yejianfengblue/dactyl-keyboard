@@ -252,9 +252,9 @@
                                          (translate [0
                                                      (+ (/ 2.7 2) (/ alps-height 2))
                                                      (/ plate-thickness 2)]))
-                              :choc (->> (cube (+ keyswitch-width 3.3) holder-thickness (* plate-thickness 0.65))
+                              :choc (->> (cube (+ keyswitch-width 3) holder-thickness (* plate-thickness 0.65))
                                          (translate [0
-                                                     (+ (/ holder-thickness 2) (/ keyswitch-height 2))
+                                                     (+ holder-thickness (/ keyswitch-height 2))
                                                      (* plate-thickness 0.7)]))
                               (->> (cube (+ keyswitch-width 3.3) holder-thickness plate-thickness)
                                    (translate [0
@@ -297,7 +297,7 @@
                                      (if create-side-nub? (with-fn 100 side-nub))))
         ; the bottom of the hole.
         swap-holder-z-offset (if use-choc? 1.5 -1.5)
-        swap-holder         (->> (cube (+ keyswitch-width 3) (/ (+ keyswitch-height 3) 2) 3)
+        swap-holder         (->> (cube (+ keyswitch-width 3) (/ keyswitch-height 2) 3)
                                  (translate [0 (/ (+ keyswitch-height 3) 4) swap-holder-z-offset]))
         ; for the main axis
         main-axis-hole      (->> (cylinder (/ 4.0 2) 10)

@@ -87,7 +87,8 @@
         param-connector-type              (case (get p "connector.type")
                                             "none" :none
                                             "trrs" :trrs
-                                            "rj9" :rj9)
+                                            "rj9" :rj9
+                                            "usb" :usb)
         param-use-promicro-usb-hole       (parse-bool (get p "connector.micro-usb"))
 
         param-hotswap                     (parse-bool (get p "form.hotswap"))

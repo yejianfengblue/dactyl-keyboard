@@ -1384,12 +1384,12 @@
                      6 -2
                      -3)
         wall-thickness (get c :configuration-wall-thickness)]
-    (key-position c 0.5 0 (map - (wall-locate2 wall-thickness 0 y-addition) [0 (/ mount-height 2) 0]))))
+    (key-position c 0.2 0 (map - (wall-locate2 wall-thickness 0 y-addition) [0 (/ mount-height 2) 0]))))
 
 (defn trrs-usb-holder-position [c]
-  (map + [17 19.3 0] [(first (trrs-usb-holder-ref c)) (second (trrs-usb-holder-ref c)) 2]))
+  (map + [17 12 0] [(first (trrs-usb-holder-ref c)) (second (trrs-usb-holder-ref c)) 2]))
 (def trrs-usb-holder-cube
-  (cube 15 12 2))
+  (cube 17 12 2))
 (defn trrs-usb-holder-space [c]
   (translate (map + (trrs-usb-holder-position c) [0 (* -1 wall-thickness) 1]) trrs-usb-holder-cube))
 (defn trrs-usb-holder-holder [c]
@@ -1590,6 +1590,8 @@
               (if use-screw-inserts? (screw-insert-outers screw-placement c) ())
               (if-not use-external-holder?
                 (case connector-type
+                  :usb (union (pro-micro-holder c)
+                               (trrs-usb-holder-holder c))
                   :trrs (union (pro-micro-holder c)
                                (trrs-usb-holder-holder c)
                                (trrs-holder c))
@@ -1600,6 +1602,8 @@
        (if use-screw-inserts? (screw-insert-holes screw-placement c) ())
        (if-not use-external-holder?
          (case connector-type
+           :usb (union  (trrs-usb-holder-space c)
+                        (trrs-usb-jack c))
            :trrs (union (trrs-holder-hole c)
                         (trrs-usb-holder-space c)
                         (trrs-usb-jack c))
